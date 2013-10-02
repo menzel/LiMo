@@ -1107,6 +1107,7 @@ public class MainGUI extends JFrame{
 					public void mouseMoved(MouseEvent a) {
 						try{ 
 							mousePos.setText("x:y " + getIc().getMousePosition().x + ":" + getIc().getMousePosition().y);
+							
 						}catch(NullPointerException c){
 							//Nothing to do here, seems to happen from time to time
 						}
@@ -1639,6 +1640,13 @@ public class MainGUI extends JFrame{
 	public void setUndoStack(UndoStack undoStack) {
 		this.undoStack = undoStack;
 
+	}
+
+	/**
+	 * @return the text
+	 */
+	public JTextArea getText() {
+		return text;
 	}
 
 }

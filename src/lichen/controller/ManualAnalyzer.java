@@ -203,19 +203,23 @@ public class ManualAnalyzer {
 	public void addArea() {
 		long last = floodfiller.getPixelCount(); 
 		int option = 0; 
+		int x = imp.getRoi().getPosX();
+		int y = imp.getRoi().getPosY();
+		long oldPixelcount = floodfiller.getPixelCount();
 		
 		if(!(factory.returnAll().size() <= gui.measurements.getSelectedRow())){ 
 			Object o = gui.measurements.getValueAt(gui.measurements.getSelectedRow(), 0); 
 			Measurement tmp = factory.getMeasurementByID(Integer.parseInt(o.toString()));
 
 			imp.getProcessor().setValue(tmp.getColor().getRGB());
-		}
+		} 
 
 		if(!floodfiller.fill(imp.getRoi().getPosX(), imp.getRoi().getPosY())){
 			JOptionPane.showMessageDialog(null, "Ein Thallus kann nicht doppelt gezählt werden");
 		}
 
 		imp.updateAndDraw();
+		gui.getText().setText(gui.getText().getText() + "\nHinzugefügt: " + x + ":" + y + " Fläche: " + (Math.round(((floodfiller.getPixelCount()-oldPixelcount)/MeasurementsFactory.getInstance().getPixelrate()))*1000.0)/1000.0);
 
 		if(MaxArea < floodfiller.getPixelCount()-last){
 			option = JOptionPane.showConfirmDialog(null, "Die hinzugefüge Fläche umfasst einen Großteil des Messbereichts\n" +
