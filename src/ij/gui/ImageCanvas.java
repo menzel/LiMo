@@ -27,6 +27,7 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 
 	public static boolean usePointer = Prefs.usePointerCursor;
 
+	
 	protected ImagePlus imp;
 	protected boolean imageUpdated;
 	protected Rectangle srcRect;

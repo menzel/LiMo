@@ -29,7 +29,6 @@ public class DataExporter {
 		String comma=";";
 		int i = 3;
 		
-		System.out.println(Data.length);
 		
 		Pattern p = Pattern.compile(Pattern.quote(".csv"));
 		Matcher pm = p.matcher(path);

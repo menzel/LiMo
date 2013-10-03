@@ -47,7 +47,9 @@ public class FloodFiller {
 
 	/** Does a 4-connected flood fill using the current fill/draw
 		value, which is defined by ImageProcessor.setValue(). */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")public FloodFiller() {
+		// TODO Auto-generated constructor stub
+	}
 	public boolean fill(int x, int y) {
 		double oldPixelcount = pixelcount;
 		

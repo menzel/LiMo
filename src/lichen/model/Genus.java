@@ -122,6 +122,7 @@ public class Genus {
 	 */
 	public Object[][] getTableData() {
 		//TODO: Trennstriche zwischen Arten
+		
 		Object[][] t = new Object[(this.getSize()+this.getGenusCount())][5] ;	
 
 		int index =0;
@@ -185,12 +186,10 @@ public class Genus {
 				for(String[] s: g.getResults().getThalliList()){
 					t[index][4] = s[0];
 					t[index++][5] = Math.round(Integer.parseInt(s[1])/g.getResults().getPixelrate()*1000.0)/1000.0;
-					System.out.println(s[0] + " " + s[1]);
 				}
 				
 				index++;
 				
-				//TODO: put list in table 
 
 			}
 		}

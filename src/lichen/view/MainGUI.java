@@ -1096,8 +1096,18 @@ public class MainGUI extends JFrame{
 					@Override
 					public void mouseWheelMoved(MouseWheelEvent e) {
 
-						System.out.println(e.getWheelRotation()); 
-						//TODO: zoom set value here
+
+						if(e.getWheelRotation() > 0){
+							getIc().zoomOut(e.getXOnScreen(), e.getYOnScreen());
+							magnification = imp.getCanvas().getMagnification();
+							getContentPane().revalidate(); 
+
+						}else{ 
+							getIc().zoomIn(e.getXOnScreen(), e.getYOnScreen());
+							magnification = imp.getCanvas().getMagnification();
+							getContentPane().revalidate(); 
+
+						}
 					}
 				});
 
@@ -1106,8 +1116,9 @@ public class MainGUI extends JFrame{
 					@Override
 					public void mouseMoved(MouseEvent a) {
 						try{ 
-							mousePos.setText("x:y " + getIc().getMousePosition().x + ":" + getIc().getMousePosition().y);
-							
+							mousePos.setText("x:y " + getIc().getMousePosition().x/magnification + ":" + getIc().getMousePosition().y/magnification);
+							getIc().mouseMoved(a);
+
 						}catch(NullPointerException c){
 							//Nothing to do here, seems to happen from time to time
 						}
@@ -1477,9 +1488,9 @@ public class MainGUI extends JFrame{
 		int r,g,b;
 		r = (c&0xff0000)>>16;	
 							g =(c&0xff00)>>8;
-							b = c&0xff;
+					b = c&0xff;
 
-							return new Color(r,g,b);
+					return new Color(r,g,b);
 	}
 
 	/**
