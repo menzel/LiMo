@@ -113,7 +113,7 @@ public class FloodFiller {
 		undoStack.add((ArrayList<int[]>) undoPos.clone());
 
 		ThallusCount++; 
-		tmp[1] = pixelcount+""; 
+		tmp[1] = (int)(pixelcount-oldPixelcount)+""; 
 		this.thalliList.add(tmp);
 		
 
