@@ -1099,11 +1099,13 @@ public class MainGUI extends JFrame{
 
 						if(e.getWheelRotation() > 0){
 							getIc().zoomOut(e.getXOnScreen(), e.getYOnScreen());
+//							getIc().zoomOut((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
 							magnification = imp.getCanvas().getMagnification();
 							getContentPane().revalidate(); 
 
 						}else{ 
-							getIc().zoomIn(e.getXOnScreen(), e.getYOnScreen());
+							getIc().zoomIn(e.getXOnScreen(), e.getYOnScreen()); 
+			//				getIc().zoomIn((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
 							magnification = imp.getCanvas().getMagnification();
 							getContentPane().revalidate(); 
 
@@ -1116,7 +1118,7 @@ public class MainGUI extends JFrame{
 					@Override
 					public void mouseMoved(MouseEvent a) {
 						try{ 
-							mousePos.setText("x:y " + getIc().getMousePosition().x/magnification + ":" + getIc().getMousePosition().y/magnification);
+							mousePos.setText("x:y " + (int)(getIc().getMousePosition().x/magnification) + ":" + (int)(getIc().getMousePosition().y/magnification));
 							getIc().mouseMoved(a);
 
 						}catch(NullPointerException c){
