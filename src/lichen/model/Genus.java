@@ -177,15 +177,18 @@ public class Genus {
 				t[index][5] = g.getResults().getCount();
 				t[index++][6] = "r=" + c.getRed() + "," + "g=" +c.getGreen() + "," + "b=" + c.getBlue();
 				
+				index++;
 				
-				t[index][4] = "Pos x:y";
-				t[index++][5] = "Größe [mm^2]";
+				
+				t[index][1] = "Thalli einzeln:";
+				t[index][2] = "Pos x:y";
+				t[index++][3] = "Größe [mm^2]";
 				
 				index++;
 				
 				for(String[] s: g.getResults().getThalliList()){
-					t[index][4] = s[0];
-					t[index++][5] = Math.round(Integer.parseInt(s[1])/g.getResults().getPixelrate()*1000.0)/1000.0;
+					t[index][2] = s[0];
+					t[index++][3] = Math.round(Integer.parseInt(s[1])/g.getResults().getPixelrate()*1000.0)/1000.0;
 				}
 				
 				index++;

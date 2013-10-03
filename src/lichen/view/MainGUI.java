@@ -53,6 +53,7 @@ import javax.swing.table.JTableHeader;
 
 import lichen.controller.AutoAnalyzer;
 import lichen.controller.ColorMatcher;
+import lichen.controller.ColorStack;
 import lichen.controller.DataExporter;
 import lichen.controller.ManualAnalyzer;
 import lichen.controller.Processor;
@@ -170,6 +171,9 @@ public class MainGUI extends JFrame{
 		JMenuItem Barea = new JMenuItem("Messfläche wählen");
 		JMenuItem Bborder = new JMenuItem("Randdicke wählen");
 		JMenuItem BsheetSize = new JMenuItem("Foliengröße wählen");
+		JMenuItem Brotate = new JMenuItem("Bild um drehen");
+
+		JMenuItem BcolorList = new JMenuItem("Füllfarben wählen");
 
 		JMenuItem Bauto = new JMenuItem("Automatische Analyse");
 		Bauto.setAccelerator(KeyStroke.getKeyStroke(
@@ -205,6 +209,9 @@ public class MainGUI extends JFrame{
 		editMenu.add(Bauto);
 		editMenu.add(Bborder);
 		editMenu.add(BsheetSize);
+		editMenu.add(Brotate);
+		editMenu.add(BcolorList);
+
 
 		dataMenu.add(Bmanual);
 		dataMenu.add(BshowResults);
@@ -771,6 +778,16 @@ public class MainGUI extends JFrame{
 			}
 		});
 
+		Brotate.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				imp.getProcessor().rotate(180);	
+				imp.updateAndDraw();
+
+
+			}
+		});
 
 		Bborder.addActionListener(new ActionListener() {
 
@@ -1099,13 +1116,13 @@ public class MainGUI extends JFrame{
 
 						if(e.getWheelRotation() > 0){
 							getIc().zoomOut(e.getXOnScreen(), e.getYOnScreen());
-//							getIc().zoomOut((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
+							//							getIc().zoomOut((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
 							magnification = imp.getCanvas().getMagnification();
 							getContentPane().revalidate(); 
 
 						}else{ 
 							getIc().zoomIn(e.getXOnScreen(), e.getYOnScreen()); 
-			//				getIc().zoomIn((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
+							//				getIc().zoomIn((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
 							magnification = imp.getCanvas().getMagnification();
 							getContentPane().revalidate(); 
 
@@ -1118,7 +1135,7 @@ public class MainGUI extends JFrame{
 					@Override
 					public void mouseMoved(MouseEvent a) {
 						try{ 
-							mousePos.setText("x:y " + (int)(getIc().getMousePosition().x/magnification) + ":" + (int)(getIc().getMousePosition().y/magnification));
+							mousePos.setText("x:y " + (int)(getIc().getMousePosition().x/magnification) + ":" + (int)getIc().getMousePosition().y/magnification);
 							getIc().mouseMoved(a);
 
 						}catch(NullPointerException c){
@@ -1338,6 +1355,67 @@ public class MainGUI extends JFrame{
 		}); 
 
 
+		BcolorList.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				final JFrame choose = new JFrame("Wähle Farbreihenfolge"); 
+				choose.setLayout(new BorderLayout());
+				choose.setSize(150, 300);
+
+				final Color[] colors = ColorStack.getAllColors(); 
+				final JTable chooseTable = new JTable(colors.length,2); 
+				final JTextArea notice = new JTextArea("Bitte Reihenfolge eintragen");
+
+				chooseTable.getTableHeader().setReorderingAllowed(false);
+				chooseTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+				chooseTable.getColumnModel().getColumn(1).setPreferredWidth(50); 
+
+				ColorStack.ColorStackInit(); 
+
+				chooseTable.getColumnModel().getColumn(1).setCellRenderer(new ChooserColorCellRenderer()); 
+
+				JButton finish = createButton("Fertig");
+				JPanel choosePanel = new JPanel(new BorderLayout());
+
+				choosePanel.add(finish, BorderLayout.SOUTH); 
+				choosePanel.add(chooseTable, BorderLayout.CENTER); 
+
+				choose.add(choosePanel, BorderLayout.CENTER);
+				choose.add(notice, BorderLayout.SOUTH);
+				choose.setVisible(true);
+
+
+				/**
+				 * Read user entered values and apply to ColorStack 
+				 */
+				finish.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) { 
+						chooseTable.setEnabled(false);
+						chooseTable.clearSelection();
+
+						for(int i =0; i< colors.length; i++){
+
+							try{ 
+								Object o =chooseTable.getModel().getValueAt(i, 0); 
+								ColorStack.setColorPos(colors[i],  Integer.parseInt(o.toString())); 
+							}catch(NullPointerException n){
+								//No Id inserted, get value somehow TODO
+							}catch(IllegalArgumentException n){
+								//Id out of range 
+							}
+						} 
+
+						choose.setVisible(false);
+					}
+				}); 
+
+			}
+		});
+
 		/**
 		 * Color choose
 		 */
@@ -1490,9 +1568,9 @@ public class MainGUI extends JFrame{
 		int r,g,b;
 		r = (c&0xff0000)>>16;	
 							g =(c&0xff00)>>8;
-					b = c&0xff;
+						b = c&0xff;
 
-					return new Color(r,g,b);
+						return new Color(r,g,b);
 	}
 
 	/**

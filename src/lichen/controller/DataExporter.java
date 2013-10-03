@@ -53,7 +53,7 @@ public class DataExporter {
 				}
 				out.newLine(); 
 				
-				if(row[4] == null)
+				if(row[3] == null)
 					i--;
 				else
 					i = 3;
