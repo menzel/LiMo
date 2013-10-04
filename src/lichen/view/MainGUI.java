@@ -259,7 +259,6 @@ public class MainGUI extends JFrame{
 		getContentPane().add(lichenPanel, BorderLayout.WEST); 
 
 
-
 		//---------------------------------------//
 
 		final JPanel imageFrame = new JPanel(new BorderLayout());
@@ -284,6 +283,7 @@ public class MainGUI extends JFrame{
 			public void adjustmentValueChanged(AdjustmentEvent ae) {
 				if(ic != null){
 
+					
 					Rectangle srcRect = ic.getSrcRect(); 
 
 					srcRect.x = (int)((ae.getValue()*(imp.getWidth()-ic.getSize().width)/90)*magnification); 
@@ -1135,7 +1135,7 @@ public class MainGUI extends JFrame{
 					@Override
 					public void mouseMoved(MouseEvent a) {
 						try{ 
-							mousePos.setText("x:y " + (int)(getIc().getMousePosition().x/magnification) + ":" + (int)getIc().getMousePosition().y/magnification);
+							mousePos.setText("x:y " + (int)(getIc().getMousePosition().x/magnification) + ":" + (int)(getIc().getMousePosition().y/magnification));
 							getIc().mouseMoved(a);
 
 						}catch(NullPointerException c){
