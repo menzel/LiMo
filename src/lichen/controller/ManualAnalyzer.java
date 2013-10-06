@@ -30,7 +30,6 @@ public class ManualAnalyzer {
 	private int blurValue = 1;
 	private MeasurementsFactory factory;
 	private static boolean active = false;
-	private ColorStack colors;
 
 	/**
 	 * Constructor
@@ -41,10 +40,9 @@ public class ManualAnalyzer {
 		this.gui = MainGUI.getInstance();
 		active = true;
 
-		this.colors = new ColorStack();
-
+		
 		gui.getMyProcessor().background(imp,blurValue); 
-		imp.getProcessor().setValue(gui.makeColor(255,5,5)); 		
+		imp.getProcessor().setValue(ColorStack.pop().getRGB());
 
 		//my Analyzer:
 		//		imp.setProcessor( convertToBinary(imp.getProcessor())); 
@@ -133,7 +131,7 @@ public class ManualAnalyzer {
 
 
 					//use old color if old measurement is selected
-					imp.getProcessor().setValue(colors.pop().getRGB()); 
+					imp.getProcessor().setValue(ColorStack.pop().getRGB()); 
 
 					return true;
 				}
@@ -219,7 +217,8 @@ public class ManualAnalyzer {
 		}
 
 		imp.updateAndDraw();
-		gui.getText().setText(gui.getText().getText() + "\nHinzugefügt: " + x + ":" + y + " Fläche: " + (Math.round(((floodfiller.getPixelCount()-oldPixelcount)/MeasurementsFactory.getInstance().getPixelrate()))*1000.0)/1000.0);
+		gui.getText().setText(gui.getText().getText() + "\nHinzugefügt: " + x + ":" + y + " Fläche: " + (Math.round((floodfiller.getPixelCount()-oldPixelcount)/MeasurementsFactory.getInstance().getPixelrate()*100.0))/100.0);
+		//TODO
 
 		if(MaxArea < floodfiller.getPixelCount()-last){
 			option = JOptionPane.showConfirmDialog(null, "Die hinzugefüge Fläche umfasst einen Großteil des Messbereichts\n" +

@@ -711,6 +711,7 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 		if (h*newMag<dstHeight) h++;
 		x = offScreenX(x);
 		y = offScreenY(y);
+//		System.out.println(x + ":" + y);
 		Rectangle r = new Rectangle(x-w/2, y-h/2, w, h);
 		if (r.x<0) r.x = 0;
 		if (r.y<0) r.y = 0;

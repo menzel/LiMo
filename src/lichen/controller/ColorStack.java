@@ -10,15 +10,16 @@ import java.util.ArrayList;
  */
 public class ColorStack {
 
-	private static int i = 12;
-	private static Color[] colorList = new Color[i];
+	private static int i = 11;
+	private static Color[] colorList = new Color[i-1];
  
 
 	/**
 	 * Inits all colors to the list, or restores them
 	 */
 	public static void ColorStackInit() { 
-
+		
+		colorList[0] = new Color(255,5,5);
 		colorList[1] = (Color.blue); 
 		colorList[2] = (new Color(125,0,0)); //dunkelrot/ braun
 		colorList[3] = (Color.green);
@@ -27,7 +28,7 @@ public class ColorStack {
 		colorList[6] = (Color.cyan); 
 		colorList[7] = (new Color(0,91,0)); // dunkelgrün
 		colorList[8] = Color.YELLOW; 
-		colorList[10] = (Color.pink);
+		colorList[9] = (Color.pink);
 	}
 
 
@@ -35,13 +36,13 @@ public class ColorStack {
 	 * pops a color off the list until its empty, then gives the colors gray 
 	 * @return
 	 */
-	public Color pop(){
+	public static Color pop(){
 		if(i == 0){
 			return Color.gray; 
 			//TODO: random color
 
 		}else{ 
-			i--;
+			i--; 
 			return ColorStack.colorList[colorList.length-i];
 
 		} 
@@ -69,7 +70,7 @@ public class ColorStack {
 		if(parseInt < 1 || parseInt > i){
 	//		throw new IllegalArgumentException; 
 		}
-		colorList[parseInt] = color;
+		colorList[parseInt-1] = color;
 
 	}
 

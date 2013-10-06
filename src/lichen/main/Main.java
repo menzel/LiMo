@@ -2,6 +2,7 @@ package lichen.main;
 
 import ij.gui.Toolbar;
 import lichen.controller.AutoAnalyzer;
+import lichen.controller.ColorStack;
 import lichen.controller.DataImporter;
 import lichen.controller.Processor;
 import lichen.controller.UndoStack;
@@ -22,6 +23,8 @@ public class Main {
 		AutoAnalyzer auto = new AutoAnalyzer();
 		Processor myProcessor = new Processor();
 		Toolbar t = new Toolbar();
+		
+		ColorStack.ColorStackInit();
 
 
 		@SuppressWarnings("unused")

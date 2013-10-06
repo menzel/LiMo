@@ -76,8 +76,8 @@ public class MainGUI extends JFrame{
 	private int linewidth = 3;
 	private double borderWidth = 0.76;
 	private double magnification = 1.0;
-	private static final String version = "0.9.5";
-	private static final String date = "01.10.2013";
+	private static final String version = "0.9.6";
+	private static final String date = "04.10.2013";
 	private static MainGUI gui;
 	private JPanel colorPanel;
 	private JPanel image;
@@ -283,7 +283,7 @@ public class MainGUI extends JFrame{
 			public void adjustmentValueChanged(AdjustmentEvent ae) {
 				if(ic != null){
 
-					
+
 					Rectangle srcRect = ic.getSrcRect(); 
 
 					srcRect.x = (int)((ae.getValue()*(imp.getWidth()-ic.getSize().width)/90)*magnification); 
@@ -476,6 +476,7 @@ public class MainGUI extends JFrame{
 				switch (Toolbar.getToolId()) {
 
 				case 11:  // lupe
+					//					getIc().zoomIn((int)(getIc().getMousePosition().x), (int)(getIc().getMousePosition().y));
 					//	System.out.println(imp.getCanvas().getMagnification());
 					magnification = imp.getCanvas().getMagnification();
 					getContentPane().revalidate(); 
@@ -1027,6 +1028,8 @@ public class MainGUI extends JFrame{
 						index++;
 					}
 					//set table
+					
+					newColor = true;
 
 				} catch(NumberFormatException e){ 
 					text.setText(text.getText() + "\n" + "Es wurde keine Nummer eingegeben");
@@ -1362,7 +1365,7 @@ public class MainGUI extends JFrame{
 
 				final JFrame choose = new JFrame("Wähle Farbreihenfolge"); 
 				choose.setLayout(new BorderLayout());
-				choose.setSize(150, 300);
+				choose.setSize(200, 280);
 
 				final Color[] colors = ColorStack.getAllColors(); 
 				final JTable chooseTable = new JTable(colors.length,2); 
@@ -1372,20 +1375,38 @@ public class MainGUI extends JFrame{
 				chooseTable.getColumnModel().getColumn(0).setPreferredWidth(30);
 				chooseTable.getColumnModel().getColumn(1).setPreferredWidth(50); 
 
-				ColorStack.ColorStackInit(); 
-
 				chooseTable.getColumnModel().getColumn(1).setCellRenderer(new ChooserColorCellRenderer()); 
 
+				JPanel buttonPanel  = new JPanel(new GridLayout(0, 2));
 				JButton finish = createButton("Fertig");
-				JPanel choosePanel = new JPanel(new BorderLayout());
+				JButton cancel = createButton("Abbruch");
 
-				choosePanel.add(finish, BorderLayout.SOUTH); 
+				buttonPanel.add(finish);
+				buttonPanel.add(cancel);
+
+
+				JPanel choosePanel = new JPanel(new BorderLayout());
+				choosePanel.add(buttonPanel, BorderLayout.SOUTH);
+
 				choosePanel.add(chooseTable, BorderLayout.CENTER); 
 
 				choose.add(choosePanel, BorderLayout.CENTER);
 				choose.add(notice, BorderLayout.SOUTH);
 				choose.setVisible(true);
 
+				/**
+				 * Cancels the insertion and does nothing to color stack
+				 */
+				cancel.addActionListener(new ActionListener() {
+
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+
+						choose.setVisible(false); 
+						choose.setEnabled(false);
+					}
+				});
 
 				/**
 				 * Read user entered values and apply to ColorStack 
@@ -1402,8 +1423,9 @@ public class MainGUI extends JFrame{
 							try{ 
 								Object o =chooseTable.getModel().getValueAt(i, 0); 
 								ColorStack.setColorPos(colors[i],  Integer.parseInt(o.toString())); 
-							}catch(NullPointerException n){
-								//No Id inserted, get value somehow TODO
+							}catch(NullPointerException n){ 
+								ColorStack.setColorPos(colors[i], colors.length-i); 
+								//No Id inserted, get value somehow 
 							}catch(IllegalArgumentException n){
 								//Id out of range 
 							}

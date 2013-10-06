@@ -149,7 +149,7 @@ public class Genus {
 	 */
 	public Object[][] getExportResultTableData() {
 
-		Object[][] t = new Object[100][7] ;	
+		Object[][] t = new Object[500][7] ;	
 
 		int index =0;
 
