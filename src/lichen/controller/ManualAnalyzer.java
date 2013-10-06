@@ -218,7 +218,6 @@ public class ManualAnalyzer {
 
 		imp.updateAndDraw();
 		gui.getText().setText(gui.getText().getText() + "\nHinzugefügt: " + x + ":" + y + " Fläche: " + (Math.round((floodfiller.getPixelCount()-oldPixelcount)/MeasurementsFactory.getInstance().getPixelrate()*100.0))/100.0);
-		//TODO
 
 		if(MaxArea < floodfiller.getPixelCount()-last){
 			option = JOptionPane.showConfirmDialog(null, "Die hinzugefüge Fläche umfasst einen Großteil des Messbereichts\n" +
