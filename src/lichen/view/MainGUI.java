@@ -936,7 +936,7 @@ public class MainGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(manualAnalyzer.undo()){ 
+				if(manualAnalyzer.undo()){
 					text.setText(text.getText() + "\n" + "Rückgängig");
 
 					int index =0;
@@ -958,6 +958,8 @@ public class MainGUI extends JFrame{
 					//set table
 
 
+				}else{ 
+					text.setText(text.getText() + "\n" + "Rückgängig nicht möglich"); 
 				}
 			}
 		});

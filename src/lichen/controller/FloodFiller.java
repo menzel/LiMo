@@ -425,12 +425,14 @@ public class FloodFiller {
 	 * Restores the previous filled pixels from undoPos
 	 * @pre an area should have been filled
 	 */
-	public void unfill() {
+	public boolean unfill() {
 
 		int sub = undoStack.undo();
 
+		if(sub == 0)
+			return false;
 		
-		System.out.println("pixelcount " + pixelcount + " substracted: " + sub);
+//		System.out.println("pixelcount " + pixelcount + " substracted: " + sub);
 		//if pixelcount < 0 substract undo area from old measurment
 		if(pixelcount-sub < 0){
 			ArrayList<Measurement> mList = MeasurementsFactory.getInstance().returnAll(); 
@@ -439,7 +441,7 @@ public class FloodFiller {
 			m.addArea(-sub);
 			m.setCount(m.getCount()-1);
 
-			if(m.getArea() == 0){ 
+			if(m.getArea() <= 0){ 
 				try {
 					Genus.getInstance().getSpeciesFromID(m.getSpecies()).setResults(null);;
 					
@@ -455,6 +457,7 @@ public class FloodFiller {
 			this.ThallusCount--;
 		}
 
+		return true;
 	}
 
 	public void setPixelrate(double pixelrate) {

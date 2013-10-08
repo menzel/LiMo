@@ -93,10 +93,10 @@ public class ManualAnalyzer {
 	 */
 	public boolean undo(){	
 
-		floodfiller.unfill(); 
+		boolean done = floodfiller.unfill(); 
 
 		imp.updateAndDraw();
-		return true;
+		return done;
 
 	}
 
