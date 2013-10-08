@@ -47,11 +47,15 @@ public class FloodFiller {
 
 	/** Does a 4-connected flood fill using the current fill/draw
 		value, which is defined by ImageProcessor.setValue(). */
-	@SuppressWarnings("unchecked")public FloodFiller() {
-		// TODO Auto-generated constructor stub
+	public FloodFiller() {
+		
 	}
+	
+	@SuppressWarnings("unchecked")
 	public boolean fill(int x, int y) {
 		double oldPixelcount = pixelcount;
+		int[] tmpPixels = (int[]) ip.getPixelsCopy();
+		
 		
 		String[] tmp = new String[2]; 
 		tmp[0] = x + ":" + y; 
@@ -112,7 +116,9 @@ public class FloodFiller {
 
 		fillEdge((int) Math.round((linewidth*pixelrate)));
 
-		undoStack.add((ArrayList<int[]>) undoPos.clone());
+		//TODO
+		undoStack.add((ArrayList<int[]>) undoPos.clone()); 
+		undoStack.addLastImp(tmpPixels, (int)(pixelcount-oldPixelcount));
 
 		ThallusCount++; 
 		tmp[1] = (int)(pixelcount-oldPixelcount)+""; 
@@ -124,7 +130,6 @@ public class FloodFiller {
 
 	/**
 	 * finds the edge of the filled area and adds an edge to it
-	 * TODO
 	 */
 
 	private void fillEdge(int n) { 
@@ -317,6 +322,11 @@ public class FloodFiller {
 			}
 	}
 
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	final void push(int x, int y) {
 		stackSize++;
 		if (stackSize==maxStackSize) {
@@ -332,6 +342,10 @@ public class FloodFiller {
 		ystack[stackSize-1] = y;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	final int popx() {
 		if (stackSize==0)
 			return -1;
@@ -339,12 +353,23 @@ public class FloodFiller {
 			return xstack[stackSize-1];
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	final int popy() {
 		int value = ystack[stackSize-1];
 		stackSize--;
 		return value;
 	}
 
+	/**
+	 * 
+	 * @param ip
+	 * @param x1
+	 * @param x2
+	 * @param y
+	 */
 	private void fillLine(ImageProcessor ip, int x1, int x2, int y) {
 		
 		//	System.out.println("fillline" + x1 + ":" + x2 + "linec: " + y); 
@@ -379,10 +404,18 @@ public class FloodFiller {
 		
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public long getPixelCount() {
 		return this.pixelcount;
 	}
 
+	/**
+	 * 
+	 * @param i
+	 */
 	public void setPixelCount(int i) {
 		this.pixelcount = 0;
 
@@ -394,8 +427,7 @@ public class FloodFiller {
 	 */
 	public void unfill() {
 
-		int sub = undoStack.undo();	
-		//TODO: remove from thallus list
+		int sub = undoStack.undo();
 
 		//if pixelcount < 0 substract undo area from old measurment
 		if(pixelcount-sub < 0){

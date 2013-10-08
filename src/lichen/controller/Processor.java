@@ -243,9 +243,9 @@ public class Processor {
 		b = c&0xff;
 
 
-		r  = posterize(r,cc);
-		g = posterize(g,cc);
-		b = posterize(b,cc);
+//		r  = posterize(r,cc);
+//		g = posterize(g,cc);
+//		b = posterize(b,cc);
 
 		if(g > 210){
 			g = 255;
@@ -267,25 +267,6 @@ public class Processor {
 
 	}
 
-	/**
-	 * 
-	 * @param color
-	 * @param blocks
-	 * @return
-	 */
-	private int posterize(int color, int blocks) {
-		if(color > 220){
-			return color;
-		}
-		for(int i = 0; i <blocks;i++){
-
-			if(color > (255/blocks)*i &&  color <(255/blocks)*i+blocks){
-				color = (255/blocks)*i; 
-			}
-		}
-
-		return color;
-	}
 
 	/**
 	 * enhance background from image with gaussian blur
@@ -310,18 +291,18 @@ public class Processor {
 
 			pixels = (int[]) processor.getPixels();
 
-		}catch (ClassCastException e){ 
+		}catch (ClassCastException e){
 
 			byte[] barr = (byte[]) processor.getPixels();
 			pixels = new int[barr.length];
 
 			for(int i = 0; i < barr.length; i++){
-				if(barr[i] == 1){
-					pixels[i]  = -1;
+				if(barr[i] == 0){
+					pixels[i]  = 0;
 				}else{
-					if(barr[i]  == 0){ 
-						pixels[i]  = 0;
-					}
+//					if(barr[i]  == 0){ 
+						pixels[i]  = -1;
+//					}
 				}
 			} 
 		}

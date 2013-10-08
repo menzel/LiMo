@@ -41,6 +41,8 @@ public class ManualAnalyzer {
 		active = true;
 
 		
+		ColorStack.resetStack();
+		
 		gui.getMyProcessor().background(imp,blurValue); 
 		imp.getProcessor().setValue(ColorStack.pop().getRGB());
 

@@ -73,5 +73,9 @@ public class ColorStack {
 		colorList[parseInt-1] = color;
 
 	}
+	
+	public static void resetStack(){
+		i = 11;
+	}
 
 }

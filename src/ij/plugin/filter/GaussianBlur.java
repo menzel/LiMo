@@ -573,8 +573,11 @@ public class GaussianBlur implements ExtendedPlugInFilter, DialogListener {
         Rectangle roi = ip.getRoi();
         int width = ip.getWidth();
         int height = ip.getHeight();
+        
         Object pixels = ip.getPixels();
-        Object snapshot = ip.getSnapshotPixels();
+        Object snapshot = ip.getPixels(); 
+        
+       	
         int y0 = roi.y-radius;              // the first line that should be reset
         if (y0<0) y0 = 0;
         for (int y=y0,p=width*y+roi.x; y<roi.y; y++,p+=width)
