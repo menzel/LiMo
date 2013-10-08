@@ -429,6 +429,8 @@ public class FloodFiller {
 
 		int sub = undoStack.undo();
 
+		
+		System.out.println("pixelcount " + pixelcount + " substracted: " + sub);
 		//if pixelcount < 0 substract undo area from old measurment
 		if(pixelcount-sub < 0){
 			ArrayList<Measurement> mList = MeasurementsFactory.getInstance().returnAll(); 

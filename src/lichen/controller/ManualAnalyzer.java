@@ -91,7 +91,7 @@ public class ManualAnalyzer {
 
 	/**
 	 * Undo a floodfill and areaAdd
-	 * @return true if undo was done, false if undo coulund not be done (when old point is not 
+	 * @return true if undo was done, false if undo could not be done (when old point is not 
 	 * set or the last AreaAdd was an readd to an existing measurement
 	 */
 	public boolean undo(){	
