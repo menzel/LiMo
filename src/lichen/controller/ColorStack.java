@@ -1,7 +1,8 @@
 package lichen.controller;
 
 import java.awt.Color;
-import java.util.ArrayList;
+
+import lichen.view.MainGUI;
 
 /**
  * Represents a static list of different colors  
@@ -38,8 +39,8 @@ public class ColorStack {
 	 */
 	public static Color pop(){
 		if(i == 0){
-			return Color.gray; 
-			//TODO: random color
+			
+			return new Color((int)(Math.random()*170+30), (int)(Math.random()*170+30), (int)(Math.random()*170+30)); 
 
 		}else{ 
 			i--; 

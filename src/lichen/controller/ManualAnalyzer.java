@@ -2,11 +2,8 @@ package lichen.controller;
 
 import ij.ImagePlus;
 import ij.gui.Toolbar;
-import ij.process.BinaryProcessor;
-import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
-import ij.process.MyFloodFiller;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -18,7 +15,6 @@ import javax.swing.JOptionPane;
 import lichen.model.Genus;
 import lichen.model.Measurement;
 import lichen.model.MeasurementsFactory;
-import lichen.model.Species;
 import lichen.view.MainGUI;
 
 public class ManualAnalyzer {
@@ -74,6 +70,7 @@ public class ManualAnalyzer {
 	 * returns a copy of the given ip as binary picture
 	 * @param processor
 	 * @return
+	 * @deprecated
 	 */
 	private ImageProcessor convertToBinary(ImageProcessor processor) {
 
@@ -138,7 +135,6 @@ public class ManualAnalyzer {
 					return true;
 				}
 				else{ 
-					//					readd(speciesID);
 					// not allowed
 					return false;
 				}
@@ -251,7 +247,7 @@ public class ManualAnalyzer {
 		Measurement tmp = factory.getMeasurementByID(Integer.parseInt(o.toString()));
 		tmp.addArea(floodfiller.getPixelCount());
 
-		imp.getProcessor().setValue(gui.makeColor((int)(Math.random()*170+30), (int)(Math.random()*170+30), (int)(Math.random()*170+30))); 
+		imp.getProcessor().setValue(ColorStack.pop().getRGB());
 		floodfiller.setPixelCount(0); 
 
 	}

@@ -1,9 +1,7 @@
 package lichen.controller;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.List; 
 import de.thm.bi.recognition.data.IPoint;
 import de.thm.bi.recognition.data.dataset.IDataSet;
 import de.thm.bi.recognition.data.region.IRegion;
@@ -16,10 +14,7 @@ import lichen.model.Measurement;
 import lichen.model.MeasurementsFactory;
 import lichen.view.MainGUI;
 import ij.ImagePlus;
-import ij.ImageStack;
-import ij.gui.ProgressBar;
 import ij.gui.Roi;
-import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 
 /**
@@ -42,7 +37,6 @@ public class AutoAnalyzer {
 		Processor processor = new Processor(); 
 		MainGUI gui = MainGUI.getInstance();
 		MeasurementsFactory factory = MeasurementsFactory.getInstance(); 
-		ColorStack colors = new ColorStack();
 		
 		double rate  = gui.getMyProcessor().getPixelRate(imp);
 		factory.setPixelrate(rate); 
@@ -79,7 +73,7 @@ public class AutoAnalyzer {
 			int[] colorImageArray = new int[imp.getWidth()* imp.getHeight()];
 
 			//			int color = gui.makeColor((int)(Math.random()*170+30), (int)(Math.random()*170+30), (int)(Math.random()*170+30)); 
-			Color c = colors.pop();
+			Color c = ColorStack.pop();
 
 			int color =((c.getRed()&0x0ff)<<16)|((c.getGreen()&0x0ff)<<8)|(c.getBlue()&0x0ff); 
 			IRegion region = regions.get(i); 
