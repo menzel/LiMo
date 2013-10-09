@@ -41,19 +41,19 @@ public class FileHandler {
 		//				return opener.openImage("/home/menzel/Desktop/bild-mon.bmp");
 
 		final JFileChooser jc;
-		
+
 		if(lastdir.equals("")){ 
 			jc = new JFileChooser("");
 		}else{ 
 			jc = new JFileChooser(lastdir);
 		}
-		
+
 		LichenFileChooser ljc = new LichenFileChooser(jc);
 		jc.addPropertyChangeListener(ljc);
 		jc.setAccessory(ljc);
 
 		jc.showDialog(null, "Wähle Bild");
-		
+
 		Opener opener = new Opener();
 		ImagePlus imp = opener.openImage(jc.getSelectedFile().toString());
 
@@ -93,6 +93,11 @@ public class FileHandler {
 		if(imp == null){
 			throw new NullPointerException("cannot load image");
 		}
+		
+		if(imp.getWidth() < imp.getHeight()){
+			imp.setProcessor( imp.getProcessor().rotateRight());
+		}
+
 		return imp;	
 	} 
 	public String getLastDir(){

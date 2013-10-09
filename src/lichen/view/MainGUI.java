@@ -44,6 +44,9 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
@@ -114,6 +117,30 @@ public class MainGUI extends JFrame{
 	 * Inits the GUI, sets up the view
 	 */
 	private void initGUI(){
+
+		UIManager.put("nimbusBase", Color.BLACK);
+		UIManager.put("nimbusBlueGrey", Color.GRAY);
+		UIManager.put("control", Color.white);
+		//		UIManager.put("text", Color.white);
+
+		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+			if ("Nimbus".equals(info.getName())) {
+				try {
+					UIManager.setLookAndFeel(info.getClassName());
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (InstantiationException e1) {
+					e1.printStackTrace();
+				} catch (IllegalAccessException e1) {
+					e1.printStackTrace();
+				} catch (UnsupportedLookAndFeelException e1) {
+					e1.printStackTrace();
+				}
+				break;
+			}
+		}
+
+
 		setSize(850,700);
 		setPreferredSize(new Dimension(850, 700));
 		setLocationRelativeTo(null);
@@ -507,6 +534,29 @@ public class MainGUI extends JFrame{
 			}
 		}
 
+		//				getIc().addMouseWheelListener(new MouseWheelListener() {
+		class mouseWheelListener implements MouseWheelListener{
+
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+
+
+				if(e.getWheelRotation() > 0){
+					getIc().zoomOut(e.getXOnScreen(), e.getYOnScreen());
+					//							getIc().zoomOut((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
+					magnification = imp.getCanvas().getMagnification();
+					getContentPane().revalidate(); 
+
+				}else{ 
+					getIc().zoomIn(e.getXOnScreen(), e.getYOnScreen()); 
+					//				getIc().zoomIn((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
+					magnification = imp.getCanvas().getMagnification();
+					getContentPane().revalidate(); 
+
+				}
+			}
+		}
+
 
 
 
@@ -649,6 +699,27 @@ public class MainGUI extends JFrame{
 
 		//--------Tools Action Listener--------//
 
+		class mouseMotionListener implements MouseMotionListener{
+
+
+			@Override
+			public void mouseMoved(MouseEvent a) {
+				try{ 
+					mousePos.setText("x:y " + (int)(getIc().getMousePosition().x/magnification) + ":" + (int)(getIc().getMousePosition().y/magnification));
+					getIc().mouseMoved(a);
+
+				}catch(NullPointerException c){
+					//Nothing to do here, seems to happen from time to time
+				}
+			}
+
+			@Override
+			public void mouseDragged(MouseEvent arg0) {
+
+			}
+		}
+
+		
 		Bpencil.addActionListener(new ActionListener() {
 
 			@Override
@@ -997,7 +1068,7 @@ public class MainGUI extends JFrame{
 							text.setText(text.getText() + "\n" + "Fläche erfolgreich zugewiesen"); 
 							id.setText("");	
 
-							if(measurements.getSelectedRow() < measurements.getRowCount()-1){ 
+							if(measurements.getSelectedRow() < measurements.getRowCount()-1 ){ 
 								measurements.setRowSelectionInterval(measurements.getSelectedRow()+1, measurements.getSelectedRow()+1);//move selection one row down
 							}else{ 
 								text.setText(text.getText() + "\n" + "Nur 10 Einträge möglich");
@@ -1028,7 +1099,7 @@ public class MainGUI extends JFrame{
 						index++;
 					}
 					//set table
-					
+
 					newColor = true;
 
 				} catch(NumberFormatException e){ 
@@ -1104,6 +1175,9 @@ public class MainGUI extends JFrame{
 
 				try{ 
 					getIc().addMouseListener(new staticMouseListener()); 
+					getIc().addMouseMotionListener(new mouseMotionListener());
+					getIc().addMouseWheelListener(new mouseWheelListener());
+					
 					//					ImageScrollPane.setViewportView(imp.getCanvas()); 
 
 				}catch (NullPointerException e){
@@ -1111,47 +1185,7 @@ public class MainGUI extends JFrame{
 
 				}
 
-				getIc().addMouseWheelListener(new MouseWheelListener() {
-
-					@Override
-					public void mouseWheelMoved(MouseWheelEvent e) {
-
-
-						if(e.getWheelRotation() > 0){
-							getIc().zoomOut(e.getXOnScreen(), e.getYOnScreen());
-							//							getIc().zoomOut((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
-							magnification = imp.getCanvas().getMagnification();
-							getContentPane().revalidate(); 
-
-						}else{ 
-							getIc().zoomIn(e.getXOnScreen(), e.getYOnScreen()); 
-							//				getIc().zoomIn((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
-							magnification = imp.getCanvas().getMagnification();
-							getContentPane().revalidate(); 
-
-						}
-					}
-				});
-
-				getIc().addMouseMotionListener(new MouseMotionListener() {
-
-					@Override
-					public void mouseMoved(MouseEvent a) {
-						try{ 
-							mousePos.setText("x:y " + (int)(getIc().getMousePosition().x/magnification) + ":" + (int)(getIc().getMousePosition().y/magnification));
-							getIc().mouseMoved(a);
-
-						}catch(NullPointerException c){
-							//Nothing to do here, seems to happen from time to time
-						}
-					}
-
-					@Override
-					public void mouseDragged(MouseEvent arg0) {
-
-					}
-				});
-
+			
 
 				imp.getProcessor().setValue(makeColor(255, 5, 5));
 				//set Scrollbars to 0:
@@ -1247,7 +1281,20 @@ public class MainGUI extends JFrame{
 				imp  = fh.reloadImage();
 				imp.show(); 
 
+
 				JOptionPane.showMessageDialog(null, "Speicher erfolgreich geleert");
+
+				try{ 
+					getIc().addMouseListener(new staticMouseListener()); 
+					getIc().addMouseMotionListener(new mouseMotionListener());
+					getIc().addMouseWheelListener(new mouseWheelListener());
+			
+					//TODO
+				}catch (NullPointerException e){
+					//triggers when single windows for each images are opened, no problem here
+
+				}
+
 
 
 			}
