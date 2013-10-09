@@ -106,7 +106,7 @@ public class AutoAnalyzer {
 			//	gui.setImp(imp);
 
 			//disable on single windows mode:
-	//		imp.show();
+			//imp.show();
 
 			Measurement measurement = factory.createMeasurement();
 			measurement.setArea(area);

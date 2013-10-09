@@ -222,7 +222,7 @@ public class ManualAnalyzer {
 					"Ist die Auswahl richtig?"); 
 		} 
 
-		if(option == 1){
+		if(option == JOptionPane.NO_OPTION){
 			undo();
 			imp.updateAndDraw();
 		}	

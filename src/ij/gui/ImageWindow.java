@@ -60,6 +60,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		this(imp, null);
 	}
 
+	@SuppressWarnings("unused")
 	public ImageWindow(ImagePlus imp, ImageCanvas ic) {
 		super(imp.getTitle());
 		if (Prefs.blackCanvas && getClass().getName().equals("ij.gui.ImageWindow")) {
@@ -82,6 +83,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		setLayout(new ImageLayout(ic));
 		add(ic);
 
+		
 		MainGUI gui = MainGUI.getInstance();
 		gui.addImageCanvas(ic); 
 		if(true)

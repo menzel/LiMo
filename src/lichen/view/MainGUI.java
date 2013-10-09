@@ -122,8 +122,8 @@ public class MainGUI extends JFrame{
 		if(styleModern){
 			UIManager.put("nimbusBase", Color.BLACK);
 			UIManager.put("nimbusBlueGrey", Color.GRAY);
-//			UIManager.put("nimbusBlueGrey", new Color(12,130,198));
-			UIManager.put("control", Color.white);
+			//			UIManager.put("nimbusBlueGrey", new Color(12,130,198));
+			UIManager.put("control", Color.DARK_GRAY);
 			//		UIManager.put("text", Color.white);
 
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -158,9 +158,10 @@ public class MainGUI extends JFrame{
 				if(imp == null ){ 
 					System.exit(0);
 				}else{
-					int exit = JOptionPane.showConfirmDialog(null, "Sie haben ein Bild geöffnet, wollen Sie das Programm wirklich schließen?");
-					if(exit == 0){
+					if(JOptionPane.showConfirmDialog(null, "Sie haben ein Bild geöffnet, wollen Sie das Programm wirklich schließen?") == JOptionPane.YES_OPTION){
+
 						System.exit(0);
+
 					}
 
 				}
@@ -1156,7 +1157,7 @@ public class MainGUI extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				if(imp != null){
 					if(JOptionPane.showConfirmDialog(null, "Sie haben bereits ein Bild geöffnet, möchten Sie" +
-							" dieses schließen und ein neues öffnen?") == 0){ 
+							" dieses schließen und ein neues öffnen?") == JOptionPane.YES_OPTION){ 
 
 						MeasurementsFactory factory = MeasurementsFactory.getInstance();
 						factory.reset();
@@ -1240,7 +1241,7 @@ public class MainGUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) { 
 				if(JOptionPane.showConfirmDialog(null, "Wollen sie das Programm wirklich " +
-						"schließen?") == 0){ 
+						"schließen?") == JOptionPane.YES_OPTION){ 
 					System.exit(0);
 				} 
 			}
@@ -1523,6 +1524,7 @@ public class MainGUI extends JFrame{
 
 					JButton finish = createButton("Fertig");
 					JPanel choosePanel = new JPanel();
+					chooseTable.setShowGrid(true);
 
 					choosePanel.add(finish); 
 					choosePanel.add(chooseTable); 
