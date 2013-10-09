@@ -38,12 +38,13 @@ public class ColorStack {
 	 * @return
 	 */
 	public static Color pop(){
-		if(i == 0){
+		
+		i--; 
+		if(i < 1){
 			
 			return new Color((int)(Math.random()*170+30), (int)(Math.random()*170+30), (int)(Math.random()*170+30)); 
 
 		}else{ 
-			i--; 
 			return ColorStack.colorList[colorList.length-i];
 
 		} 

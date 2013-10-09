@@ -79,6 +79,7 @@ public class MainGUI extends JFrame{
 	private double magnification = 1.0;
 	private static final String version = "0.9.7";
 	private static final String date = "08.10.2013";
+	private static boolean styleModern = false; 
 	private static MainGUI gui;
 	private JPanel colorPanel;
 	private JPanel image;
@@ -118,25 +119,28 @@ public class MainGUI extends JFrame{
 	 */
 	private void initGUI(){
 
-		UIManager.put("nimbusBase", Color.BLACK);
-		UIManager.put("nimbusBlueGrey", Color.GRAY);
-		UIManager.put("control", Color.white);
-		//		UIManager.put("text", Color.white);
+		if(styleModern){
+			UIManager.put("nimbusBase", Color.BLACK);
+			UIManager.put("nimbusBlueGrey", Color.GRAY);
+//			UIManager.put("nimbusBlueGrey", new Color(12,130,198));
+			UIManager.put("control", Color.white);
+			//		UIManager.put("text", Color.white);
 
-		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-			if ("Nimbus".equals(info.getName())) {
-				try {
-					UIManager.setLookAndFeel(info.getClassName());
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (InstantiationException e1) {
-					e1.printStackTrace();
-				} catch (IllegalAccessException e1) {
-					e1.printStackTrace();
-				} catch (UnsupportedLookAndFeelException e1) {
-					e1.printStackTrace();
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					try {
+						UIManager.setLookAndFeel(info.getClassName());
+					} catch (ClassNotFoundException e1) {
+						e1.printStackTrace();
+					} catch (InstantiationException e1) {
+						e1.printStackTrace();
+					} catch (IllegalAccessException e1) {
+						e1.printStackTrace();
+					} catch (UnsupportedLookAndFeelException e1) {
+						e1.printStackTrace();
+					}
+					break;
 				}
-				break;
 			}
 		}
 
@@ -300,7 +304,7 @@ public class MainGUI extends JFrame{
 		final JScrollBar imageHorizontal  = new JScrollBar(0); 
 		imageHorizontal.setUnitIncrement(1000);
 
-		imageHorizontal.setPreferredSize(new Dimension(1,18)); 
+		imageHorizontal.setPreferredSize(new Dimension(1,16)); 
 		imageHorizontal.addAdjustmentListener(new AdjustmentListener() {
 
 
@@ -325,7 +329,7 @@ public class MainGUI extends JFrame{
 		});
 
 		final JScrollBar imageVertical = new JScrollBar(1); 
-		imageVertical.setPreferredSize(new Dimension(18,1)); 
+		imageVertical.setPreferredSize(new Dimension(16,1)); 
 		imageVertical.addAdjustmentListener(new AdjustmentListener() {
 
 			@Override
@@ -719,7 +723,7 @@ public class MainGUI extends JFrame{
 			}
 		}
 
-		
+
 		Bpencil.addActionListener(new ActionListener() {
 
 			@Override
@@ -1177,7 +1181,7 @@ public class MainGUI extends JFrame{
 					getIc().addMouseListener(new staticMouseListener()); 
 					getIc().addMouseMotionListener(new mouseMotionListener());
 					getIc().addMouseWheelListener(new mouseWheelListener());
-					
+
 					//					ImageScrollPane.setViewportView(imp.getCanvas()); 
 
 				}catch (NullPointerException e){
@@ -1185,7 +1189,7 @@ public class MainGUI extends JFrame{
 
 				}
 
-			
+
 
 				imp.getProcessor().setValue(makeColor(255, 5, 5));
 				//set Scrollbars to 0:
@@ -1288,7 +1292,7 @@ public class MainGUI extends JFrame{
 					getIc().addMouseListener(new staticMouseListener()); 
 					getIc().addMouseMotionListener(new mouseMotionListener());
 					getIc().addMouseWheelListener(new mouseWheelListener());
-			
+
 					//TODO
 				}catch (NullPointerException e){
 					//triggers when single windows for each images are opened, no problem here
@@ -1807,6 +1811,13 @@ public class MainGUI extends JFrame{
 	 */
 	public JTextArea getText() {
 		return text;
+	}
+
+	/**
+	 * @param styleModern the styleModern to set
+	 */
+	public static void setStyleModern(boolean styleModern) {
+		MainGUI.styleModern = styleModern;
 	}
 
 }

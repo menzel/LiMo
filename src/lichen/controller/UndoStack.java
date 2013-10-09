@@ -8,18 +8,33 @@ public class UndoStack {
 
 	private ArrayList<ArrayList<int[]>> undoPosList = new ArrayList<ArrayList<int[]>>();
 	private int stackSize = 0;
-	private int[] imp;
+	private int[] pixels;
 	private ImageProcessor ip;
 	private int[] lastImp;
 	private int lastImpPixelCount =0;
 
 	/**
 	 * 
-	 * @param imp
+	 * @param ip
 	 */
-	public UndoStack(ImageProcessor imp) {
-		this.imp = (int[]) imp.getPixelsCopy();
-		this.ip =imp;
+	public UndoStack(ImageProcessor ip) {
+		try{ 
+			this.pixels = (int[]) ip.getPixelsCopy();
+
+		}catch(ClassCastException c){
+
+			byte[] barr = (byte[]) ip.getPixels();
+			this.pixels = new int[barr.length];
+
+			for(int i = 0; i < barr.length; i++){
+				if(barr[i] == 0){
+					this.pixels[i]  = 0;
+				}else{
+					this.pixels[i]  = -1;
+				}
+			} 	
+		}
+		this.ip =ip;
 
 	}
 
@@ -69,7 +84,7 @@ public class UndoStack {
 		if(lastImp != null){ 
 
 			undoPosList.remove(stackSize-1);
-			
+
 			stackSize--; 
 			return undoAll();
 		}
@@ -78,7 +93,7 @@ public class UndoStack {
 
 		if(stackSize > 0){
 			for(int[] p: undoPosList.remove(stackSize-1)){
-				ip.setPixel(p[0], p[1], imp[p[1]*ip.getWidth() + p[0]]); 
+				ip.setPixel(p[0], p[1], pixels[p[1]*ip.getWidth() + p[0]]); 
 				count++; 
 			} 
 		}

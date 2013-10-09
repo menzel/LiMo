@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import lichen.model.Genus;
 import lichen.model.Species;
+import lichen.view.MainGUI;
 
 public class DataImporter {
 
@@ -82,6 +83,7 @@ public class DataImporter {
 			Pattern n = Pattern.compile(Pattern.quote("Anzahl="));
 			Pattern pathPattern = Pattern.compile(Pattern.quote("inipath="));
 			Pattern newPattern = Pattern.compile(Pattern.quote(";"));
+			Pattern stylePattern = Pattern.compile(Pattern.quote("style="));
 			
 			boolean flag = false;
 			Species species;
@@ -97,10 +99,17 @@ public class DataImporter {
 				Matcher nm = n.matcher(s);
 				Matcher pm = pathPattern.matcher(s); 
 				Matcher newm = newPattern.matcher(s);
+				Matcher styleM = stylePattern.matcher(s);
 				
 				if(pm.find()){
 					this.inipath = s.substring(9,s.length()-1); 
 				} 
+				
+				if(styleM.find()){
+					if(s.substring(6, s.length()).equalsIgnoreCase( "modern")){
+						MainGUI.setStyleModern(true);
+					}
+				}
 			
 				if(gm.find()){
 					flag = true; 
