@@ -179,8 +179,8 @@ public class MainGUI extends JFrame{
 		Toolbar.setBrushSize(1);
 		//---------------------------------------//
 		// Menu Bar:
-	//	menuBar.setPreferredSize(new Dimension(1, 30));
-		
+		//	menuBar.setPreferredSize(new Dimension(1, 30));
+
 
 		Menu fileMenu = new Menu("Datei");
 		Menu editMenu = new Menu("Bild");
@@ -198,10 +198,10 @@ public class MainGUI extends JFrame{
 		MenuItem Bnew  = new MenuItem("Neue Folie", new MenuShortcut(KeyEvent.VK_1, false)); 
 		MenuItem Bsave = new MenuItem("Ergebnisse Speichern");
 		MenuItem Bclose = new MenuItem("Programm Schließen"); 
-		
+
 		final MenuItem Bdraw = new MenuItem("Stift"); 
 		final MenuItem Bpicker = new MenuItem("Farbwähler");
-		
+
 		MenuItem BpictureSave = new MenuItem("Bild speichern");
 		MenuItem Barea = new MenuItem("Messfläche wählen");
 		MenuItem Bborder = new MenuItem("Randdicke wählen");
@@ -212,7 +212,7 @@ public class MainGUI extends JFrame{
 
 		MenuItem Bchooser = new MenuItem("Farben zuweisen");
 		MenuItem BshowResults = new MenuItem("Ergebnisse anzeigen", new MenuShortcut(KeyEvent.VK_3));
- 
+
 		MenuItem Bmanual = new MenuItem("Manuelle Analyse", new MenuShortcut(KeyEvent.VK_2)); 
 
 		final MenuItem Breset = new MenuItem("Daten reset", new MenuShortcut(KeyEvent.VK_0));
@@ -245,7 +245,7 @@ public class MainGUI extends JFrame{
 		autoMenu.add(Bauto);
 		autoMenu.add(Bchooser);
 
-//		setJMenuBar(menuBar);
+		//		setJMenuBar(menuBar);
 		setMenuBar(menuBar);
 		//---------------------------------------//
 
@@ -258,7 +258,7 @@ public class MainGUI extends JFrame{
 		table.setShowGrid(false);
 		table.setEnabled(false);
 		table.setMinimumSize(new Dimension(3000, 5000));
-		table.getColumnModel().getColumn(0).setPreferredWidth(10);
+		table.getColumnModel().getColumn(0).setPreferredWidth(15);
 		table.getColumnModel().getColumn(1).setPreferredWidth(150); 
 		table.getColumnModel().getColumn(2).setPreferredWidth(10); 
 
@@ -270,7 +270,7 @@ public class MainGUI extends JFrame{
 		JScrollPane scrollPane = new JScrollPane(table);
 		//		scrollPane.add(lichenPanel);
 		scrollPane.setPreferredSize(new Dimension(280, 1));
-		lichenPanel.setPreferredSize(new Dimension(240, 1));
+		lichenPanel.setPreferredSize(new Dimension(260, 1));
 
 		//search panel + table headings
 		JPanel search = new JPanel();
@@ -1049,14 +1049,14 @@ public class MainGUI extends JFrame{
 				text.setText(text.getText()+"\n" + "Ergebnis: " + Math.round(area * 100.0) /100.0 + " mm^2"); 
 			} 
 		}); 
-		
+
 		id.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				assign.doClick();
-				
+
 			}
 		});
 
@@ -1091,9 +1091,12 @@ public class MainGUI extends JFrame{
 						} 
 
 					}else{ // re-adding area to existing measurement 
+
 						Object o = measurements.getValueAt(measurements.getSelectedRow(), 0); 
-						manualAnalyzer.readd(o); 
+
+						manualAnalyzer.readd(o);
 						text.setText(text.getText() + "\n" + "Fläche erfolgreich zugewiesen"); 
+
 						id.setText("");
 					}
 
@@ -1137,20 +1140,23 @@ public class MainGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				//TODO: check if pressed twice
+				if(manualAnalyzer == null){ 
 
-				BmanualSelector.setForeground(new Color(51,51,51));
-				BmanualSelector.doClick();
+					BmanualSelector.setForeground(new Color(51,51,51));
+					BmanualSelector.doClick();
 
-				if(imp !=null){
+					if(imp !=null){
 
-					manualAnalyzer = new ManualAnalyzer(imp);
+						manualAnalyzer = new ManualAnalyzer(imp);
 
 
-					text.setText("Wählen Sie jeweils den Innenbereich eines Thallus mit dem Thallus auswählen tool\n " +
-							"Wenn alle ausgewählt sind klicken Sie auf 'Fläche berechnen'\n" +
-							"Entspricht die Fläche der Gewünschten tragen Sie die ID im Feld ID ein und klicken Sie auf 'Zuordnen'"); 
-				}else{
-					JOptionPane.showMessageDialog(null, "Öffnen Sie bitte zuerst ein Bild");
+						text.setText("Wählen Sie jeweils den Innenbereich eines Thallus mit dem Thallus auswählen tool\n " +
+								"Wenn alle ausgewählt sind klicken Sie auf 'Fläche berechnen'\n" +
+								"Entspricht die Fläche der Gewünschten tragen Sie die ID im Feld ID ein und klicken Sie auf 'Zuordnen'"); 
+					}else{
+						JOptionPane.showMessageDialog(null, "Öffnen Sie bitte zuerst ein Bild");
+					}
 				}
 			}
 		});
@@ -1177,12 +1183,15 @@ public class MainGUI extends JFrame{
 						pathField.setText(fh.getLastDir());
 
 						imp.show();
+						manualAnalyzer = null;
 					}
 
 				}else{
 					imp = fh.openImagePlus(); 
 					pathField.setText(fh.getLastDir());
 					imp.show();
+
+					manualAnalyzer = null;
 				}
 
 				try{ 
@@ -1292,7 +1301,8 @@ public class MainGUI extends JFrame{
 
 				imp  = fh.reloadImage();
 				imp.show(); 
-
+				
+				manualAnalyzer = null;
 
 				JOptionPane.showMessageDialog(null, "Speicher erfolgreich geleert");
 
@@ -1752,7 +1762,7 @@ public class MainGUI extends JFrame{
 
 		ic.setSize(new Dimension(image.getSize().width, image.getSize().height));
 		this.ic = ic;
- 
+
 		this.image.add(ic);
 
 

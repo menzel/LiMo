@@ -428,9 +428,12 @@ public class FloodFiller {
 	public boolean unfill() {
 
 		int sub = undoStack.undo();
+		
 
 		if(sub == 0)
 			return false;
+		
+		this.thalliList.remove(thalliList.size()-1);
 		
 //		System.out.println("pixelcount " + pixelcount + " substracted: " + sub);
 		//if pixelcount < 0 substract undo area from old measurment

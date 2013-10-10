@@ -36,9 +36,9 @@ public class ManualAnalyzer {
 		this.gui = MainGUI.getInstance();
 		active = true;
 
-		
+
 		ColorStack.resetStack();
-		
+
 		gui.getMyProcessor().background(imp,blurValue); 
 		imp.getProcessor().setValue(ColorStack.pop().getRGB());
 
@@ -115,7 +115,7 @@ public class ManualAnalyzer {
 				if(genus.getSpeciesFromID(speciesID).getResults() == null){ 
 
 					Measurement manualMeasured = factory.createMeasurement();
-					
+
 					manualMeasured.setArea(floodfiller.getPixelCount());
 					manualMeasured.setCount(floodfiller.getThallusCount());
 					manualMeasured.setColor(gui.convertFromIJIntToColor(imp.getProcessor().getValue()));
@@ -123,7 +123,7 @@ public class ManualAnalyzer {
 
 					genus.getSpeciesFromID(speciesID).setResults(manualMeasured);
 					manualMeasured.setSpecies(speciesID); 				
-					
+
 					floodfiller.setPixelCount(0); 
 					floodfiller.setThallusCount(0);
 					floodfiller.setThalliList(new ArrayList<String[]>());
@@ -202,12 +202,15 @@ public class ManualAnalyzer {
 		int x = imp.getRoi().getPosX();
 		int y = imp.getRoi().getPosY();
 		long oldPixelcount = floodfiller.getPixelCount();
-		
+
 		if(!(factory.returnAll().size() <= gui.measurements.getSelectedRow())){ 
+			if(floodfiller.getPixelCount() == 0){ 
+			
 			Object o = gui.measurements.getValueAt(gui.measurements.getSelectedRow(), 0); 
 			Measurement tmp = factory.getMeasurementByID(Integer.parseInt(o.toString()));
 
 			imp.getProcessor().setValue(tmp.getColor().getRGB());
+			}
 		} 
 
 		if(!floodfiller.fill(imp.getRoi().getPosX(), imp.getRoi().getPosY())){
@@ -243,12 +246,19 @@ public class ManualAnalyzer {
 	 * Adds an area to an existing measurement
 	 * @param o - entry of the existing measurement
 	 */
-	public void readd(Object o) {
+	public boolean readd(Object o) {
+
 		Measurement tmp = factory.getMeasurementByID(Integer.parseInt(o.toString()));
 		tmp.addArea(floodfiller.getPixelCount());
+		tmp.getThalliList().addAll(floodfiller.getThalliList()); 
+		floodfiller.setThalliList(new ArrayList<String[]>());
 
+		//TODO: do not pop new color, just restore the one before readding
 		imp.getProcessor().setValue(ColorStack.pop().getRGB());
+
+
 		floodfiller.setPixelCount(0); 
+		return true;
 
 	}
 
