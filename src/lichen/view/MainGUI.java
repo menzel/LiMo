@@ -11,13 +11,19 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.MenuShortcut;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints.Key;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -91,7 +97,8 @@ public class MainGUI extends JFrame{
 	private ProgressBar bar; 
 	public final JTable measurements = new JTable( new DefaultTableModel(new Object[] {"Id","Name", "Fläche", "Farbe"}, 10));
 	private int fillColor;
-	private boolean newColor = true;
+	private boolean newColor = true; 
+	private final MenuBar menuBar = new MenuBar();
 
 	/**
 	 * Constructor GUI
@@ -172,75 +179,56 @@ public class MainGUI extends JFrame{
 		Toolbar.setBrushSize(1);
 		//---------------------------------------//
 		// Menu Bar:
-		final JMenuBar menuBar = new JMenuBar();
-		menuBar.setPreferredSize(new Dimension(1, 30));
+	//	menuBar.setPreferredSize(new Dimension(1, 30));
+		
 
-		JMenu fileMenu = new JMenu("Datei");
-		JMenu editMenu = new JMenu("Bild");
-		JMenu dataMenu = new JMenu("Daten");
+		Menu fileMenu = new Menu("Datei");
+		Menu editMenu = new Menu("Bild");
+		Menu dataMenu = new Menu("Daten");
+		Menu autoMenu = new Menu("Auto Analyse");
+		Menu settingsMenu = new Menu("Einstellungen");
 
 		menuBar.add(fileMenu);
 		menuBar.add(editMenu);
 		menuBar.add(dataMenu);
+		menuBar.add(autoMenu);
+		menuBar.add(settingsMenu); 
 
 
-		JMenuItem Bnew  = new JMenuItem("Neue Folie");
+		MenuItem Bnew  = new MenuItem("Neue Folie", new MenuShortcut(KeyEvent.VK_1, false)); 
+		MenuItem Bsave = new MenuItem("Ergebnisse Speichern");
+		MenuItem Bclose = new MenuItem("Programm Schließen"); 
+		
+		final MenuItem Bdraw = new MenuItem("Stift"); 
+		final MenuItem Bpicker = new MenuItem("Farbwähler");
+		
+		MenuItem BpictureSave = new MenuItem("Bild speichern");
+		MenuItem Barea = new MenuItem("Messfläche wählen");
+		MenuItem Bborder = new MenuItem("Randdicke wählen");
+		MenuItem BsheetSize = new MenuItem("Foliengröße wählen");
+		MenuItem Brotate = new MenuItem("Bild um 90° drehen"); 
+		MenuItem BcolorList = new MenuItem("Füllfarben wählen"); 
+		MenuItem Bauto = new MenuItem("Automatische Analyse");
 
-		Bnew.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_N, ActionEvent.ALT_MASK));
+		MenuItem Bchooser = new MenuItem("Farben zuweisen");
+		MenuItem BshowResults = new MenuItem("Ergebnisse anzeigen", new MenuShortcut(KeyEvent.VK_3));
+ 
+		MenuItem Bmanual = new MenuItem("Manuelle Analyse", new MenuShortcut(KeyEvent.VK_2)); 
 
-		JMenuItem Bsave = new JMenuItem("Ergebnisse Speichern");
-		JMenuItem Bclose = new JMenuItem("Programm Schließen");
-
-		final JMenuItem Bdraw = new JMenuItem("Stift");
-		Bdraw.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_S, ActionEvent.ALT_MASK));
-
-		final JMenuItem Bpicker = new JMenuItem("Farbwähler");
-		JMenuItem BpictureSave = new JMenuItem("Bild speichern");
-		JMenuItem Barea = new JMenuItem("Messfläche wählen");
-		JMenuItem Bborder = new JMenuItem("Randdicke wählen");
-		JMenuItem BsheetSize = new JMenuItem("Foliengröße wählen");
-		JMenuItem Brotate = new JMenuItem("Bild um drehen");
-
-		JMenuItem BcolorList = new JMenuItem("Füllfarben wählen");
-
-		JMenuItem Bauto = new JMenuItem("Automatische Analyse");
-		Bauto.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_A, ActionEvent.ALT_MASK));
-
-		JMenuItem Bchooser = new JMenuItem("Farben zuweisen");
-		JMenuItem BshowResults = new JMenuItem("Ergebnisse anzeigen");
-
-		BshowResults.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_E, ActionEvent.ALT_MASK));
-
-		JMenuItem Bmanual = new JMenuItem("Manuelle Analyse"); 
-
-		Bmanual.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_M, ActionEvent.ALT_MASK));
-
-		final JMenuItem Breset = new JMenuItem("Daten reset");
-		Breset.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_R, ActionEvent.ALT_MASK));
+		final MenuItem Breset = new MenuItem("Daten reset", new MenuShortcut(KeyEvent.VK_0));
 
 
-		JMenuItem Babout = new JMenuItem("über");
+		MenuItem Babout = new MenuItem("über");
 
-		fileMenu.add(Bnew);;
+		fileMenu.add(Bnew);
 		fileMenu.add(Babout);
 
 		editMenu.add(Bpicker);
 		editMenu.add(Bdraw);
 		editMenu.add(Barea);
-		editMenu.add(Bchooser);
 		editMenu.add(BpictureSave);
 		//editMenu.add(Bblur);
-		editMenu.add(Bauto);
-		editMenu.add(Bborder);
-		editMenu.add(BsheetSize);
 		editMenu.add(Brotate);
-		editMenu.add(BcolorList);
 
 
 		dataMenu.add(Bmanual);
@@ -248,7 +236,17 @@ public class MainGUI extends JFrame{
 		dataMenu.add(Bsave);
 		dataMenu.add(Breset); 
 
-		setJMenuBar(menuBar);
+
+		settingsMenu.add(BsheetSize);
+		settingsMenu.add(Bborder);
+		settingsMenu.add(BcolorList);
+
+
+		autoMenu.add(Bauto);
+		autoMenu.add(Bchooser);
+
+//		setJMenuBar(menuBar);
+		setMenuBar(menuBar);
 		//---------------------------------------//
 
 		// Lichen Panel : 
@@ -261,7 +259,7 @@ public class MainGUI extends JFrame{
 		table.setEnabled(false);
 		table.setMinimumSize(new Dimension(3000, 5000));
 		table.getColumnModel().getColumn(0).setPreferredWidth(10);
-		table.getColumnModel().getColumn(1).setPreferredWidth(190); 
+		table.getColumnModel().getColumn(1).setPreferredWidth(150); 
 		table.getColumnModel().getColumn(2).setPreferredWidth(10); 
 
 		table.getColumnModel().getColumn(2).setCellRenderer(new ColorCellRenderer());
@@ -272,6 +270,7 @@ public class MainGUI extends JFrame{
 		JScrollPane scrollPane = new JScrollPane(table);
 		//		scrollPane.add(lichenPanel);
 		scrollPane.setPreferredSize(new Dimension(280, 1));
+		lichenPanel.setPreferredSize(new Dimension(240, 1));
 
 		//search panel + table headings
 		JPanel search = new JPanel();
@@ -640,9 +639,7 @@ public class MainGUI extends JFrame{
 		manualMitte.add(undo);
 		manualMitte.add(result);
 
-		userPanel.add(manualMitte);
-
-
+		userPanel.add(manualMitte); 
 
 
 		measurements.setShowGrid(true);
@@ -669,11 +666,10 @@ public class MainGUI extends JFrame{
 		id.setPreferredSize(new Dimension(30, 30));
 		assignPanel.add(id, BorderLayout.WEST);
 
-		JButton assign = MainGUI.createButton("Zuordnen");
+		final JButton assign = MainGUI.createButton("Zuordnen");
 		assignPanel.add(assign);
 
-		userPanel.add(assignPanel, BorderLayout.EAST);
-
+		userPanel.add(assignPanel, BorderLayout.EAST); 
 
 		text.setLineWrap(true);
 		text.setWrapStyleWord(false);
@@ -700,6 +696,7 @@ public class MainGUI extends JFrame{
 		final JTextField mousePos = new JTextField();
 		mousePos.setEditable(false);
 		northPanel.add(mousePos); 
+
 
 
 		//--------Tools Action Listener--------//
@@ -729,7 +726,7 @@ public class MainGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) { 
-				Bdraw.doClick(); 
+				Bdraw.getActionListeners()[0].actionPerformed(null);
 			} 
 		});
 
@@ -737,7 +734,7 @@ public class MainGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) { 
-				Bpicker.doClick(); 
+				Bpicker.getActionListeners()[0].actionPerformed(null);
 			} 
 		});
 
@@ -1052,6 +1049,16 @@ public class MainGUI extends JFrame{
 				text.setText(text.getText()+"\n" + "Ergebnis: " + Math.round(area * 100.0) /100.0 + " mm^2"); 
 			} 
 		}); 
+		
+		id.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				assign.doClick();
+				
+			}
+		});
 
 		/**
 		 * Assign area to lichen depeding on the selected row 
@@ -1742,10 +1749,12 @@ public class MainGUI extends JFrame{
 		if(this.ic != null){ 
 			this.image.remove(this.ic);
 		} 
+
 		ic.setSize(new Dimension(image.getSize().width, image.getSize().height));
 		this.ic = ic;
-
+ 
 		this.image.add(ic);
+
 
 	}
 
