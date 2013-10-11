@@ -740,13 +740,13 @@ public class MainGUI extends JFrame{
 				final JTextArea infoLabel = new JTextArea("Bitte die Länge der langen Seite in mm eintragen,\noder"
 						+ " eine Voreinstellung auswählen:");
 				infoLabel.setPreferredSize(new Dimension(400, 35));
- 
+
 				infoLabel.setEditable(false);
 				infoLabel.setEnabled(false);
 
 				infoLabel.setBackground(Color.gray);
 				infoLabel.setDisabledTextColor(Color.white);
- 
+
 				JButton dina4 = new JButton("DinA4");
 				JButton done = new JButton("Wert setzen");
 				JButton dina3 = new JButton("DinA3");
@@ -1092,11 +1092,9 @@ public class MainGUI extends JFrame{
 				//TODO: check if pressed twice
 				if(manualAnalyzer == null){ 
 
-					BmanualSelector.setForeground(new Color(51,51,51));
-					BmanualSelector.doClick();
-
-					if(imp !=null){
-
+					if(imp !=null){ 
+						BmanualSelector.setForeground(new Color(51,51,51)); 
+						BmanualSelector.doClick();
 						manualAnalyzer = new ManualAnalyzer(imp);
 
 
