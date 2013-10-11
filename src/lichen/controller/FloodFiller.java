@@ -53,6 +53,7 @@ public class FloodFiller {
 
 	@SuppressWarnings("unchecked")
 	public boolean fill(int x, int y) {
+
 		double oldPixelcount = pixelcount;
 		int[] tmpPixels = (int[]) ip.getPixelsCopy();
 
@@ -84,7 +85,7 @@ public class FloodFiller {
 			//			x1++; 
 			while (ip.getPixel(x2,y)==color && x2<width) x2++;  // find end of scan-line                 
 			//			x2--;
- 
+
 			fillLine(ip, x1, x2,y); 
 
 			boolean inScanLine = false;
@@ -418,35 +419,61 @@ public class FloodFiller {
 	/**
 	 * Restores the previous filled pixels from undoPos
 	 * @pre an area should have been filled
+	 * @notice better do not change anything here
 	 */
 	public boolean unfill() {
 
-		String[] tmp;
- 
-		if(!thalliList.isEmpty()){ 
-			tmp = this.thalliList.remove(thalliList.size()-1); 
-		}
-		else{ 
-			ArrayList<Measurement> mList = MeasurementsFactory.getInstance().returnAll(); 
-			Measurement m =mList.get(mList.size()-1); 
-			
-			 tmp = m.getThalliList().get(m.getThalliList().size()-1); 
-		} 
-		
-		int sub = undoStack.getLastUndoCount();
+		ArrayList<String[]>	 tmp;
+
+		int sub = undoStack.getLastUndoCount(); 
+		boolean flag = false;
+		Measurement stat = null;
+		Measurement m;
 
 		if(sub == 0) 
 			return false;
-		
+
+		ArrayList<Measurement> mList = MeasurementsFactory.getInstance().returnAll(); 
+
+		for(Measurement list: mList){ 
+
+			m = list;
+
+			tmp = m.getThalliList();
+
+			for(String[] t: tmp){
+
+				if(Double.parseDouble(t[1]) == sub){ 
+					stat = m;
+					flag = true;
+				}
+			} 
+
+			for(String[] t: thalliList){
+				if(Double.parseDouble(t[1]) == sub){ 
+					flag = true;
+				} 
+			} 
+		}
+
+
+
+		if(!flag)
+			return false; 
+
 		sub = undoStack.undo(); 
 
 		//		System.out.println("pixelcount " + pixelcount + " substracted: " + sub);
 		//if pixelcount < 0 substract undo area from old measurment
-		
-		if(pixelcount-sub < 0){
-			ArrayList<Measurement> mList = MeasurementsFactory.getInstance().returnAll(); 
 
-			Measurement m =mList.get(mList.size()-1); 
+		if(pixelcount-sub < 0){
+			//			ArrayList<Measurement> mList = MeasurementsFactory.getInstance().returnAll(); 
+
+			if(stat == null)
+				m =mList.get(mList.size()-1); 
+			else
+				m = stat;
+			
 			m.addArea(-sub);
 			m.setCount(m.getCount()-1);
 
@@ -469,6 +496,10 @@ public class FloodFiller {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param pixelrate
+	 */
 	public void setPixelrate(double pixelrate) {
 		this.pixelrate = pixelrate;
 
