@@ -4,6 +4,11 @@ import ij.process.ImageProcessor;
 import java.util.ArrayList;
 
 
+/**
+ * 
+ * @author menzel
+ *
+ */
 public class UndoStack {
 
 	private ArrayList<ArrayList<int[]>> undoPosList = new ArrayList<ArrayList<int[]>>();
@@ -80,7 +85,7 @@ public class UndoStack {
 	 * @return - pixelcount of unfilled pixels
 	 */
 	public int undo() { 
-
+		
 		if(lastImp != null){ 
 
 			undoPosList.remove(stackSize-1);
@@ -102,7 +107,23 @@ public class UndoStack {
 
 		return count;
 	}
-
-
+	
+	/**
+	 * Returns the size of the last flood fill without removing it from the list
+	 * @return size 
+	 */
+	public int getLastUndoCount(){
+		
+		ArrayList<int[]> p;
+		
+		if(stackSize > 0){
+			p = undoPosList.remove(stackSize-1); 
+			undoPosList.add(p);
+			
+			return p.size();
+		} 
+		
+		return 0;
+	}
 
 }

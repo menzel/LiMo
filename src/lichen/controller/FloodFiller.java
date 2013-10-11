@@ -48,21 +48,18 @@ public class FloodFiller {
 	/** Does a 4-connected flood fill using the current fill/draw
 		value, which is defined by ImageProcessor.setValue(). */
 	public FloodFiller() {
-		
+
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public boolean fill(int x, int y) {
 		double oldPixelcount = pixelcount;
 		int[] tmpPixels = (int[]) ip.getPixelsCopy();
-		
-		
+
 		String[] tmp = new String[2]; 
 		tmp[0] = x + ":" + y; 
 
-		
 		undoPos.clear();
-		//		undoPos.clear();
 
 		int width = ip.getWidth();
 		int height = ip.getHeight();
@@ -74,7 +71,7 @@ public class FloodFiller {
 		if (color==newColor) return false;
 		stackSize = 0;
 		push(x, y);
- 
+
 		while(true) { 
 			//boolean pushed = false;
 			//			System.out.println("SS: "+ stackSize);
@@ -87,10 +84,8 @@ public class FloodFiller {
 			//			x1++; 
 			while (ip.getPixel(x2,y)==color && x2<width) x2++;  // find end of scan-line                 
 			//			x2--;
-
-
-			fillLine(ip, x1, x2,y);
-
+ 
+			fillLine(ip, x1, x2,y); 
 
 			boolean inScanLine = false;
 			for (int i=x1; i<=x2; i++) { // find scan-lines above this one
@@ -116,14 +111,13 @@ public class FloodFiller {
 
 		fillEdge((int) Math.round((linewidth*pixelrate)));
 
-		//TODO
 		undoStack.add((ArrayList<int[]>) undoPos.clone()); 
 		undoStack.addLastImp(tmpPixels, (int)(pixelcount-oldPixelcount));
 
 		ThallusCount++; 
 		tmp[1] = (int)(pixelcount-oldPixelcount)+""; 
 		this.thalliList.add(tmp);
-		
+
 
 		return true;
 	}
@@ -145,14 +139,14 @@ public class FloodFiller {
 			imageArray[i]= -1;
 		}
 
-//		for(Point p: undoPos){
-//			imageArray[p.y*ip.getWidth()+p.x] = 0; 
-//		}
+		//		for(Point p: undoPos){
+		//			imageArray[p.y*ip.getWidth()+p.x] = 0; 
+		//		}
 
 		for(int[] p: undoPos){ 
 			imageArray[p[1]*ip.getWidth()+p[0]] = 0; 
 		}
-		
+
 		ImagePlus imp = new ImagePlus("", new ColorProcessor(ip.getWidth(), ip.getHeight(), imageArray));
 		//		imp.getProcessor().findEdges();
 		ImageProcessor impp = imp.getProcessor();
@@ -185,9 +179,9 @@ public class FloodFiller {
 		for(int[] p: edge){
 			if(impp.getPixel(p[0], p[1]) != 0){ 
 				//	undoArray[p[0]][p[1]] = ip.getPixel(p[0], p[1]); 
-								undoPos.add(new int[] {p[0],p[1]});
-				
-//				undoPos.add(new Point(p[0], p[1]));
+				undoPos.add(new int[] {p[0],p[1]});
+
+				//				undoPos.add(new Point(p[0], p[1]));
 
 				this.pixelcount++;
 
@@ -371,7 +365,7 @@ public class FloodFiller {
 	 * @param y
 	 */
 	private void fillLine(ImageProcessor ip, int x1, int x2, int y) {
-		
+
 		//	System.out.println("fillline" + x1 + ":" + x2 + "linec: " + y); 
 
 		if (x1>x2) {
@@ -396,12 +390,12 @@ public class FloodFiller {
 		for (int x=x1; x<=x2; x++){ 
 
 			undoPos.add(new int[]{x,y});
-//			undoPos.add(new Point(x, y));
+			//			undoPos.add(new Point(x, y));
 
 			ip.drawPixel(x, y);
 			pixelcount++;
 		}
-		
+
 	}
 
 	/**
@@ -427,16 +421,28 @@ public class FloodFiller {
 	 */
 	public boolean unfill() {
 
-		int sub = undoStack.undo();
+		String[] tmp;
+ 
+		if(!thalliList.isEmpty()){ 
+			tmp = this.thalliList.remove(thalliList.size()-1); 
+		}
+		else{ 
+			ArrayList<Measurement> mList = MeasurementsFactory.getInstance().returnAll(); 
+			Measurement m =mList.get(mList.size()-1); 
+			
+			 tmp = m.getThalliList().get(m.getThalliList().size()-1); 
+		} 
 		
+		int sub = undoStack.getLastUndoCount();
 
-		if(sub == 0)
+		if(sub == 0) 
 			return false;
 		
-		this.thalliList.remove(thalliList.size()-1);
-		
-//		System.out.println("pixelcount " + pixelcount + " substracted: " + sub);
+		sub = undoStack.undo(); 
+
+		//		System.out.println("pixelcount " + pixelcount + " substracted: " + sub);
 		//if pixelcount < 0 substract undo area from old measurment
+		
 		if(pixelcount-sub < 0){
 			ArrayList<Measurement> mList = MeasurementsFactory.getInstance().returnAll(); 
 
@@ -447,12 +453,12 @@ public class FloodFiller {
 			if(m.getArea() <= 0){ 
 				try {
 					Genus.getInstance().getSpeciesFromID(m.getSpecies()).setResults(null);;
-					
+
 				} catch (NameNotFoundException e) {
 					//Nothing to be done here, cannot happen
 				}
 				mList.remove(mList.size()-1); 
-				
+
 			}
 
 		}else{ 

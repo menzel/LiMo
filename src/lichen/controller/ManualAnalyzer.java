@@ -127,11 +127,7 @@ public class ManualAnalyzer {
 					floodfiller.setPixelCount(0); 
 					floodfiller.setThallusCount(0);
 					floodfiller.setThalliList(new ArrayList<String[]>());
-
-
-					//use old color if old measurement is selected
-					imp.getProcessor().setValue(ColorStack.pop().getRGB()); 
-
+ 
 					return true;
 				}
 				else{ 
@@ -202,14 +198,16 @@ public class ManualAnalyzer {
 		int x = imp.getRoi().getPosX();
 		int y = imp.getRoi().getPosY();
 		long oldPixelcount = floodfiller.getPixelCount();
+		int oldColor = 0;
 
 		if(!(factory.returnAll().size() <= gui.measurements.getSelectedRow())){ 
 			if(floodfiller.getPixelCount() == 0){ 
-			
-			Object o = gui.measurements.getValueAt(gui.measurements.getSelectedRow(), 0); 
-			Measurement tmp = factory.getMeasurementByID(Integer.parseInt(o.toString()));
 
-			imp.getProcessor().setValue(tmp.getColor().getRGB());
+				Object o = gui.measurements.getValueAt(gui.measurements.getSelectedRow(), 0); 
+				Measurement tmp = factory.getMeasurementByID(Integer.parseInt(o.toString()));
+
+				oldColor = imp.getProcessor().getValue();
+				imp.getProcessor().setValue(tmp.getColor().getRGB());
 			}
 		} 
 
@@ -229,6 +227,11 @@ public class ManualAnalyzer {
 			undo();
 			imp.updateAndDraw();
 		}	
+
+		if(oldColor != 0){ 
+			imp.getProcessor().setValue(oldColor);
+		}
+
 
 	}
 

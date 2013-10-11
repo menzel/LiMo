@@ -114,9 +114,7 @@ public class MainGUI extends JFrame{
 		this.fh = fh;
 		this.auto = auto;
 		this.myProcessor = myProcessor;
-		this.t = t;
-
-
+		this.t = t; 
 
 		initGUI();
 	}
@@ -149,8 +147,7 @@ public class MainGUI extends JFrame{
 					break;
 				}
 			}
-		}
-
+		} 
 
 		setSize(850,700);
 		setPreferredSize(new Dimension(850, 700));
@@ -165,14 +162,10 @@ public class MainGUI extends JFrame{
 				if(imp == null ){ 
 					System.exit(0);
 				}else{
-					if(JOptionPane.showConfirmDialog(null, "Sie haben ein Bild geöffnet, wollen Sie das Programm wirklich schließen?") == JOptionPane.YES_OPTION){
+					if(JOptionPane.showConfirmDialog(null, "Sie haben ein Bild geöffnet, wollen Sie das Programm wirklich schließen?") == JOptionPane.YES_OPTION) 
+						System.exit(0); 
 
-						System.exit(0);
-
-					}
-
-				}
-
+				} 
 			}
 		});
 
@@ -211,8 +204,7 @@ public class MainGUI extends JFrame{
 		MenuItem Bauto = new MenuItem("Automatische Analyse");
 
 		MenuItem Bchooser = new MenuItem("Farben zuweisen");
-		MenuItem BshowResults = new MenuItem("Ergebnisse anzeigen", new MenuShortcut(KeyEvent.VK_3));
-
+		MenuItem BshowResults = new MenuItem("Ergebnisse anzeigen", new MenuShortcut(KeyEvent.VK_3)); 
 		MenuItem Bmanual = new MenuItem("Manuelle Analyse", new MenuShortcut(KeyEvent.VK_2)); 
 
 		final MenuItem Breset = new MenuItem("Daten reset", new MenuShortcut(KeyEvent.VK_0));
@@ -228,19 +220,16 @@ public class MainGUI extends JFrame{
 		editMenu.add(Barea);
 		editMenu.add(BpictureSave);
 		//editMenu.add(Bblur);
-		editMenu.add(Brotate);
-
+		editMenu.add(Brotate); 
 
 		dataMenu.add(Bmanual);
 		dataMenu.add(BshowResults);
 		dataMenu.add(Bsave);
 		dataMenu.add(Breset); 
 
-
 		settingsMenu.add(BsheetSize);
 		settingsMenu.add(Bborder);
-		settingsMenu.add(BcolorList);
-
+		settingsMenu.add(BcolorList); 
 
 		autoMenu.add(Bauto);
 		autoMenu.add(Bchooser);
@@ -300,7 +289,6 @@ public class MainGUI extends JFrame{
 		image.setBackground(Color.GRAY);
 
 
-
 		final JScrollBar imageHorizontal  = new JScrollBar(0); 
 		imageHorizontal.setUnitIncrement(1000);
 
@@ -310,21 +298,18 @@ public class MainGUI extends JFrame{
 
 			@Override
 			public void adjustmentValueChanged(AdjustmentEvent ae) {
-				if(ic != null){
-
+				if(ic != null){ 
 
 					Rectangle srcRect = ic.getSrcRect(); 
 
 					srcRect.x = (int)((ae.getValue()*(imp.getWidth()-ic.getSize().width)/90)*magnification); 
 
 					ic.repaint();
-					imp.updateAndDraw();
-
+					imp.updateAndDraw(); 
 
 				}else{
 					imageHorizontal.setValue(0);
-				}
-
+				} 
 			}
 		});
 
@@ -362,8 +347,6 @@ public class MainGUI extends JFrame{
 		//final JScrollPane ImageScrollPane = new JScrollPane(image);
 		//	ImageScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		//	ImageScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); 
-
-
 		//	imageFrame.add(ImageScrollPane, BorderLayout.CENTER);
 
 		getContentPane().add(imageFrame, BorderLayout.CENTER); 
@@ -390,13 +373,11 @@ public class MainGUI extends JFrame{
 		data.getColumnModel().getColumn(2).setPreferredWidth(50); 
 		data.getColumnModel().getColumn(3).setPreferredWidth(50); 
 
-		//	data.getColumnModel().getColumn(4).setCellRenderer(new ResultsColorCellRenderer());
-
+		//	data.getColumnModel().getColumn(4).setCellRenderer(new ResultsColorCellRenderer()); 
 		//resultPanel.add(data.getTableHeader(), BorderLayout.NORTH);
 
 		JScrollPane RscrollPane = new JScrollPane(data);
-		RscrollPane.add(resultPanel);
-
+		RscrollPane.add(resultPanel); 
 		RscrollPane.setPreferredSize(new Dimension(1,130)); 
 
 		getContentPane().add(RscrollPane, BorderLayout.SOUTH);
@@ -433,16 +414,13 @@ public class MainGUI extends JFrame{
 						mousePressed = null;
 
 					}catch (NullPointerException a){
-						// No ROI defined. nothing to do here
-
-					}
-
+						// No ROI defined. nothing to do here 
+					} 
 				}
 
 
 				if(Toolbar.getToolId() == 21){ // pencil 
-					try{
-
+					try{ 
 
 						if(!mousePressed.equals(ic.getMousePosition())){ 
 							imp.getProcessor().drawLine(mousePressed.x, mousePressed.y, ic.getMousePosition().x, ic.getMousePosition().y, linewidth);
@@ -453,8 +431,7 @@ public class MainGUI extends JFrame{
 
 					}catch (NullPointerException a){
 						//mouse left screen, is processed in MouseExited
-					}
-
+					} 
 				}
 
 				if(Toolbar.getToolId() == 20){ // Hand tool
@@ -526,11 +503,8 @@ public class MainGUI extends JFrame{
 					//	imp.updateAndDraw(); 
 					//	mousePressed = null;
 
-					break;
-
-
-				default:
-
+					break; 
+				default: 
 					//					System.out.println(Toolbar.getToolId());
 					break;
 				}
@@ -562,8 +536,6 @@ public class MainGUI extends JFrame{
 		}
 
 
-
-
 		//manual measurement start
 
 		JPanel manualPanel = new JPanel(new BorderLayout());
@@ -591,15 +563,12 @@ public class MainGUI extends JFrame{
 		manualTools.add(BhandTool);
 		manualTools.add(BLupe);
 		manualTools.add(Bpencil);
-		manualTools.add(BcolorChooser);
-
+		manualTools.add(BcolorChooser); 
 
 		userPanel.add(manualTools);
-		userPanel.add(point);
+		userPanel.add(point); 
 
-
-		userPanel.setLayout(new BoxLayout(userPanel,1));
-
+		userPanel.setLayout(new BoxLayout(userPanel,1)); 
 
 		final JButton addArea = MainGUI.createButton("Hinzufügen");
 
@@ -771,15 +740,13 @@ public class MainGUI extends JFrame{
 				final JTextArea infoLabel = new JTextArea("Bitte die Länge der langen Seite in mm eintragen,\noder"
 						+ " eine Voreinstellung auswählen:");
 				infoLabel.setPreferredSize(new Dimension(400, 35));
-
-
+ 
 				infoLabel.setEditable(false);
 				infoLabel.setEnabled(false);
 
 				infoLabel.setBackground(Color.gray);
 				infoLabel.setDisabledTextColor(Color.white);
-
-
+ 
 				JButton dina4 = new JButton("DinA4");
 				JButton done = new JButton("Wert setzen");
 				JButton dina3 = new JButton("DinA3");
@@ -798,15 +765,11 @@ public class MainGUI extends JFrame{
 						try{ 
 							double lw = Double.parseDouble(value.getText());
 							Processor.setSheetWidth(lw); 
-
 							borderWidthChooser.setVisible(false);
 
 						}catch (IllegalArgumentException e){
-							infoLabel.setText("ungültiger Wert");
-
-						}
-
-
+							infoLabel.setText("ungültiger Wert"); 
+						} 
 					}
 				});
 
@@ -822,9 +785,7 @@ public class MainGUI extends JFrame{
 						}catch (IllegalArgumentException e){
 							infoLabel.setText("ungültiger Wert");
 
-						}
-
-
+						} 
 					}
 				});
 
@@ -838,14 +799,10 @@ public class MainGUI extends JFrame{
 							borderWidthChooser.setVisible(false);
 
 						}catch (IllegalArgumentException e){
-							infoLabel.setText("ungültiger Wert");
-
-						}
-
-
+							infoLabel.setText("ungültiger Wert"); 
+						} 
 					}
-				});
-
+				}); 
 
 			}
 		});
@@ -855,9 +812,7 @@ public class MainGUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				imp.getProcessor().rotate(180);	
-				imp.updateAndDraw();
-
-
+				imp.updateAndDraw(); 
 			}
 		});
 
@@ -900,12 +855,9 @@ public class MainGUI extends JFrame{
 						}catch (IllegalArgumentException e){
 							infoLabel.setText("ungültiger Wert");
 
-						}
-
-
+						} 
 					}
-				});
-
+				}); 
 			}
 		});
 
@@ -1120,10 +1072,7 @@ public class MainGUI extends JFrame{
 				} catch(NumberFormatException e){ 
 					text.setText(text.getText() + "\n" + "Es wurde keine Nummer eingegeben");
 				} 
-			}
-
-
-
+			} 
 		} 
 
 		assign.addActionListener(new assignActionListener()); 
@@ -1204,9 +1153,7 @@ public class MainGUI extends JFrame{
 				}catch (NullPointerException e){
 					//triggers when single windows for each images are opened, no problem here
 
-				}
-
-
+				} 
 
 				imp.getProcessor().setValue(makeColor(255, 5, 5));
 				//set Scrollbars to 0:
@@ -1261,9 +1208,7 @@ public class MainGUI extends JFrame{
 					System.exit(0);
 				} 
 			}
-		});
-
-
+		}); 
 
 		/**
 		 * About this program window 
@@ -1301,7 +1246,7 @@ public class MainGUI extends JFrame{
 
 				imp  = fh.reloadImage();
 				imp.show(); 
-				
+
 				manualAnalyzer = null;
 
 				JOptionPane.showMessageDialog(null, "Speicher erfolgreich geleert");
@@ -1525,8 +1470,7 @@ public class MainGUI extends JFrame{
 				if(colors.length == 0){
 					JOptionPane.showMessageDialog(null, "Keine Farben vorhanden");
 
-				}else{
-
+				}else{ 
 
 					final JTable chooseTable = new JTable(colors.length,3); 
 					final JTextArea notice = new JTextArea("Bitte IDs eintragen");
@@ -1535,7 +1479,6 @@ public class MainGUI extends JFrame{
 					chooseTable.getColumnModel().getColumn(0).setPreferredWidth(30);
 					chooseTable.getColumnModel().getColumn(1).setPreferredWidth(200); 
 					chooseTable.getColumnModel().getColumn(2).setPreferredWidth(50); 
-
 
 					chooseTable.getColumnModel().getColumn(2).setCellRenderer(new ResultsColorCellRenderer()); 
 
