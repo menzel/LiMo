@@ -106,6 +106,7 @@ public class ManualAnalyzer {
 	 * @return true if SUCCESSFUL, false if ID was not found 
 	 */
 	public boolean assign(int speciesID){
+		
 
 		Genus genus = Genus.getInstance();
 		try{
@@ -127,6 +128,8 @@ public class ManualAnalyzer {
 					floodfiller.setPixelCount(0); 
 					floodfiller.setThallusCount(0);
 					floodfiller.setThalliList(new ArrayList<String[]>());
+					
+					 imp.getProcessor().setValue(ColorStack.pop().getRGB());  
  
 					return true;
 				}
@@ -198,7 +201,7 @@ public class ManualAnalyzer {
 		int x = imp.getRoi().getPosX();
 		int y = imp.getRoi().getPosY();
 		long oldPixelcount = floodfiller.getPixelCount();
-		int oldColor = 0;
+	//	int oldColor = 0;
 
 		if(!(factory.returnAll().size() <= gui.measurements.getSelectedRow())){ 
 			if(floodfiller.getPixelCount() == 0){ 
@@ -206,7 +209,7 @@ public class ManualAnalyzer {
 				Object o = gui.measurements.getValueAt(gui.measurements.getSelectedRow(), 0); 
 				Measurement tmp = factory.getMeasurementByID(Integer.parseInt(o.toString()));
 
-				oldColor = imp.getProcessor().getValue();
+	//			oldColor = imp.getProcessor().getValue();
 				imp.getProcessor().setValue(tmp.getColor().getRGB());
 			}
 		} 
@@ -228,9 +231,9 @@ public class ManualAnalyzer {
 			imp.updateAndDraw();
 		}	
 
-		if(oldColor != 0){ 
-			imp.getProcessor().setValue(oldColor);
-		}
+	//	if(oldColor != 0){ 
+	//		imp.getProcessor().setValue(oldColor);
+	//	}
 
 
 	}
