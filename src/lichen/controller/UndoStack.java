@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 
 /**
- * 
+ * Represents a stack of the last changes as well as the last picture for first undo
  * @author menzel
  *
  */
@@ -19,8 +19,8 @@ public class UndoStack {
 	private int lastImpPixelCount =0;
 
 	/**
-	 * 
-	 * @param ip
+	 * Contructor
+	 * @param ip ImageProcesser of the Image to be analyzed
 	 */
 	public UndoStack(ImageProcessor ip) {
 		try{ 
@@ -44,8 +44,8 @@ public class UndoStack {
 	}
 
 	/**
-	 * 
-	 * @param undoPos
+	 * Adds a new undo Position to the stack
+	 * @param undoPos a list of int[] which hold 
 	 */
 	public void add(ArrayList<int[]> undoPos){
 		this.undoPosList.add(undoPos); 
@@ -54,6 +54,7 @@ public class UndoStack {
 
 	/**
 	 * 
+	 * Stores the last Image (as int[] ) for first undo
 	 * @param arr - int[] of pixels for floodfill undo
 	 * @param pixelcount - last filled pixelcount
 	 */
@@ -64,7 +65,7 @@ public class UndoStack {
 
 
 	/**
-	 * 
+	 * first undo, restores picture from lastImp, not from undoPosList 
 	 * @return pixelcount substracted
 	 */
 	private int undoAll(){ 
@@ -80,7 +81,6 @@ public class UndoStack {
 	}
 
 	/**
-	 * 
 	 * undo a flood fill from the list, undo with undoAll if possible
 	 * @return - pixelcount of unfilled pixels
 	 */

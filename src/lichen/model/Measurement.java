@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * @author menzel
  *
  */ 
-public class Measurement {
+public class Measurement implements Comparable<Measurement> {
 
 	private double pixelarea;
 	private Color color;
@@ -96,26 +96,26 @@ public class Measurement {
 	 */
 	public void addArea(long l) {
 
-		
+
 		this.pixelarea += l; 
 	}
 
 	public double getPixelArea() {
 		return this.pixelarea;
 	}
-	
+
 	public int getCount(){
 		return this.thallusCount;
 	}
 
 	public void setCount(int thallusCount) {
 		this.thallusCount = thallusCount;
-		
+
 	}
 
 	public void setThallusList(ArrayList<String[]> arrayList) {
 		this.thalliList = arrayList; 
-		
+
 	}
 
 	/**
@@ -128,7 +128,13 @@ public class Measurement {
 	public double getPixelrate() {
 		return this.pixelrate;
 	}
-	
 
+	@Override
+	public int compareTo(Measurement arg0) {
+		if(this.species > arg0.getSpecies())
+			return 0;
+		else
+			return -1; 
+	} 
 
 }

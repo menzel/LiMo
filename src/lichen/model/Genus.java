@@ -150,6 +150,7 @@ public class Genus {
 	public Object[][] getExportResultTableData() {
 
 		Object[][] t = new Object[500][7] ;	
+		//TODO: evaluate 500 as fixed lenght
 
 		int index =0;
 
@@ -163,6 +164,28 @@ public class Genus {
 
 
 		index++;
+		//TODO: display overview table at the top 
+		
+		
+		for(Species g: this.returnAll()){ 
+			if(g.getResults() != null){ 
+				
+				t[index][0] = g.getId();
+				t[index][1] = g.getName();
+				t[index][2] = g.getGenus();
+				t[index][3] =Double.toString(Math.round(g.getResults().getArea()*100.0)/100.0).replace(".", ","); 
+				t[index][4] =Double.toString(Math.round((100/area)*g.getResults().getArea()*1000.0)/1000.0).replace(".", ","); 
+				Color c = g.getResults().getColor();
+				t[index][5] = g.getResults().getThalliList().size();
+				t[index++][6] = "r=" + c.getRed() + "," + "g=" +c.getGreen() + "," + "b=" + c.getBlue();
+				
+			}
+		}
+		
+		index++; 
+		index++;
+		index++;
+		
 
 		for(Species g: this.returnAll()){ 
 			if(g.getResults() != null){
@@ -174,7 +197,7 @@ public class Genus {
 				t[index][3] =Double.toString(Math.round(g.getResults().getArea()*100.0)/100.0).replace(".", ","); 
 				t[index][4] =Double.toString(Math.round((100/area)*g.getResults().getArea()*1000.0)/1000.0).replace(".", ","); 
 				Color c = g.getResults().getColor();
-				t[index][5] = g.getResults().getCount();
+				t[index][5] = g.getResults().getThalliList().size();
 				t[index++][6] = "r=" + c.getRed() + "," + "g=" +c.getGreen() + "," + "b=" + c.getBlue();
 				
 				index++;

@@ -6,6 +6,8 @@ import ij.process.ImageProcessor;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import javax.naming.NameNotFoundException;
 
@@ -40,6 +42,9 @@ public class FloodFiller {
 	public FloodFiller(ImageProcessor ip) {
 		this.ip = ip;
 		this.undoStack = new UndoStack(ip);
+		if(MainGUI.getInstance() ==null){
+			return;
+		}
 		MainGUI.getInstance().setUndoStack(this.undoStack);
 
 		isFloat = ip instanceof FloatProcessor;
@@ -433,9 +438,12 @@ public class FloodFiller {
 		if(sub == 0) 
 			return false;
 
-		ArrayList<Measurement> mList = MeasurementsFactory.getInstance().returnAll(); 
+		//work with clone for sorting 
+		@SuppressWarnings("unchecked")
+		ArrayList<Measurement> mList = (ArrayList<Measurement>) MeasurementsFactory.getInstance().returnAll().clone(); 
+		Collections.sort(mList);
 
-		for(Measurement list: mList){ 
+		for(Measurement list: mList){
 
 			m = list;
 
@@ -445,15 +453,21 @@ public class FloodFiller {
 
 				if(Double.parseDouble(t[1]) == sub){ 
 					stat = m;
+					m.getThalliList().remove(t);//TODO: testen
 					flag = true;
+					break;
 				}
 			} 
 
 			for(String[] t: thalliList){
 				if(Double.parseDouble(t[1]) == sub){ 
 					flag = true;
+					break;
 				} 
 			} 
+
+			if(flag)
+				break;
 		}
 
 
@@ -467,13 +481,15 @@ public class FloodFiller {
 		//if pixelcount < 0 substract undo area from old measurment
 
 		if(pixelcount-sub < 0){
-			//			ArrayList<Measurement> mList = MeasurementsFactory.getInstance().returnAll(); 
+			
+			// work with real list to modify table
+			mList = MeasurementsFactory.getInstance().returnAll(); 
 
 			if(stat == null)
 				m =mList.get(mList.size()-1); 
 			else
 				m = stat;
-			
+
 			m.addArea(-sub);
 			m.setCount(m.getCount()-1);
 

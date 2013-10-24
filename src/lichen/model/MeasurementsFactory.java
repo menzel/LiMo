@@ -2,6 +2,9 @@ package lichen.model;
 
 import java.util.ArrayList;
 
+import org.junit.runner.manipulation.Sortable;
+import org.junit.runner.manipulation.Sorter;
+
 
 /**
  * Factory for Measurement, holds references to all objects
@@ -97,6 +100,5 @@ public class MeasurementsFactory {
 	 */
 	public double getPixelrate(){ 
 		return this.pixelrate;
-	}
-
+	} 
 }

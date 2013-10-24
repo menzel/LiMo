@@ -286,6 +286,7 @@ public class Processor {
 
 		imp.getProcessor().sharpen();
 		int[] pixels = null;
+		//TODO: rewrite with instanceof
 
 		try{
 

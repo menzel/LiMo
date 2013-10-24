@@ -83,8 +83,8 @@ public class MainGUI extends JFrame{
 	private int linewidth = 3;
 	private double borderWidth = 0.76;
 	private double magnification = 1.0;
-	private static final String version = "0.9.7";
-	private static final String date = "08.10.2013";
+	private static final String version = "0.9.7.1";
+	private static final String date = "12.10.2013";
 	private static boolean styleModern = false; 
 	private static MainGUI gui;
 	private JPanel colorPanel;
@@ -199,7 +199,7 @@ public class MainGUI extends JFrame{
 		MenuItem Barea = new MenuItem("Messfläche wählen");
 		MenuItem Bborder = new MenuItem("Randdicke wählen");
 		MenuItem BsheetSize = new MenuItem("Foliengröße wählen");
-		MenuItem Brotate = new MenuItem("Bild um 90° drehen"); 
+		MenuItem Brotate = new MenuItem("Bild um 180° drehen"); 
 		MenuItem BcolorList = new MenuItem("Füllfarben wählen"); 
 		MenuItem Bauto = new MenuItem("Automatische Analyse");
 
@@ -1089,7 +1089,6 @@ public class MainGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//TODO: check if pressed twice
 				if(manualAnalyzer == null){ 
 
 					if(imp !=null){ 
@@ -1254,7 +1253,6 @@ public class MainGUI extends JFrame{
 					getIc().addMouseMotionListener(new mouseMotionListener());
 					getIc().addMouseWheelListener(new mouseWheelListener());
 
-					//TODO
 				}catch (NullPointerException e){
 					//triggers when single windows for each images are opened, no problem here
 

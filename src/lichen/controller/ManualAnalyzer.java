@@ -192,8 +192,10 @@ public class ManualAnalyzer {
 
 
 	/**
-	 * Add to Area.
+	 * Add to Area current flood filler area
 	 * reads selected pixels, does a flood fill and adds to the measurement
+	 * @pre Roi on picture has to be defined
+	 * @post Roi and area around it is filled with background color and pixel countet
 	 */
 	public void addArea() {
 		long last = floodfiller.getPixelCount(); 
