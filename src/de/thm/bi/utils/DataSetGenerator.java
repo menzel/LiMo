@@ -23,7 +23,7 @@ public class DataSetGenerator {
 
 		final int xmin = 0, xmax = 500, ymin = 0, ymax = 500;
 
-		ArrayList<IPoint> points = new ArrayList<>();
+		ArrayList<IPoint> points = new ArrayList<IPoint>();
 
 		int numberOfPoints = 2000;
 

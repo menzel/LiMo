@@ -26,7 +26,7 @@ public class Grayscale implements IPointFilter {
 	 */
 	@Override
 	public List<IPoint> filter(IDataSet dataSet) {
-		ArrayList<IPoint> result = new ArrayList<>(100);
+		ArrayList<IPoint> result = new ArrayList<IPoint>(100);
 		List<IPoint> points = dataSet.getAllPoints();
 
 		int grayscale = (int) (dataSet.hasStoredAttribute(Attributes.MAX_GRAYSCALE_INT) ? dataSet

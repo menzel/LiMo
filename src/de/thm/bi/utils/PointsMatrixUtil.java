@@ -44,7 +44,7 @@ public class PointsMatrixUtil {
 	 * @return Returns the Hull
 	 */
 	public static final List<IPoint> findFullHull(PointsMatrix pointsMatrix) {
-		ArrayList<IPoint> border = new ArrayList<>();
+		ArrayList<IPoint> border = new ArrayList<IPoint>();
 
 		int minX = pointsMatrix.getMinX(), minY = pointsMatrix.getMinY();
 		int maxX = pointsMatrix.getMaxX(), maxY = pointsMatrix.getMaxY();
@@ -79,7 +79,7 @@ public class PointsMatrixUtil {
 			lineEnd = tmp;
 		}
 
-		ArrayList<IPoint> points = new ArrayList<>(100);
+		ArrayList<IPoint> points = new ArrayList<IPoint>(100);
 
 		PointsMatrix matrix = dataSet.toPointsMatrix();
 

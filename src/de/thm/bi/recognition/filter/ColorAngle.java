@@ -15,6 +15,8 @@ import de.thm.bi.utils.Vector3D;
  */
 public class ColorAngle implements IPointFilter {
 
+	/**                                    IPointFilter {
+
 	/**
 	 * An Angle of 1.5 degrees seems to be a good choice
 	 */
@@ -78,7 +80,7 @@ public class ColorAngle implements IPointFilter {
 	@Override
 	public List<IPoint> filter(IDataSet dataSet) {
 		analyzeDataSet(dataSet);
-		ArrayList<IPoint> filteredPoints = new ArrayList<>();
+		ArrayList<IPoint> filteredPoints = new ArrayList<IPoint>();
 
 		List<IPoint> allPoints = dataSet.getAllPoints();
 		int limit = allPoints.size();

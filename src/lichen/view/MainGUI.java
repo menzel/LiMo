@@ -31,6 +31,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.naming.NameNotFoundException;
@@ -83,8 +84,8 @@ public class MainGUI extends JFrame{
 	private int linewidth = 3;
 	private double borderWidth = 0.76;
 	private double magnification = 1.0;
-	private static final String version = "0.9.7.1";
-	private static final String date = "12.10.2013";
+	private static final String version = "0.9.7.2";
+	private static final String date = "6.11.2013";
 	private static boolean styleModern = false; 
 	private static MainGUI gui;
 	private JPanel colorPanel;
@@ -189,7 +190,7 @@ public class MainGUI extends JFrame{
 
 
 		MenuItem Bnew  = new MenuItem("Neue Folie", new MenuShortcut(KeyEvent.VK_1, false)); 
-		MenuItem Bsave = new MenuItem("Ergebnisse Speichern");
+		MenuItem Bsave = new MenuItem("Ergebnisse speichern");
 		MenuItem Bclose = new MenuItem("Programm Schließen"); 
 
 		final MenuItem Bdraw = new MenuItem("Stift"); 
@@ -205,9 +206,9 @@ public class MainGUI extends JFrame{
 
 		MenuItem Bchooser = new MenuItem("Farben zuweisen");
 		MenuItem BshowResults = new MenuItem("Ergebnisse anzeigen", new MenuShortcut(KeyEvent.VK_3)); 
-		MenuItem Bmanual = new MenuItem("Manuelle Analyse", new MenuShortcut(KeyEvent.VK_2)); 
+		MenuItem Bmanual = new MenuItem("manuelle Analyse", new MenuShortcut(KeyEvent.VK_2)); 
 
-		final MenuItem Breset = new MenuItem("Daten reset", new MenuShortcut(KeyEvent.VK_0));
+		final MenuItem Breset = new MenuItem("Daten zurücksetzen", new MenuShortcut(KeyEvent.VK_0));
 
 
 		MenuItem Babout = new MenuItem("über");
@@ -484,7 +485,10 @@ public class MainGUI extends JFrame{
 				case 11:  // lupe
 					//					getIc().zoomIn((int)(getIc().getMousePosition().x), (int)(getIc().getMousePosition().y));
 					//	System.out.println(imp.getCanvas().getMagnification());
+//					magnification = Math.log(imp.getCanvas().getMagnification());
 					magnification = imp.getCanvas().getMagnification();
+					//TODO: magnification value for scrolling
+					System.out.println(magnification);
 					getContentPane().revalidate(); 
 					break;
 
@@ -550,6 +554,8 @@ public class MainGUI extends JFrame{
 		final JButton BLupe = createButton("Lupe");
 
 		final JButton Bpencil = createButton("Stift");
+		final JButton Bline = createButton("Linie");
+
 		final JButton BcolorChooser = createButton("Farbwähler");
 
 		JPanel point = new JPanel(new BorderLayout());
@@ -563,6 +569,7 @@ public class MainGUI extends JFrame{
 		manualTools.add(BhandTool);
 		manualTools.add(BLupe);
 		manualTools.add(Bpencil);
+		manualTools.add(Bline);
 		manualTools.add(BcolorChooser); 
 
 		userPanel.add(manualTools);
@@ -691,13 +698,14 @@ public class MainGUI extends JFrame{
 		}
 
 
-		Bpencil.addActionListener(new ActionListener() {
+		Bline.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) { 
 				Bdraw.getActionListeners()[0].actionPerformed(null);
 			} 
 		});
+
 
 		BcolorChooser.addActionListener(new ActionListener() {
 
@@ -961,6 +969,7 @@ public class MainGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				//TODO
 				if(manualAnalyzer.undo()){
 					text.setText(text.getText() + "\n" + "Rückgängig");
 
@@ -1277,6 +1286,15 @@ public class MainGUI extends JFrame{
 			}
 		});
 
+		
+		Bpencil.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) { 
+						t.installBuiltinTool("Brush");
+			}
+		});
+
 		Bdraw.addActionListener(new ActionListener() {
 
 			@Override
@@ -1323,6 +1341,7 @@ public class MainGUI extends JFrame{
 				String path;
 
 				JFileChooser jc = new JFileChooser(fh.getLastDir());
+				jc.setSelectedFile(new File(fh.getLastDir()));
 				jc.showDialog(null, "Ziel wählen"); 
 				path = jc.getSelectedFile().toString();
 

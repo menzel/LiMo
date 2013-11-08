@@ -28,7 +28,7 @@ public class ColorVector implements INormalization {
 	@Override
 	public IDataSet normalize(ImagePlus img) {
 		StopWatch.start();
-		ArrayList<IPoint> points = new ArrayList<>(100000);
+		ArrayList<IPoint> points = new ArrayList<IPoint>(100000);
 
 		int w = img.getWidth();
 		int h = img.getHeight();

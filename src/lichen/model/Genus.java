@@ -154,7 +154,7 @@ public class Genus {
 
 		int index =0;
 
-		t[index][0] = "Nr.";
+		t[index][0] = "ID";
 		t[index][1] = "Gattung";
 		t[index][2] = "Art";
 		t[index][3] = "Fläche [mm^2]"; 

@@ -435,13 +435,15 @@ public class FloodFiller {
 		Measurement stat = null;
 		Measurement m;
 
-		if(sub == 0) 
+		if(sub == 0){ 
 			return false;
+		}
 
 		//work with clone for sorting 
 		@SuppressWarnings("unchecked")
 		ArrayList<Measurement> mList = (ArrayList<Measurement>) MeasurementsFactory.getInstance().returnAll().clone(); 
 		Collections.sort(mList);
+
 
 		for(Measurement list: mList){
 
@@ -457,23 +459,24 @@ public class FloodFiller {
 					flag = true;
 					break;
 				}
-			} 
-
-			for(String[] t: thalliList){
-				if(Double.parseDouble(t[1]) == sub){ 
-					flag = true;
-					break;
-				} 
-			} 
-
+			}
 			if(flag)
 				break;
+
 		}
 
+		for(String[] t: thalliList){
+			if(Double.parseDouble(t[1]) == sub){ 
+				flag = true;
+				break;
+			} 
+		} 
 
 
-		if(!flag)
+
+		if(!flag){ 
 			return false; 
+		}
 
 		sub = undoStack.undo(); 
 
@@ -481,7 +484,7 @@ public class FloodFiller {
 		//if pixelcount < 0 substract undo area from old measurment
 
 		if(pixelcount-sub < 0){
-			
+
 			// work with real list to modify table
 			mList = MeasurementsFactory.getInstance().returnAll(); 
 

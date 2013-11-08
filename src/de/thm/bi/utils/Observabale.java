@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class Observabale implements IObservable {
 
-	private ArrayList<IObserver> observers = new ArrayList<>();
+	private ArrayList<IObserver> observers = new ArrayList<IObservable>();
 
 	@Override
 	public void notifyObservers(Object observable) {

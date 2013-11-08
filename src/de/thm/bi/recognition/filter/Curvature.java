@@ -22,7 +22,7 @@ public class Curvature implements IPointFilter {
 	@Override
 	public List<IPoint> filter(IDataSet dataSet) {
 
-		List<IPoint> filteredPoints = new ArrayList<>();
+		List<IPoint> filteredPoints = new ArrayList<IPoint>();
 
 		List<IPoint> hull = dataSet.getFullHull();
 
