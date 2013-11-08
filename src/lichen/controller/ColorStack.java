@@ -67,13 +67,9 @@ public class ColorStack {
 	 * 
 	 * Do not use 0
 	 */
-	public static void setColorPos(Color color, int parseInt) {
-		
-		if(parseInt < 1 || parseInt > i){
-	//		throw new IllegalArgumentException; 
-		}
-		colorList[parseInt-1] = color;
-
+	public static void setColorPos(Color color[]) {
+		colorList = color;
+	
 	}
 	
 	public static void resetStack(){

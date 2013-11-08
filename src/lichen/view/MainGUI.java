@@ -230,7 +230,7 @@ public class MainGUI extends JFrame{
 
 		settingsMenu.add(BsheetSize);
 		settingsMenu.add(Bborder);
-		settingsMenu.add(BcolorList); 
+		//settingsMenu.add(BcolorList); //TODO: reenable
 
 		autoMenu.add(Bauto);
 		autoMenu.add(Bchooser);
@@ -443,7 +443,6 @@ public class MainGUI extends JFrame{
 
 						imageHorizontal.setValue((int) (imageHorizontal.getValue()- (ic.getMousePosition().x - mousePressed.x)/w));
 						imageVertical.setValue((int) (imageVertical.getValue() - (ic.getMousePosition().y - mousePressed.y)/h)); 
-						//TODO: mouse vergröbern
 
 
 					}catch(NullPointerException c){
@@ -484,10 +483,8 @@ public class MainGUI extends JFrame{
 
 				case 11:  // lupe
 					//					getIc().zoomIn((int)(getIc().getMousePosition().x), (int)(getIc().getMousePosition().y));
-					//	System.out.println(imp.getCanvas().getMagnification());
-//					magnification = Math.log(imp.getCanvas().getMagnification());
+
 					magnification = imp.getCanvas().getMagnification();
-					//TODO: magnification value for scrolling
 					System.out.println(magnification);
 					getContentPane().revalidate(); 
 					break;
@@ -969,7 +966,6 @@ public class MainGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//TODO
 				if(manualAnalyzer.undo()){
 					text.setText(text.getText() + "\n" + "Rückgängig");
 
@@ -1399,6 +1395,7 @@ public class MainGUI extends JFrame{
 				final Color[] colors = ColorStack.getAllColors(); 
 				final JTable chooseTable = new JTable(colors.length,2); 
 				final JTextArea notice = new JTextArea("Bitte Reihenfolge eintragen");
+				notice.setEditable(false);
 
 				chooseTable.getTableHeader().setReorderingAllowed(false);
 				chooseTable.getColumnModel().getColumn(0).setPreferredWidth(30);
@@ -1443,23 +1440,27 @@ public class MainGUI extends JFrame{
 				finish.addActionListener(new ActionListener() {
 
 					@Override
-					public void actionPerformed(ActionEvent arg0) { 
+					public void actionPerformed(ActionEvent arg0) {
 						chooseTable.setEnabled(false);
 						chooseTable.clearSelection();
+						Color newColors[] = new Color[11];
 
 						for(int i =0; i< colors.length; i++){
 
 							try{ 
 								Object o =chooseTable.getModel().getValueAt(i, 0); 
-								ColorStack.setColorPos(colors[i],  Integer.parseInt(o.toString())); 
+								newColors[Integer.parseInt(o.toString())] = colors[i]; 
+
 							}catch(NullPointerException n){ 
-								ColorStack.setColorPos(colors[i], colors.length-i); 
+								System.out.println("bla");
 								//No Id inserted, get value somehow 
 							}catch(IllegalArgumentException n){
+
+								System.out.println("bla");
 								//Id out of range 
 							}
 						} 
-
+						ColorStack.setColorPos(newColors);
 						choose.setVisible(false);
 					}
 				}); 
@@ -1529,7 +1530,6 @@ public class MainGUI extends JFrame{
 									id = Integer.parseInt(chooseTable.getModel().getValueAt(i,0).toString());
 								}
 
-								//TODO: warnungen, fenster schließen, erfolgsmeldung usw
 								try {
 									matcher.setColor(id, i);
 
