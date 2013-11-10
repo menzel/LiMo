@@ -909,6 +909,7 @@ public class MainGUI extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				try{ 
 					linewidth = Integer.parseInt( lineWidthChooser.getText());
+					Toolbar.setBrushSize(Integer.parseInt(lineWidthChooser.getText()));
 
 					text.setText(text.getText() + "\n" + "Wert gesetzt: " + linewidth);
 				}catch(IllegalArgumentException e){
@@ -1282,12 +1283,17 @@ public class MainGUI extends JFrame{
 			}
 		});
 
-		
+
 		Bpencil.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) { 
-						t.installBuiltinTool("Brush");
+
+				if(newColor) 
+					fillColor = imp.getProcessor().getValue();
+				newColor = false;
+
+				t.installBuiltinTool("Brush");
 			}
 		});
 
