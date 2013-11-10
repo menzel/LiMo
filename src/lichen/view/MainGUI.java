@@ -230,7 +230,7 @@ public class MainGUI extends JFrame{
 
 		settingsMenu.add(BsheetSize);
 		settingsMenu.add(Bborder);
-		//settingsMenu.add(BcolorList); //TODO: reenable
+		settingsMenu.add(BcolorList); //TODO: reenable
 
 		autoMenu.add(Bauto);
 		autoMenu.add(Bchooser);
@@ -588,7 +588,7 @@ public class MainGUI extends JFrame{
 		final JPanel lineChooser = new JPanel(new GridLayout(0,2));
 
 		final JTextField lineWidthChooser = new JTextField("3"); 
-		JTextField lineWidthChooserLabel = new JTextField("Stiftdicke");
+		JTextField lineWidthChooserLabel = new JTextField("Stiftdicke:");
 		lineWidthChooserLabel.setEditable(false);
 
 		lineChooser.add(lineWidthChooserLabel);
@@ -1394,83 +1394,88 @@ public class MainGUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				final JFrame choose = new JFrame("Wähle Farbreihenfolge"); 
-				choose.setLayout(new BorderLayout());
-				choose.setSize(200, 280);
+				if(manualAnalyzer == null ){
+					final JFrame choose = new JFrame("Wähle Farbreihenfolge"); 
+					choose.setLayout(new BorderLayout());
+					choose.setSize(200, 280);
 
-				final Color[] colors = ColorStack.getAllColors(); 
-				final JTable chooseTable = new JTable(colors.length,2); 
-				final JTextArea notice = new JTextArea("Bitte Reihenfolge eintragen");
-				notice.setEditable(false);
+					final Color[] colors = ColorStack.getAllColors(); 
+					final JTable chooseTable = new JTable(colors.length,2); 
+					final JTextArea notice = new JTextArea("Bitte Reihenfolge eintragen");
+					notice.setEditable(false);
 
-				chooseTable.getTableHeader().setReorderingAllowed(false);
-				chooseTable.getColumnModel().getColumn(0).setPreferredWidth(30);
-				chooseTable.getColumnModel().getColumn(1).setPreferredWidth(50); 
+					chooseTable.getTableHeader().setReorderingAllowed(false);
+					chooseTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+					chooseTable.getColumnModel().getColumn(1).setPreferredWidth(50); 
 
-				chooseTable.getColumnModel().getColumn(1).setCellRenderer(new ChooserColorCellRenderer()); 
+					chooseTable.getColumnModel().getColumn(1).setCellRenderer(new ChooserColorCellRenderer()); 
 
-				JPanel buttonPanel  = new JPanel(new GridLayout(0, 2));
-				JButton finish = createButton("Fertig");
-				JButton cancel = createButton("Abbruch");
+					JPanel buttonPanel  = new JPanel(new GridLayout(0, 2));
+					JButton finish = createButton("Fertig");
+					JButton cancel = createButton("Abbruch");
 
-				buttonPanel.add(finish);
-				buttonPanel.add(cancel);
-
-
-				JPanel choosePanel = new JPanel(new BorderLayout());
-				choosePanel.add(buttonPanel, BorderLayout.SOUTH);
-
-				choosePanel.add(chooseTable, BorderLayout.CENTER); 
-
-				choose.add(choosePanel, BorderLayout.CENTER);
-				choose.add(notice, BorderLayout.SOUTH);
-				choose.setVisible(true);
-
-				/**
-				 * Cancels the insertion and does nothing to color stack
-				 */
-				cancel.addActionListener(new ActionListener() {
+					buttonPanel.add(finish);
+					buttonPanel.add(cancel);
 
 
-					@Override
-					public void actionPerformed(ActionEvent e) {
+					JPanel choosePanel = new JPanel(new BorderLayout());
+					choosePanel.add(buttonPanel, BorderLayout.SOUTH);
 
-						choose.setVisible(false); 
-						choose.setEnabled(false);
-					}
-				});
+					choosePanel.add(chooseTable, BorderLayout.CENTER); 
 
-				/**
-				 * Read user entered values and apply to ColorStack 
-				 */
-				finish.addActionListener(new ActionListener() {
+					choose.add(choosePanel, BorderLayout.CENTER);
+					choose.add(notice, BorderLayout.SOUTH);
+					choose.setVisible(true);
 
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						chooseTable.setEnabled(false);
-						chooseTable.clearSelection();
-						Color newColors[] = new Color[11];
+					/**
+					 * Cancels the insertion and does nothing to color stack
+					 */
+					cancel.addActionListener(new ActionListener() {
 
-						for(int i =0; i< colors.length; i++){
 
-							try{ 
-								Object o =chooseTable.getModel().getValueAt(i, 0); 
-								newColors[Integer.parseInt(o.toString())] = colors[i]; 
+						@Override
+						public void actionPerformed(ActionEvent e) {
 
-							}catch(NullPointerException n){ 
-								System.out.println("bla");
-								//No Id inserted, get value somehow 
-							}catch(IllegalArgumentException n){
+							choose.setVisible(false); 
+							choose.setEnabled(false);
+						}
+					});
 
-								System.out.println("bla");
-								//Id out of range 
-							}
-						} 
-						ColorStack.setColorPos(newColors);
-						choose.setVisible(false);
-					}
-				}); 
+					/**
+					 * Read user entered values and apply to ColorStack 
+					 */
+					finish.addActionListener(new ActionListener() {
 
+						@Override
+						public void actionPerformed(ActionEvent arg0) {
+
+							chooseTable.setEnabled(false);
+							chooseTable.clearSelection();
+							Color newColors[] = new Color[11];
+
+							for(int i =0; i< colors.length; i++){
+
+								try{ 
+									Object o =chooseTable.getModel().getValueAt(i, 0); 
+									newColors[Integer.parseInt(o.toString())] = colors[i]; 
+
+								}catch(NullPointerException n){ 
+									n.printStackTrace();
+									//No Id inserted, get value somehow 
+								}catch(IllegalArgumentException n){ 
+									n.printStackTrace();
+									//Id out of range 
+								}
+							} 
+							ColorStack.setColorPos(newColors);
+							choose.setVisible(false);
+						}
+					}); 
+
+				}else{
+
+					JOptionPane.showMessageDialog(null, "Die Wahl der Farbreihenfolge ist nur vor dem Starten der manuellen Analyse möglich");
+				}
 			}
 		});
 
