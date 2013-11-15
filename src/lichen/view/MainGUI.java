@@ -8,6 +8,7 @@ import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import javax.naming.NameNotFoundException;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -84,8 +86,8 @@ public class MainGUI extends JFrame{
 	private int linewidth = 3;
 	private double borderWidth = 0.76;
 	private double magnification = 1.0;
-	private static final String version = "0.9.7.2";
-	private static final String date = "6.11.2013";
+	private static final String version = "0.9.7.3";
+	private static final String date = "10.11.2013";
 	private static boolean styleModern = false; 
 	private static MainGUI gui;
 	private JPanel colorPanel;
@@ -131,7 +133,7 @@ public class MainGUI extends JFrame{
 			//			UIManager.put("nimbusBlueGrey", new Color(12,130,198));
 			UIManager.put("control", Color.DARK_GRAY);
 			//		UIManager.put("text", Color.white);
-
+			
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
 					try {
@@ -562,12 +564,21 @@ public class MainGUI extends JFrame{
 
 
 		BmanualSelector.setPreferredSize(new Dimension(250, 25));
+		
+		final lichen.view.ButtonGroup buttonGroup = new lichen.view.ButtonGroup();
 
 		manualTools.add(BhandTool);
 		manualTools.add(BLupe);
 		manualTools.add(Bpencil);
 		manualTools.add(Bline);
 		manualTools.add(BcolorChooser); 
+
+		buttonGroup.add(BhandTool);
+		buttonGroup.add(BLupe);
+		buttonGroup.add(Bline);
+		buttonGroup.add(Bpencil);
+		buttonGroup.add(BcolorChooser);
+		buttonGroup.add(BmanualSelector);
 
 		userPanel.add(manualTools);
 		userPanel.add(point); 
@@ -673,6 +684,30 @@ public class MainGUI extends JFrame{
 
 
 		//--------Tools Action Listener--------//
+		
+		
+		class ButtonGroupChangedListener implements ActionListener{
+
+			private JButton activeButton;
+			public ButtonGroupChangedListener(JButton button) {
+				activeButton = button; 
+			}
+
+			@Override 
+			public void actionPerformed(ActionEvent arg0) {
+				buttonGroup.setActive(activeButton);
+				buttonGroup.highlight();
+				
+			}
+			
+		}
+
+		BmanualSelector.addActionListener(new ButtonGroupChangedListener(BmanualSelector));
+		BhandTool.addActionListener(new ButtonGroupChangedListener(BhandTool));
+		BLupe.addActionListener(new ButtonGroupChangedListener(BLupe));
+		Bline.addActionListener(new ButtonGroupChangedListener(Bline));
+		BcolorChooser.addActionListener(new ButtonGroupChangedListener(BcolorChooser));
+		Bpencil.addActionListener(new ButtonGroupChangedListener(Bpencil));
 
 		class mouseMotionListener implements MouseMotionListener{
 
@@ -714,13 +749,14 @@ public class MainGUI extends JFrame{
 
 		BhandTool.addActionListener(new ActionListener() {
 
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				t.setTool(20);
 
 				BmanualSelector.setBorderPainted(false);
 				BhandTool.setBorderPainted(true);
-				BLupe.setBorderPainted(false);
+				BLupe.setBorderPainted(false); 
 
 			} 
 		});
@@ -1045,7 +1081,7 @@ public class MainGUI extends JFrame{
 							}
 
 						}else{ 
-							text.setText(text.getText() + "\n" + "Es existiert kein Eintrag mit dieser ID, oder die ID besitzt bereits eine Farbe"); 
+							text.setText(text.getText() + "\n" + "Es existiert kein Eintrag mit dieser ID, die ID besitzt bereits eine Farbe oder die Fläche ist 0"); 
 						} 
 
 					}else{ // re-adding area to existing measurement 

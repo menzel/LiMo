@@ -113,7 +113,7 @@ public class ManualAnalyzer {
 
 
 			if(genus.exists(speciesID)){
-				if(genus.getSpeciesFromID(speciesID).getResults() == null){ 
+				if(genus.getSpeciesFromID(speciesID).getResults() == null && floodfiller.getPixelCount() != 0){ 
 
 					Measurement manualMeasured = factory.createMeasurement();
 
