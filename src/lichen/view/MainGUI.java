@@ -57,6 +57,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
+import javax.swing.event.TableModelEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -248,14 +249,14 @@ public class MainGUI extends JFrame{
 		String columnNames[] = {"ID", "Name","Farbe"}; 
 		final JTable table = new JTable(getTableData(),columnNames); 
 		table.setShowGrid(false);
-		table.setEnabled(false);
+		table.setEnabled(true);
 		table.setMinimumSize(new Dimension(3000, 5000));
 		table.getColumnModel().getColumn(0).setPreferredWidth(15);
 		table.getColumnModel().getColumn(1).setPreferredWidth(150); 
 		table.getColumnModel().getColumn(2).setPreferredWidth(10); 
 
 		table.getColumnModel().getColumn(2).setCellRenderer(new ColorCellRenderer());
-
+		
 		JTableHeader header = table.getTableHeader(); 
 		header.setReorderingAllowed(false);
 
@@ -1372,6 +1373,9 @@ public class MainGUI extends JFrame{
 			}
 		});
 
+		/**
+		 * search 
+		 */
 		searchField.addActionListener(new ActionListener() {
 
 			@Override
@@ -1383,11 +1387,18 @@ public class MainGUI extends JFrame{
 		searchButton.addActionListener(new ActionListener() {
 
 			private int i =0; //last result row
+			private String lastSearch = ""; // last used search term
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				String searchTerm = searchField.getText();
+
+				i = table.getSelectedRow()+1;
+				if(!lastSearch.equals(searchTerm))
+					i=0; 
+				
+				lastSearch = searchTerm;
 				Genus lichen = Genus.getInstance();
 
 				ArrayList<Species>list = lichen.returnAll();
@@ -1399,16 +1410,13 @@ public class MainGUI extends JFrame{
 							if(table.getValueAt(j, 0) != null)
 								if(Integer.toString(species.getId()).equals(table.getValueAt(j, 0).toString())){ 
 									if(table.getSelectedRow() == j){ 
-
-										continue; 
 									}else{
 										table.getSelectionModel().setSelectionInterval(j	,j);
 										table.scrollRectToVisible(new Rectangle(table.getCellRect(j,0, true)));
-										i = j+1;
 										return;							
 									}
 								}
-						}
+						} 
 					}
 				}
 			}
