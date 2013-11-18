@@ -133,7 +133,7 @@ public class MainGUI extends JFrame{
 			//			UIManager.put("nimbusBlueGrey", new Color(12,130,198));
 			UIManager.put("control", Color.DARK_GRAY);
 			//		UIManager.put("text", Color.white);
-			
+
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
 					try {
@@ -172,7 +172,7 @@ public class MainGUI extends JFrame{
 			}
 		});
 
-		Toolbar.setBrushSize(1);
+		Toolbar.setBrushSize(10);
 		//---------------------------------------//
 		// Menu Bar:
 		//	menuBar.setPreferredSize(new Dimension(1, 30));
@@ -187,7 +187,7 @@ public class MainGUI extends JFrame{
 		menuBar.add(fileMenu);
 		menuBar.add(editMenu);
 		menuBar.add(dataMenu);
-		menuBar.add(autoMenu);
+		//menuBar.add(autoMenu);
 		menuBar.add(settingsMenu); 
 
 
@@ -200,7 +200,7 @@ public class MainGUI extends JFrame{
 
 		MenuItem BpictureSave = new MenuItem("Bild speichern");
 		MenuItem Barea = new MenuItem("Messfläche wählen");
-		MenuItem Bborder = new MenuItem("Randdicke wählen");
+		MenuItem Bborder = new MenuItem("Thallus Rahmendicke wählen");
 		MenuItem BsheetSize = new MenuItem("Foliengröße wählen");
 		MenuItem Brotate = new MenuItem("Bild um 180° drehen"); 
 		MenuItem BcolorList = new MenuItem("Füllfarben wählen"); 
@@ -564,7 +564,7 @@ public class MainGUI extends JFrame{
 
 
 		BmanualSelector.setPreferredSize(new Dimension(250, 25));
-		
+
 		final lichen.view.ButtonGroup buttonGroup = new lichen.view.ButtonGroup();
 
 		manualTools.add(BhandTool);
@@ -684,12 +684,12 @@ public class MainGUI extends JFrame{
 
 
 		//--------Tools Action Listener--------//
-		
-		
+
+
 		class ButtonGroupChangedListener implements ActionListener{
 
 			private JButton activeButton;
-			public ButtonGroupChangedListener(JButton button) {
+			private ButtonGroupChangedListener(JButton button) {
 				activeButton = button; 
 			}
 
@@ -697,9 +697,9 @@ public class MainGUI extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				buttonGroup.setActive(activeButton);
 				buttonGroup.highlight();
-				
+
 			}
-			
+
 		}
 
 		BmanualSelector.addActionListener(new ButtonGroupChangedListener(BmanualSelector));
@@ -753,10 +753,6 @@ public class MainGUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				t.setTool(20);
-
-				BmanualSelector.setBorderPainted(false);
-				BhandTool.setBorderPainted(true);
-				BLupe.setBorderPainted(false); 
 
 			} 
 		});
@@ -911,12 +907,6 @@ public class MainGUI extends JFrame{
 				if(newColor) 
 					fillColor = imp.getProcessor().getValue();
 				newColor = false;
-
-
-				BmanualSelector.setBorderPainted(false);
-				BhandTool.setBorderPainted(false);
-				BLupe.setBorderPainted(true);
-
 			}
 		});
 
@@ -928,10 +918,6 @@ public class MainGUI extends JFrame{
 
 				imp.getProcessor().setValue(fillColor); 
 				newColor = true; 
-
-				BmanualSelector.setBorderPainted(true);
-				BhandTool.setBorderPainted(false);
-				BLupe.setBorderPainted(false);	
 
 			}
 		});
@@ -1330,6 +1316,8 @@ public class MainGUI extends JFrame{
 				newColor = false;
 
 				t.installBuiltinTool("Brush");
+
+				Toolbar.setBrushSize((int)Math.round(pixelrate*0.76));
 			}
 		});
 
@@ -1337,17 +1325,12 @@ public class MainGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//				t.installBuiltinTool("Brush"); 
-				//	t.installBuiltinTool("Pencil"); 
 
 				if(newColor) 
 					fillColor = imp.getProcessor().getValue();
 				newColor = false;
 
-				//		t.installBuiltinTool("Brush");
-				t.setTool(4);
-
-				//		Toolbar.setBrushSize((int)Math.round(pixelrate*0.76));
+				t.setTool(4); 
 			}
 		});
 
@@ -1399,9 +1382,11 @@ public class MainGUI extends JFrame{
 
 		searchButton.addActionListener(new ActionListener() {
 
+			private int i =0; //last result row
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//		System.out.println(searchField.getText());
+
 				String searchTerm = searchField.getText();
 				Genus lichen = Genus.getInstance();
 
@@ -1409,16 +1394,21 @@ public class MainGUI extends JFrame{
 				for(Species species: list){
 					//		if(species.getName().startsWith(searchTerm) || species.getName().contains(searchTerm)){
 					if(species.getName().startsWith(searchTerm)){ 
-						for(int j =0; j< table.getRowCount();j++){
+						for(int j =i; j< table.getRowCount();j++){
 
 							if(table.getValueAt(j, 0) != null)
 								if(Integer.toString(species.getId()).equals(table.getValueAt(j, 0).toString())){ 
-									table.getSelectionModel().setSelectionInterval(j	,j);
-									table.scrollRectToVisible(new Rectangle(table.getCellRect(j,0, true)));
-									return;							
-								} 
-						}
+									if(table.getSelectedRow() == j){ 
 
+										continue; 
+									}else{
+										table.getSelectionModel().setSelectionInterval(j	,j);
+										table.scrollRectToVisible(new Rectangle(table.getCellRect(j,0, true)));
+										i = j+1;
+										return;							
+									}
+								}
+						}
 					}
 				}
 			}

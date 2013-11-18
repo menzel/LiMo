@@ -26,6 +26,7 @@ public class Test {
 
 	private static void createMeasurements() {
 		Color[] colors = new Color[10];
+		
 
 		colors[0] = Color.red;
 		colors[1] = Color.blue;

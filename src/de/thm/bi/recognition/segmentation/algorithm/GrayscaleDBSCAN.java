@@ -274,7 +274,7 @@ public class GrayscaleDBSCAN implements ISegmentationAlgorithm {
 	public void subCluster(final IDataSet dataSet) {
 
 		List<IRegion> dsClusters = dataSet.getClusters();
-		List<IRegion> tmpClusters = new ArrayList<IRegion>(dsClusters.size() * 2);
+		List<IRegion> tmpClusters = new ArrayList<>(dsClusters.size() * 2);
 
 		int maxClusterSize = (int) (getSize(dataSet) * (sizeVariance + 1f));
 

@@ -27,7 +27,7 @@ public class ColorSegmentation implements ISegmentationAlgorithm {
 		dataSet.onStartClustering();
 		dbscan.performSegmentation(dataSet);
 		List<IRegion> dataSetRegions = dataSet.getClusters();
-		List<IRegion> regions = new ArrayList<IRegion>(dataSetRegions);
+		List<IRegion> regions = new ArrayList<>(dataSetRegions);
 		dataSetRegions.clear();
 		int limit = regions.size();
 		int counter = 0;
@@ -35,9 +35,8 @@ public class ColorSegmentation implements ISegmentationAlgorithm {
 
 		dataSetRegions.add(regions.remove(0));
 		while (!regions.isEmpty()) {
-		//	System.out.println("ALL: " + limit);
-		//	System.out.println("CUR: " + (counter++));
-			counter++;
+			System.out.println("ALL: " + limit);
+			System.out.println("CUR: " + (counter++));
 
 			IRegion region = regions.remove(0);
 			int dataSetLimit = dataSetRegions.size();

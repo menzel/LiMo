@@ -612,7 +612,7 @@ public class ImageJ extends Frame implements ActionListener,
 		//prefs.put(IJ_HEIGHT, Integer.toString(size.height));
 	}
 
-	public static void main(String args[]) {
+	public void mainsome(String args[]) {
 		if (System.getProperty("java.version").substring(0,3).compareTo("1.5")<0) {
 			javax.swing.JOptionPane.showMessageDialog(null,"ImageJ "+VERSION+" requires Java 1.5 or later.");
 			System.exit(0);
