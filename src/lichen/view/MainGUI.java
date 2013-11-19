@@ -87,8 +87,8 @@ public class MainGUI extends JFrame{
 	private int linewidth = 3;
 	private double borderWidth = 0.76;
 	private double magnification = 1.0;
-	private static final String version = "0.9.7.3";
-	private static final String date = "10.11.2013";
+	private static final String version = "0.9.7.5";
+	private static final String date = "19.11.2013";
 	private static boolean styleModern = false; 
 	private static MainGUI gui;
 	private JPanel colorPanel;
@@ -337,7 +337,6 @@ public class MainGUI extends JFrame{
 		});
 
 
-		//path north here
 		final JTextField pathField = new JTextField("");
 		pathField.setEditable(false);
 
