@@ -256,7 +256,7 @@ public class MainGUI extends JFrame{
 		table.getColumnModel().getColumn(2).setPreferredWidth(10); 
 
 		table.getColumnModel().getColumn(2).setCellRenderer(new ColorCellRenderer());
-		
+
 		JTableHeader header = table.getTableHeader(); 
 		header.setReorderingAllowed(false);
 
@@ -752,6 +752,11 @@ public class MainGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+
+				if(newColor) 
+					fillColor = imp.getProcessor().getValue();
+				newColor = false;
+
 				t.setTool(20);
 
 			} 
@@ -1406,7 +1411,7 @@ public class MainGUI extends JFrame{
 				i = table.getSelectedRow()+1;
 				if(!lastSearch.equals(searchTerm))
 					i=0; 
-				
+
 				lastSearch = searchTerm;
 				Genus lichen = Genus.getInstance();
 
