@@ -486,8 +486,10 @@ public class MainGUI extends JFrame{
 				case 11:  // lupe
 					//					getIc().zoomIn((int)(getIc().getMousePosition().x), (int)(getIc().getMousePosition().y));
 
-					magnification = imp.getCanvas().getMagnification();
+					magnification = scaleMag(imp.getCanvas().getMagnification());
+
 					System.out.println(magnification);
+
 					getContentPane().revalidate(); 
 					break;
 
@@ -512,6 +514,24 @@ public class MainGUI extends JFrame{
 					break;
 				}
 
+			}
+
+			/**
+			 * Scales down the magnification value
+			 * @param magnification
+			 * @return
+			 */
+			private double scaleMag(double magnification) {
+				double t = 1;
+				if(magnification < 1){
+					t = ((1-magnification)/3)-1;
+					
+				}
+				if(magnification > 1){
+					t = ((magnification-1)/3)+1;
+					
+				}
+				return t;
 			}
 		}
 
