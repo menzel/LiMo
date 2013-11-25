@@ -246,24 +246,24 @@ public class MainGUI extends JFrame{
 		JPanel lichenPanel = new JPanel(); 
 		lichenPanel.setLayout(new BorderLayout()); 
 
-		String columnNames[] = {"ID", "Name","Farbe"}; 
+		String columnNames[] = {"ID", "Name"}; 
 		final JTable table = new JTable(getTableData(),columnNames); 
 		table.setShowGrid(false);
 		table.setEnabled(true);
 		table.setMinimumSize(new Dimension(3000, 5000));
 		table.getColumnModel().getColumn(0).setPreferredWidth(15);
-		table.getColumnModel().getColumn(1).setPreferredWidth(150); 
-		table.getColumnModel().getColumn(2).setPreferredWidth(10); 
+		table.getColumnModel().getColumn(1).setPreferredWidth(140); 
+	//	table.getColumnModel().getColumn(2).setPreferredWidth(10); 
 
-		table.getColumnModel().getColumn(2).setCellRenderer(new ColorCellRenderer());
+	//	table.getColumnModel().getColumn(2).setCellRenderer(new ColorCellRenderer());
 
 		JTableHeader header = table.getTableHeader(); 
 		header.setReorderingAllowed(false);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		//		scrollPane.add(lichenPanel);
-		scrollPane.setPreferredSize(new Dimension(280, 1));
-		lichenPanel.setPreferredSize(new Dimension(260, 1));
+		scrollPane.setPreferredSize(new Dimension(240, 1));
+		lichenPanel.setPreferredSize(new Dimension(220, 1));
 
 		//search panel + table headings
 		JPanel search = new JPanel();
@@ -362,7 +362,7 @@ public class MainGUI extends JFrame{
 		JPanel resultPanel = new JPanel(new BorderLayout()); 
 
 
-		String RcolumnNames[] = {"ID", "Name","Fläche[mm^2]","Fläche%"}; 
+		String RcolumnNames[] = {"ID", "Name","Fläche [mm^2]","Fläche %"}; 
 		DefaultTableModel model = new DefaultTableModel(RcolumnNames,15); 
 		//TODO: evaluate fixed table length 
 

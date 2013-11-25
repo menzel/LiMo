@@ -58,7 +58,12 @@ public class DataImporter {
 			}
 
 		}
-		readFile(stream);
+		try{ 
+			readFile(stream);
+		}catch (Exception e){
+			JOptionPane.showMessageDialog(null, "Fehler in der FLECHTE.INI Datei:\n\n" +  e.getMessage() + "\nLiMo-Anyalse kann nicht gestartet werden.\nBitte editieren sie die FLECHTE.INI.\n",  "Fehler INI Datei" , JOptionPane.ERROR_MESSAGE );
+		}
+
 	}
 
 
@@ -70,7 +75,7 @@ public class DataImporter {
 	 * @post: species are species-object in lichen 
 	 * @post lichen.genusCount is set
 	 */
-	private void readFile(FileInputStream stream) {
+	private void readFile(FileInputStream stream) throws Exception{
 		lichen = Genus.getInstance();
 		
 		try {
