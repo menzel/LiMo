@@ -149,7 +149,7 @@ public class Genus {
 	 */
 	public Object[][] getExportResultTableData() {
 
-		Object[][] t = new Object[500][7] ;	
+		Object[][] t = new Object[1000][7] ;	
 		//TODO: evaluate 500 as fixed lenght
 
 		int index =0;
@@ -184,7 +184,6 @@ public class Genus {
 		
 		index++; 
 		index++;
-		index++;
 		
 
 		for(Species g: this.returnAll()){ 
@@ -211,7 +210,7 @@ public class Genus {
 				
 				for(String[] s: g.getResults().getThalliList()){
 					t[index][2] = s[0];
-					t[index++][3] = Math.round(Integer.parseInt(s[1])/g.getResults().getPixelrate()*1000.0)/1000.0;
+					t[index++][3] = Double.toString(Math.round(Integer.parseInt(s[1])/g.getResults().getPixelrate()*1000.0)/1000.0).replace(".",",");
 				}
 				
 				index++;

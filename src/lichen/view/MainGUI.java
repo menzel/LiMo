@@ -262,8 +262,8 @@ public class MainGUI extends JFrame{
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		//		scrollPane.add(lichenPanel);
-		scrollPane.setPreferredSize(new Dimension(240, 1));
-		lichenPanel.setPreferredSize(new Dimension(220, 1));
+		scrollPane.setPreferredSize(new Dimension(280, 1));
+		lichenPanel.setPreferredSize(new Dimension(260, 1));
 
 		//search panel + table headings
 		JPanel search = new JPanel();
