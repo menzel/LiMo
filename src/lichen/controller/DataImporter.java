@@ -45,7 +45,7 @@ public class DataImporter {
 
 		FileInputStream stream = null;
 		try {
-			stream = new FileInputStream("FLECHTE.INI");
+			stream = new FileInputStream("ARTENLISTE.INI");
 
 		} catch (FileNotFoundException e) { 
 			JFileChooser filechooser = new JFileChooser();
@@ -61,7 +61,7 @@ public class DataImporter {
 		try{ 
 			readFile(stream);
 		}catch (Exception e){
-			JOptionPane.showMessageDialog(null, "Fehler in der FLECHTE.INI Datei:\n\n" +  e.getMessage() + "\nLiMo-Anyalse kann nicht gestartet werden.\nBitte editieren sie die FLECHTE.INI.\n",  "Fehler INI Datei" , JOptionPane.ERROR_MESSAGE );
+			JOptionPane.showMessageDialog(null, "Fehler in der ARTENLISTE.INI Datei:\n\n" +  e.getMessage() + "\nLiMo-Anyalse kann nicht gestartet werden.\nBitte editieren sie die FLECHTE.INI.\n",  "Fehler INI Datei" , JOptionPane.ERROR_MESSAGE );
 		}
 
 	}
