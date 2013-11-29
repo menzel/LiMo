@@ -37,7 +37,7 @@ public class Main {
 
 
 		FileHandler fh = new FileHandler();
-		AutoAnalyzer auto = new AutoAnalyzer();
+	//	AutoAnalyzer auto = new AutoAnalyzer();
 		Processor myProcessor = new Processor();
 		Toolbar t = new Toolbar();
 		
@@ -50,7 +50,7 @@ public class Main {
 		fh.setLastDir(data.getInipath());
 
 		@SuppressWarnings("unused")
-		MainGUI gui = new MainGUI( fh, auto, myProcessor, t); 
+		MainGUI gui = new MainGUI( fh, null, myProcessor, t); 
 
 	}
 

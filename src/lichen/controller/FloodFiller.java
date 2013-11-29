@@ -11,7 +11,6 @@ import java.util.Collections;
 
 import javax.naming.NameNotFoundException;
 
-import de.thm.bi.recognition.data.Point;
 import lichen.model.Genus;
 import lichen.model.Measurement;
 import lichen.model.MeasurementsFactory;

@@ -21,6 +21,7 @@ import ij.process.ColorProcessor;
  * Auto analyzes a scan of lichen as far as possible
  * @author menzel
  *
+ *{@See old version for de.* packages}
  */
 public class AutoAnalyzer {
 
