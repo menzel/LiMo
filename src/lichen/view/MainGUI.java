@@ -87,8 +87,8 @@ public class MainGUI extends JFrame{
 	private int linewidth = 3;
 	private double borderWidth = 0.76;
 	private double magnification = 1.0;
-	private static final String version = "0.9.7.5";
-	private static final String date = "19.11.2013";
+	private static final String version = "1.0";
+	private static final String date = "30.11.2013";
 	private static boolean styleModern = false; 
 	private static MainGUI gui;
 	private JPanel colorPanel;
@@ -233,7 +233,7 @@ public class MainGUI extends JFrame{
 
 		settingsMenu.add(BsheetSize);
 		settingsMenu.add(Bborder);
-		settingsMenu.add(BcolorList); //TODO: reenable
+		settingsMenu.add(BcolorList); 
 
 		autoMenu.add(Bauto);
 		autoMenu.add(Bchooser);
@@ -262,8 +262,8 @@ public class MainGUI extends JFrame{
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		//		scrollPane.add(lichenPanel);
-		scrollPane.setPreferredSize(new Dimension(280, 1));
-		lichenPanel.setPreferredSize(new Dimension(260, 1));
+		scrollPane.setPreferredSize(new Dimension(240, 1));
+		lichenPanel.setPreferredSize(new Dimension(220, 1));
 
 		//search panel + table headings
 		JPanel search = new JPanel();
@@ -307,7 +307,7 @@ public class MainGUI extends JFrame{
 					Rectangle srcRect = ic.getSrcRect(); 
 
 					srcRect.x = (int)((ae.getValue()*(imp.getWidth()-ic.getSize().width)/90)*magnification); 
-
+				
 					ic.repaint();
 					imp.updateAndDraw(); 
 
@@ -498,7 +498,7 @@ public class MainGUI extends JFrame{
 					break;
 
 				case 15: // IJ pencil 
-					//	undoStack.add(undoPos); //TODO: set filled pixels for undo 
+					//	undoStack.add(undoPos); 
 					break;
 
 				case 5: 
