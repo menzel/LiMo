@@ -14,7 +14,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class LichenFileChooser extends JPanel implements PropertyChangeListener {
+class LichenFileChooser extends JPanel implements PropertyChangeListener {
 	private JFileChooser jfc;
 	private Image img;
 

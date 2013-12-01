@@ -35,10 +35,6 @@ public class FileHandler {
 	 * @return - the picture
 	 */
 	public ImagePlus openImagePlus(){
-		//		Opener opener = new Opener();
-		//			return opener.openImage("/home/menzel/Desktop/THM/4.Semester/flechtenkartierung/f.jpg");
-		//			return opener.openImage("/home/menzel/Desktop/THM/4.Semester/flechtenkartierung/bild.jpg");
-		//				return opener.openImage("/home/menzel/Desktop/bild-mon.bmp");
 
 		final JFileChooser jc;
 
@@ -52,24 +48,30 @@ public class FileHandler {
 		jc.addPropertyChangeListener(ljc);
 		jc.setAccessory(ljc);
 
-		jc.showDialog(null, "Wähle Bild");
+		int returnVal = jc.showDialog(null, "Wähle Bild");
 
-		Opener opener = new Opener();
-		ImagePlus imp = opener.openImage(jc.getSelectedFile().toString());
+		if(returnVal == JFileChooser.APPROVE_OPTION){
 
-		lastdir = jc.getSelectedFile().toString();
-		lastImage = jc.getSelectedFile().toString();
 
-		if(imp == null){
-			throw new NullPointerException("cannot load image");
+			Opener opener = new Opener();
+			ImagePlus imp = opener.openImage(jc.getSelectedFile().toString());
+
+			lastdir = jc.getSelectedFile().toString();
+			lastImage = jc.getSelectedFile().toString();
+
+			if(imp == null){
+				throw new NullPointerException("cannot load image");
+			}
+
+			//rotate Image if high side is up
+			if(imp.getWidth() < imp.getHeight()){
+				imp.setProcessor( imp.getProcessor().rotateRight());
+			} 
+			return imp; 
 		}
 
-		//rotate Image if high side is up
-		if(imp.getWidth() < imp.getHeight()){
-			imp.setProcessor( imp.getProcessor().rotateRight());
-		}
+		return null;
 
-		return imp; 
 	}
 
 	/**
@@ -93,7 +95,7 @@ public class FileHandler {
 		if(imp == null){
 			throw new NullPointerException("cannot load image");
 		}
-		
+
 		if(imp.getWidth() < imp.getHeight()){
 			imp.setProcessor( imp.getProcessor().rotateRight());
 		}

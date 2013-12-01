@@ -253,9 +253,9 @@ public class MainGUI extends JFrame{
 		table.setMinimumSize(new Dimension(3000, 5000));
 		table.getColumnModel().getColumn(0).setPreferredWidth(15);
 		table.getColumnModel().getColumn(1).setPreferredWidth(140); 
-	//	table.getColumnModel().getColumn(2).setPreferredWidth(10); 
+		//	table.getColumnModel().getColumn(2).setPreferredWidth(10); 
 
-	//	table.getColumnModel().getColumn(2).setCellRenderer(new ColorCellRenderer());
+		//	table.getColumnModel().getColumn(2).setCellRenderer(new ColorCellRenderer());
 
 		JTableHeader header = table.getTableHeader(); 
 		header.setReorderingAllowed(false);
@@ -307,7 +307,7 @@ public class MainGUI extends JFrame{
 					Rectangle srcRect = ic.getSrcRect(); 
 
 					srcRect.x = (int)((ae.getValue()*(imp.getWidth()-ic.getSize().width)/90)*magnification); 
-				
+
 					ic.repaint();
 					imp.updateAndDraw(); 
 
@@ -525,17 +525,16 @@ public class MainGUI extends JFrame{
 				double t = 1;
 				if(magnification < 1){
 					t = ((1-magnification)/3)-1;
-					
+
 				}
 				if(magnification > 1){
 					t = ((magnification-1)/3)+1;
-					
+
 				}
 				return t;
 			}
 		}
 
-		//				getIc().addMouseWheelListener(new MouseWheelListener() {
 		class mouseWheelListener implements MouseWheelListener{
 
 			@Override
@@ -1178,19 +1177,23 @@ public class MainGUI extends JFrame{
 						flushTable(measurements);
 						flushTable(data);
 
-						imp = fh.openImagePlus(); 
-						pathField.setText(fh.getLastDir());
 
-						imp.show();
-						manualAnalyzer = null;
+						imp = fh.openImagePlus(); 
+						if(imp != null){
+							pathField.setText(fh.getLastDir());
+
+							imp.show();
+							manualAnalyzer = null;
+						}
 					}
 
 				}else{
 					imp = fh.openImagePlus(); 
-					pathField.setText(fh.getLastDir());
-					imp.show();
-
-					manualAnalyzer = null;
+					if(imp != null){
+						pathField.setText(fh.getLastDir());
+						imp.show(); 
+						manualAnalyzer = null;
+					}
 				}
 
 				try{ 
@@ -1198,17 +1201,17 @@ public class MainGUI extends JFrame{
 					getIc().addMouseMotionListener(new mouseMotionListener());
 					getIc().addMouseWheelListener(new mouseWheelListener());
 
-					//					ImageScrollPane.setViewportView(imp.getCanvas()); 
+					imp.getProcessor().setValue(makeColor(255, 5, 5));
+
+					//set Scrollbars to 0:
+					imageHorizontal.setValue(0);
+					imageVertical.setValue(0);
 
 				}catch (NullPointerException e){
-					//triggers when single windows for each images are opened, no problem here
+					//triggers when single windows for each images are opened or no image is selected, no problem here
 
 				} 
 
-				imp.getProcessor().setValue(makeColor(255, 5, 5));
-				//set Scrollbars to 0:
-				imageHorizontal.setValue(0);
-				imageVertical.setValue(0);
 			}
 		});
 
@@ -1226,22 +1229,26 @@ public class MainGUI extends JFrame{
 
 				if(Exdata[2][0] != null){
 					JFileChooser chooser = new JFileChooser();
+					String pictureFile = fh.getLastDir();
+					System.out.println(pictureFile);
+					chooser.setSelectedFile(new File(pictureFile+".csv"));
 
-					chooser.setFileFilter(new FileNameExtensionFilter("csv", ".csv"));
-					chooser.showSaveDialog(null); 
+					int returnVal = chooser.showSaveDialog(null); 
 					String path;
-					try{ 
-						path = chooser.getSelectedFile().getAbsolutePath(); 
+					if(returnVal == JFileChooser.APPROVE_OPTION){
+						try{ 
+							path = chooser.getSelectedFile().getAbsolutePath(); 
 
-						if(d.export(Exdata, path)){ 
-							JOptionPane.showMessageDialog(null, "Erfolgreich exportiert");
-						}else{ 
-							JOptionPane.showMessageDialog(null, "Export Fehler");
-						}
+							if(d.export(Exdata, path)){ 
+								JOptionPane.showMessageDialog(null, "Erfolgreich exportiert");
+							}else{ 
+								JOptionPane.showMessageDialog(null, "Export Fehler");
+							}
 
-					}catch (NullPointerException e){
-						System.err.println("no file choosen");
-					} 
+						}catch (NullPointerException e){
+							System.err.println("no file choosen");
+						} 
+					}
 				}else{
 					JOptionPane.showMessageDialog(null, "Keine Daten vorhanden");
 				}
