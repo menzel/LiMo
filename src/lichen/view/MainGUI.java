@@ -567,7 +567,14 @@ public class MainGUI extends JFrame{
 		final JPanel view = new JPanel();
 		view.setLayout(new BorderLayout());
 
-		JPanel manualTools = new JPanel(new GridLayout(2, 2));
+		JPanel manualToolsOv = new JPanel(new GridLayout(2, 2));
+
+		JPanel manualTools = new JPanel(new GridLayout(1, 3));
+		JPanel manualTools2 = new JPanel(new GridLayout(0, 2));
+		
+		manualToolsOv.add(manualTools);
+		manualToolsOv.add(manualTools2);
+
 		final JButton BhandTool = createButton("Hand");
 		final JButton BLupe = createButton("Lupe");
 
@@ -589,8 +596,9 @@ public class MainGUI extends JFrame{
 		manualTools.add(BhandTool);
 		manualTools.add(BLupe);
 		manualTools.add(Bpencil);
-		manualTools.add(Bline);
-		manualTools.add(BcolorChooser); 
+
+		manualTools2.add(Bline);
+		manualTools2.add(BcolorChooser); 
 
 		buttonGroup.add(BhandTool);
 		buttonGroup.add(BLupe);
@@ -599,7 +607,7 @@ public class MainGUI extends JFrame{
 		buttonGroup.add(BcolorChooser);
 		buttonGroup.add(BmanualSelector);
 
-		userPanel.add(manualTools);
+		userPanel.add(manualToolsOv);
 		userPanel.add(point); 
 
 		userPanel.setLayout(new BoxLayout(userPanel,1)); 
