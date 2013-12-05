@@ -1,7 +1,8 @@
 package lichen.controller;
 
 import java.awt.Color;
-import java.util.ArrayList; 
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.NameNotFoundException; 
 
@@ -11,7 +12,7 @@ import lichen.model.MeasurementsFactory;
 import lichen.model.Species;
 
 public class ColorMatcher {
-	ArrayList<Measurement> mes; 
+	List<Measurement> mes;
 
 	public ColorMatcher() { 
 		mes = MeasurementsFactory.getInstance().returnAll(); 

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.JButton;
 
@@ -15,7 +16,7 @@ import javax.swing.JButton;
 public class ButtonGroup {
 	
 
-	private ArrayList<JButton> list = new ArrayList<JButton>();
+	private Collection<JButton> list = new ArrayList<JButton>();
 	private JButton activeButton;
 	
 	/**

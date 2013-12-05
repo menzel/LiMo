@@ -3,6 +3,7 @@ package lichen.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -20,7 +21,7 @@ public class ResultsColorCellRenderer extends DefaultTableCellRenderer {
 
 		JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
-		ArrayList<Measurement> lichen = MeasurementsFactory.getInstance().returnAll();
+		List<Measurement> lichen = MeasurementsFactory.getInstance().returnAll();
 
 		Color c = lichen.get(row).getColor();
 		if(c !=null){ 

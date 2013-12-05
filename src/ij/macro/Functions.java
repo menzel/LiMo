@@ -18,7 +18,7 @@ import java.awt.event.KeyEvent;
 import java.lang.reflect.*;
 import java.net.URL;
 import java.awt.datatransfer.*;
-import java.awt.geom.*;;
+import java.awt.geom.*;
 
 import lichen.controller.FloodFiller;
 

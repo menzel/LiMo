@@ -118,7 +118,7 @@ public class DataImporter {
 			
 				if(gm.find()){
 					flag = true; 
-					if(lastGenus != genus){ 
+					if(!lastGenus.equals(genus)){
 						lastGenus = genus;
 						geni++;
 					}

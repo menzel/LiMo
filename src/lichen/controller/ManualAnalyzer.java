@@ -149,7 +149,7 @@ public class ManualAnalyzer {
 	 * MouseListener, triggers when user clicks on image
 	 *
 	 */
-	class manualMouseListener implements MouseListener {
+	private class manualMouseListener implements MouseListener {
 
 		@Override
 		public void mouseReleased(MouseEvent e) { 

@@ -156,7 +156,7 @@ public class FloodFiller {
 		//		imp.getProcessor().findEdges();
 		ImageProcessor impp = imp.getProcessor();
 
-		ArrayList<int[]> edge = new ArrayList<int[]>();
+		Collection<int[]> edge = new ArrayList<int[]>();
 
 
 		for(int i =0; i < impp.getWidth(); i++){
@@ -427,7 +427,7 @@ public class FloodFiller {
 	 */
 	public boolean unfill() {
 
-		ArrayList<String[]>	 tmp;
+		Iterable<String[]> tmp;
 
 		int sub = undoStack.getLastUndoCount(); 
 		boolean flag = false;
@@ -497,9 +497,9 @@ public class FloodFiller {
 
 			if(m.getArea() <= 0){ 
 				try {
-					Genus.getInstance().getSpeciesFromID(m.getSpecies()).setResults(null);;
+					Genus.getInstance().getSpeciesFromID(m.getSpecies()).setResults(null);
 
-				} catch (NameNotFoundException e) {
+                } catch (NameNotFoundException e) {
 					//Nothing to be done here, cannot happen
 				}
 				mList.remove(mList.size()-1); 

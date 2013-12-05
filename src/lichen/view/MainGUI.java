@@ -6,78 +6,26 @@ import ij.gui.ProgressBar;
 import ij.gui.Toolbar;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
-
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Menu;
-import java.awt.MenuBar;
-import java.awt.MenuItem;
-import java.awt.MenuShortcut;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints.Key;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.util.ArrayList;
-
-import javax.naming.NameNotFoundException;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.WindowConstants;
-import javax.swing.event.TableModelEvent;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-
-import lichen.controller.AutoAnalyzer;
-import lichen.controller.ColorMatcher;
-import lichen.controller.ColorStack;
-import lichen.controller.DataExporter;
-import lichen.controller.ManualAnalyzer;
-import lichen.controller.Processor;
-import lichen.controller.UndoStack;
+import lichen.controller.*;
 import lichen.model.Genus;
 import lichen.model.Measurement;
 import lichen.model.MeasurementsFactory;
 import lichen.model.Species;
 
+import javax.naming.NameNotFoundException;
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.util.ArrayList;
+
 @SuppressWarnings("serial")
 public class MainGUI extends JFrame{
 
-	private FileHandler fh;
+    private FileHandler fh;
 	private AutoAnalyzer auto;
 	private Toolbar t;
 	private ImagePlus imp;
@@ -1450,7 +1398,7 @@ public class MainGUI extends JFrame{
 				lastSearch = searchTerm;
 				Genus lichen = Genus.getInstance();
 
-				ArrayList<Species>list = lichen.returnAll();
+				Iterable<Species> list = lichen.returnAll();
 				for(Species species: list){
 					//		if(species.getName().startsWith(searchTerm) || species.getName().contains(searchTerm)){
 					if(species.getName().startsWith(searchTerm)){ 
@@ -1687,7 +1635,7 @@ public class MainGUI extends JFrame{
 
 		MeasurementsFactory factory = MeasurementsFactory.getInstance();
 		Genus lichen = Genus.getInstance();
-		ArrayList<Measurement> list = factory.returnAll();
+		Iterable<Measurement> list = factory.returnAll();
 		for(Measurement tmp: list){ 
 
 			tableData[i][0] = tmp.getSpecies(); 

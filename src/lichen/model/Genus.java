@@ -129,7 +129,7 @@ public class Genus {
 		String lastGenus = "";
 
 		for(Species g: this.returnAll()){
-			if(lastGenus != g.getGenus()){ 
+			if(!lastGenus.equals(g.getGenus())){
 				t[index++][1] = "<html><b>" + g.getGenus() + "</html></b>";
 			}
 
