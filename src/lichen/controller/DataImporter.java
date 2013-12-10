@@ -128,7 +128,6 @@ public class DataImporter {
 				}else{ 
 
 					if(nm.find() ){
-						int j;
 						i = Character.getNumericValue(s.charAt(7));
 						if(s.length() > 8){ 
 

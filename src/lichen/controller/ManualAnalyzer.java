@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import lichen.model.Genus;
 import lichen.model.Measurement;
 import lichen.model.MeasurementsFactory;
+import lichen.model.Species;
 import lichen.view.MainGUI;
 
 public class ManualAnalyzer {
@@ -75,7 +76,6 @@ public class ManualAnalyzer {
 	private ImageProcessor convertToBinary(ImageProcessor processor) {
 
 		int[] pixels = (int[]) processor.getPixelsCopy(); 
-		ImageProcessor pro2 = imp.getProcessor();
 
 		for(int i =0 ; i < pixels.length; i++){
 			if( pixels[i] != -1) {
@@ -106,34 +106,38 @@ public class ManualAnalyzer {
 	 * @return true if SUCCESSFUL, false if ID was not found 
 	 */
 	public boolean assign(int speciesID){
-		
+
 
 		Genus genus = Genus.getInstance();
 		try{
 
 
 			if(genus.exists(speciesID)){
-				if(genus.getSpeciesFromID(speciesID).getResults() == null && floodfiller.getPixelCount() != 0){ 
+				if(genus.getSpeciesFromID(speciesID).getResults() == null){
+					if( floodfiller.getPixelCount() != 0){ 
 
-					Measurement manualMeasured = factory.createMeasurement();
+						Measurement manualMeasured = factory.createMeasurement();
 
-					manualMeasured.setArea(floodfiller.getPixelCount());
-					manualMeasured.setCount(floodfiller.getThallusCount());
-					manualMeasured.setColor(gui.convertFromIJIntToColor(imp.getProcessor().getValue()));
-					manualMeasured.setThallusList(floodfiller.getThalliList());
+						manualMeasured.setArea(floodfiller.getPixelCount());
+						manualMeasured.setCount(floodfiller.getThallusCount());
+						manualMeasured.setColor(gui.convertFromIJIntToColor(imp.getProcessor().getValue()));
+						manualMeasured.setThallusList(floodfiller.getThalliList());
 
-					genus.getSpeciesFromID(speciesID).setResults(manualMeasured);
-					manualMeasured.setSpecies(speciesID); 				
+						genus.getSpeciesFromID(speciesID).setResults(manualMeasured);
+						manualMeasured.setSpecies(speciesID); 				
 
-					floodfiller.setPixelCount(0); 
-					floodfiller.setThallusCount(0);
-					floodfiller.setThalliList(new ArrayList<String[]>());
-					
-					 imp.getProcessor().setValue(ColorStack.pop().getRGB());  
- 
-					return true;
-				}
-				else{ 
+						floodfiller.setPixelCount(0); 
+						floodfiller.setThallusCount(0);
+						floodfiller.setThalliList(new ArrayList<String[]>());
+
+						imp.getProcessor().setValue(ColorStack.pop().getRGB());  
+
+						return true;
+					}else{
+
+						return false; 
+					}
+				} else{ 
 					// not allowed
 					return false;
 				}
@@ -203,7 +207,7 @@ public class ManualAnalyzer {
 		int x = imp.getRoi().getPosX();
 		int y = imp.getRoi().getPosY();
 		long oldPixelcount = floodfiller.getPixelCount();
-	//	int oldColor = 0;
+		//	int oldColor = 0;
 
 		if(!(factory.returnAll().size() <= gui.measurements.getSelectedRow())){ 
 			if(floodfiller.getPixelCount() == 0){ 
@@ -211,7 +215,7 @@ public class ManualAnalyzer {
 				Object o = gui.measurements.getValueAt(gui.measurements.getSelectedRow(), 0); 
 				Measurement tmp = factory.getMeasurementByID(Integer.parseInt(o.toString()));
 
-	//			oldColor = imp.getProcessor().getValue();
+				//			oldColor = imp.getProcessor().getValue();
 				imp.getProcessor().setValue(tmp.getColor().getRGB());
 			}
 		} 
@@ -233,9 +237,9 @@ public class ManualAnalyzer {
 			imp.updateAndDraw();
 		}	
 
-	//	if(oldColor != 0){ 
-	//		imp.getProcessor().setValue(oldColor);
-	//	}
+		//	if(oldColor != 0){ 
+		//		imp.getProcessor().setValue(oldColor);
+		//	}
 
 
 	}
@@ -251,23 +255,49 @@ public class ManualAnalyzer {
 
 
 	/**
-	 * Adds an area to an existing measurement
+	 * Adds an area to an existing measurement or is used to change the id of a measurement
 	 * @param o - entry of the existing measurement
+	 * @param speciesID for changing id in measurement 
+	 * @return true if it worked, false if name not found
 	 */
-	public boolean readd(Object o) {
+	public boolean readd(Object o, int speciesID) {
 
-		Measurement tmp = factory.getMeasurementByID(Integer.parseInt(o.toString()));
-		tmp.addArea(floodfiller.getPixelCount());
-		tmp.getThalliList().addAll(floodfiller.getThalliList()); 
-		floodfiller.setThalliList(new ArrayList<String[]>());
+		//readd:
+		if(floodfiller.getPixelCount() != 0){
+			Measurement tmp = factory.getMeasurementByID(Integer.parseInt(o.toString()));
+			tmp.addArea(floodfiller.getPixelCount());
+			tmp.getThalliList().addAll(floodfiller.getThalliList()); 
+			floodfiller.setThalliList(new ArrayList<String[]>());
 
-		//TODO: do not pop new color, just restore the one before readding
-		imp.getProcessor().setValue(ColorStack.pop().getRGB());
+			//TODO: do not pop new color, just restore the one before readding
+			imp.getProcessor().setValue(ColorStack.pop().getRGB());
 
 
-		floodfiller.setPixelCount(0); 
-		return true;
+			floodfiller.setPixelCount(0); 
+			return true;
+		}else{
+			//change ID:
 
+			Genus genus = Genus.getInstance();
+			Object tableID = MainGUI.getInstance().measurements.getValueAt(MainGUI.getInstance().measurements.getSelectedRow(), 0);
+
+			int oldID = Integer.parseInt(tableID.toString());
+
+			Species tmpSpe;
+			try {
+				tmpSpe = genus.getSpeciesFromID(oldID);
+				Measurement tmpMes = tmpSpe.getResults();
+
+				genus.getSpeciesFromID(speciesID).setResults(tmpMes);
+				tmpMes.setSpecies(speciesID);
+
+				tmpSpe.setResults(null);
+			} catch (NameNotFoundException e) {
+				return false;
+			}
+
+			return true;
+		}
 	}
 
 

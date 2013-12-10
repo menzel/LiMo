@@ -25,7 +25,7 @@ import java.util.ArrayList;
 @SuppressWarnings("serial")
 public class MainGUI extends JFrame{
 
-    private FileHandler fh;
+	private FileHandler fh;
 	private AutoAnalyzer auto;
 	private Toolbar t;
 	private ImagePlus imp;
@@ -47,7 +47,7 @@ public class MainGUI extends JFrame{
 	private final JTextArea text = new JTextArea();
 	private Point mousePressed = null; 
 	private ProgressBar bar; 
-	public final JTable measurements = new JTable( new DefaultTableModel(new Object[] {"Id","Name", "Fläche", "Farbe"}, 10));
+	public final JTable measurements = new JTable( new DefaultTableModel(new Object[] {"Id","Name", "Fläche", "Farbe"}, 10)); //public for readding and reading values
 	private int fillColor;
 	private boolean newColor = true; 
 	private final MenuBar menuBar = new MenuBar();
@@ -519,7 +519,7 @@ public class MainGUI extends JFrame{
 
 		JPanel manualTools = new JPanel(new GridLayout(1, 3));
 		JPanel manualTools2 = new JPanel(new GridLayout(0, 2));
-		
+
 		manualToolsOv.add(manualTools);
 		manualToolsOv.add(manualTools2);
 
@@ -864,9 +864,9 @@ public class MainGUI extends JFrame{
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						try{ 
-							double lw = Double.parseDouble(value.getText());
-							borderWidth = lw; 
+						try{
+
+							borderWidth = Double.parseDouble(value.getText());
 							borderWidthChooser.setVisible(false);
 
 						}catch (IllegalArgumentException e){
@@ -1031,10 +1031,10 @@ public class MainGUI extends JFrame{
 
 				MeasurementsFactory factory = MeasurementsFactory.getInstance();
 				int speciesID;
-				try{ 
 
-					if(factory.returnAll().size() <= measurements.getSelectedRow()){
 
+				if(factory.returnAll().size() <= measurements.getSelectedRow()){
+					try{ 
 						speciesID = Integer.parseInt(id.getText()); 
 						if(manualAnalyzer.assign(speciesID)){ 
 							text.setText(text.getText() + "\n" + "Fläche erfolgreich zugewiesen"); 
@@ -1047,39 +1047,52 @@ public class MainGUI extends JFrame{
 							}
 
 						}else{ 
-							text.setText(text.getText() + "\n" + "Es existiert kein Eintrag mit dieser ID, die ID besitzt bereits eine Farbe oder die Fläche ist 0"); 
+							text.setText(text.getText() + "\n" + "Es existiert kein Eintrag mit dieser ID, die ID besitzt bereits eine Farbe oder die gemessene Fläche ist 0"); 
 						} 
 
-					}else{ // re-adding area to existing measurement 
+					} catch(NumberFormatException e){ 
+						e.printStackTrace();
+						text.setText(text.getText() + "\n" + "Es wurde keine Nummer eingegeben");
+					} 
+				}else{ // re-adding area to existing measurement 
 
-						Object o = measurements.getValueAt(measurements.getSelectedRow(), 0); 
+					Object o = measurements.getValueAt(measurements.getSelectedRow(), 0); 
+					
+					int idForChangeId;
+					try{ 
+						idForChangeId = Integer.parseInt(id.getText());
+					}catch(NumberFormatException e){ 
+						//readd instead of chang id
+						idForChangeId = Integer.MAX_VALUE; 
+					}
 
-						manualAnalyzer.readd(o);
+					if(manualAnalyzer.readd(o, idForChangeId )){ 
+
 						text.setText(text.getText() + "\n" + "Fläche erfolgreich zugewiesen"); 
-
 						id.setText("");
+					}else{ 
+						text.setText(text.getText() + "\n" + "Zuweisung nicht erfolgreich, ID nicht gefunden"); 
 					}
+				}
 
-					int index =0;
+				int index =0;
 
-					//set overview table
-					Object[][] measurementValues = getMeasurements();
-					for(Object[] row: measurementValues){
-						if(row[0] == null)
-							return;
-						int columnCount =0;
-						for(Object o: row){ 
-							measurements.setValueAt(o, index, columnCount++);
-						} 
-						index++;
-					}
-					//set table
+				//set overview table
+				Object[][] measurementValues = getMeasurements();
+				for(Object[] row: measurementValues){
+					if(row[0] == null)
+						return;
+					int columnCount =0;
+					for(Object o: row){ 
+						measurements.setValueAt(o, index, columnCount++);
+					} 
+					index++;
+				}
+				//set table
 
-					newColor = true;
+				newColor = true;
 
-				} catch(NumberFormatException e){ 
-					text.setText(text.getText() + "\n" + "Es wurde keine Nummer eingegeben");
-				} 
+
 			} 
 		} 
 
