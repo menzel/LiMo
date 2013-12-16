@@ -44,7 +44,6 @@ public class Main {
 		ColorStack.ColorStackInit();
 
 
-		@SuppressWarnings("unused")
 		DataImporter data = new DataImporter(); 
 
 		fh.setLastDir(data.getInipath());
