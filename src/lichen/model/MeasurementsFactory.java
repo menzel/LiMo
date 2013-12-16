@@ -2,8 +2,6 @@ package lichen.model;
 
 import java.util.ArrayList;
 
-import org.junit.runner.manipulation.Sortable;
-import org.junit.runner.manipulation.Sorter;
 
 
 /**
