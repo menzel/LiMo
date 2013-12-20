@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser; 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import ij.ImagePlus;
@@ -55,7 +56,8 @@ public class FileHandler {
 
 			Opener opener = new Opener();
 			ImagePlus imp = opener.openImage(jc.getSelectedFile().toString());
-
+			File file = new File(jc.getSelectedFile().toString());
+		
 			lastdir = jc.getSelectedFile().toString();
 			lastImage = jc.getSelectedFile().toString();
 
@@ -67,6 +69,17 @@ public class FileHandler {
 			if(imp.getWidth() < imp.getHeight()){
 				imp.setProcessor( imp.getProcessor().rotateRight());
 			} 
+	
+			  long heapSize = Runtime.getRuntime().maxMemory()/ (1024*1024); 
+
+			/* Warnung wenn Bild zu groß */
+			if(file.length()/(1024*1024)*100 > heapSize){ /* Image size bigger than maxMemory*100  */
+				JOptionPane.showMessageDialog(MainGUI.getInstance(), "Das Bild ist möglicherweise zu groß für den verfügbaren Arbeitsspeicher, wenn " +
+						"das Programm wenig Arbeitsspeicher hat, kann das zu " +
+						"Problemen führen.\nDer maximale Arbeitsspeicher muss erhöht, oder die Größe des Bildes verkleinert werden.\n" +
+						"Bitte lesen Sie hierzu das Benutzerhandbuch", "Bildgröße", JOptionPane.WARNING_MESSAGE); 
+			} 
+
 			return imp; 
 		}
 
