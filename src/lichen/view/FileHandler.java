@@ -73,7 +73,7 @@ public class FileHandler {
 			  long heapSize = Runtime.getRuntime().maxMemory()/ (1024*1024); 
 
 			/* Warnung wenn Bild zu groß */
-			if(file.length()/(1024*1024)*100 > heapSize){ /* Image size bigger than maxMemory*100  */
+			if(file.length()/(1024*1024)*80 > heapSize){ /* Image size bigger than maxMemory*80  */
 				JOptionPane.showMessageDialog(MainGUI.getInstance(), "Das Bild ist möglicherweise zu groß für den verfügbaren Arbeitsspeicher, wenn " +
 						"das Programm wenig Arbeitsspeicher hat, kann das zu " +
 						"Problemen führen.\nDer maximale Arbeitsspeicher muss erhöht, oder die Größe des Bildes verkleinert werden.\n" +
