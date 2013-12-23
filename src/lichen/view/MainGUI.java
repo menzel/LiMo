@@ -21,6 +21,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 
 @SuppressWarnings("serial")
 public class MainGUI extends JFrame{
@@ -75,6 +76,13 @@ public class MainGUI extends JFrame{
 	 * Inits the GUI, sets up the view
 	 */
 	private void initGUI(){
+
+		try{ 
+			JOptionPane.setDefaultLocale(new Locale("de_DE"));
+		}catch (Exception e){
+			//some wired connection lost exception possible
+		}
+
 
 		if(styleModern){
 			UIManager.put("nimbusBase", Color.BLACK);
@@ -1151,6 +1159,7 @@ public class MainGUI extends JFrame{
 						imp = fh.openImagePlus(); 
 						if(imp != null){
 							pathField.setText(fh.getLastDir());
+							imp.getProcessor().setProgressBar(bar);
 
 							imp.show();
 							manualAnalyzer = null;
@@ -1160,7 +1169,9 @@ public class MainGUI extends JFrame{
 				}else{
 					imp = fh.openImagePlus(); 
 					if(imp != null){
-						pathField.setText(fh.getLastDir());
+						pathField.setText(fh.getLastDir()); 
+						imp.getProcessor().setProgressBar(bar);
+
 						imp.show(); 
 						manualAnalyzer = null;
 					}

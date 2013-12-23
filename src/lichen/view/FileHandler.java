@@ -1,35 +1,17 @@
 package lichen.view;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.JFileChooser; 
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
 import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.io.Opener;
 
+import java.io.File;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 public class FileHandler {
 
 	private String lastdir = "";
-	private String lastImage;
-	private JFileChooser jfc;
-	private Image img;
-
-
-
-	public FileHandler() { 
-	}
-
 
 	/**
 	 * Shows FileChooser Dialog to choose a picture
@@ -57,9 +39,8 @@ public class FileHandler {
 			Opener opener = new Opener();
 			ImagePlus imp = opener.openImage(jc.getSelectedFile().toString());
 			File file = new File(jc.getSelectedFile().toString());
-		
+
 			lastdir = jc.getSelectedFile().toString();
-			lastImage = jc.getSelectedFile().toString();
 
 			if(imp == null){
 				throw new NullPointerException("cannot load image");
@@ -69,17 +50,26 @@ public class FileHandler {
 			if(imp.getWidth() < imp.getHeight()){
 				imp.setProcessor( imp.getProcessor().rotateRight());
 			} 
-	
-			  long heapSize = Runtime.getRuntime().maxMemory()/ (1024*1024); 
 
-			/* Warnung wenn Bild zu groß */
-			if(file.length()/(1024*1024)*80 > heapSize){ /* Image size bigger than maxMemory*80  */
-				JOptionPane.showMessageDialog(MainGUI.getInstance(), "Das Bild ist möglicherweise zu groß für den verfügbaren Arbeitsspeicher, wenn " +
+			double heapSize = Runtime.getRuntime().maxMemory()/ (1024*1024); 
+
+			/* check picture size*/
+			if(file.length()/(1024*1024)*80 > heapSize){ /* Image size bigger than maxMemory*80  */ 
+
+				int returnValue = JOptionPane.showConfirmDialog(MainGUI.getInstance(), "Das Bild ist möglicherweise zu groß für den verfügbaren Arbeitsspeicher. Wenn " +
 						"das Programm wenig Arbeitsspeicher hat, kann das zu " +
 						"Problemen führen.\nDer maximale Arbeitsspeicher muss erhöht, oder die Größe des Bildes verkleinert werden.\n" +
-						"Bitte lesen Sie hierzu das Benutzerhandbuch", "Bildgröße", JOptionPane.WARNING_MESSAGE); 
-			} 
+						"Wie man den Arbeitsspeicher erhöht, steht imBenutzerhandbuch.\n" +
+						"Soll das Bild verkleinert werden? \n" , "Bildgröße", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE); 
 
+				if(returnValue == JOptionPane.YES_OPTION){
+					
+					double fLengthM = ((file.length()/(1024*1024))*80);
+
+					makeSmaller(imp, (int)(Math.round(fLengthM/heapSize)/2));
+				}
+
+			}
 			return imp; 
 		}
 
@@ -103,7 +93,7 @@ public class FileHandler {
 	 */
 	public ImagePlus reloadImage() throws NullPointerException{
 		Opener opener = new Opener();
-		ImagePlus imp = opener.openImage(lastImage);
+		ImagePlus imp = opener.openImage(lastdir);
 
 		if(imp == null){
 			throw new NullPointerException("cannot load image");
@@ -125,6 +115,13 @@ public class FileHandler {
 
 	}
 
+	/**
+	 * shinks the imgage by factor n 
+	 * @param imp - image to be shrinked
+	 * @param n - shrink factor
+	 */
+	public void makeSmaller(ImagePlus imp, int sFactor){
+		imp.setProcessor(imp.getProcessor().bin(sFactor)); 
 
-
+	} 
 }
