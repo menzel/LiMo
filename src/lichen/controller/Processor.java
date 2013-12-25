@@ -1,28 +1,18 @@
 package lichen.controller;
 
-import java.util.ArrayList;
-
-import lichen.main.Main;
-import lichen.model.MeasurementsFactory;
-import lichen.view.MainGUI;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.gui.Roi;
-import ij.measure.Calibration;
 import ij.measure.Measurements;
 import ij.measure.ResultsTable;
 import ij.plugin.Colour_Deconvolution;
-import ij.plugin.ContrastEnhancer;
 import ij.plugin.filter.BackgroundSubtracter;
-import ij.plugin.filter.Filters;
 import ij.plugin.filter.GaussianBlur;
 import ij.plugin.filter.ParticleAnalyzer;
-import ij.process.BinaryProcessor;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
-import ij.process.ImageStatistics;
+import lichen.view.MainGUI;
 
 
 /**

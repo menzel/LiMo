@@ -37,18 +37,10 @@ public class ManualAnalyzer {
 		this.gui = MainGUI.getInstance();
 		active = true;
 
-
 		ColorStack.resetStack();
 
 		gui.getMyProcessor().background(imp,blurValue); 
 		imp.getProcessor().setValue(ColorStack.pop().getRGB());
-
-		//my Analyzer:
-		//		imp.setProcessor( convertToBinary(imp.getProcessor())); 
-		//		floodfiller = new MyFloodFiller(imp.getProcessor());
-
-		//		floodfiller = new MyFloodFiller(convertToBinary(imp.getProcessor()));
-		//		floodfiller.setOrg(imp.getProcessor());
 
 
 		//orig. flood filler:
@@ -60,8 +52,9 @@ public class ManualAnalyzer {
 		MaxArea = imp.getWidth()*imp.getHeight()*(20.0/100); //set default 20.0% maxArea;
 
 		factory = MeasurementsFactory.getInstance();
-		double rate  = gui.getMyProcessor().getPixelRate(imp);
+		double rate  = gui.getMyProcessor().getPixelRate(imp); 
 		factory.setPixelrate(rate); 
+
 		floodfiller.setPixelrate(Math.sqrt(rate));
 		MainGUI.getInstance().setPixelrate(Math.sqrt(rate));
 
@@ -151,7 +144,6 @@ public class ManualAnalyzer {
 
 	/**
 	 * MouseListener, triggers when user clicks on image
-	 *
 	 */
 	private class manualMouseListener implements MouseListener {
 
@@ -236,11 +228,6 @@ public class ManualAnalyzer {
 			undo();
 			imp.updateAndDraw();
 		}	
-
-		//	if(oldColor != 0){ 
-		//		imp.getProcessor().setValue(oldColor);
-		//	}
-
 
 	}
 

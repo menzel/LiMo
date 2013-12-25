@@ -36,8 +36,8 @@ public class MainGUI extends JFrame{
 	private int linewidth = 3;
 	private double borderWidth = 0.76;
 	private double magnification = 1.0;
-	private static final String version = "1.0.2.1";
-	private static final String date = "22.12.2013";
+	private static final String version = "1.0.2.2";
+	private static final String date = "24.12.2013";
 	private static boolean styleModern = false; 
 	private static MainGUI gui;
 	private JPanel colorPanel;
