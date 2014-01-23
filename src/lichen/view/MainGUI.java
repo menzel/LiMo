@@ -17,6 +17,7 @@ import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -26,11 +27,12 @@ import java.util.Locale;
 @SuppressWarnings("serial")
 public class MainGUI extends JFrame{
 
-	
+
+
 
 	
 
-	private FileHandler fh;
+	protected FileHandler fh;
 	private AutoAnalyzer auto;
 	private Toolbar t;
 	private ImagePlus imp;
@@ -751,7 +753,7 @@ public class MainGUI extends JFrame{
 			} 
 		});
 
-		BsheetSize.addActionListener(new BsheetSize());
+		BsheetSize.addActionListener(new BsheetSizePanel());
 
 		Brotate.addActionListener(new ActionListener() {
 
@@ -1002,43 +1004,7 @@ public class MainGUI extends JFrame{
 		/**
 		 * Save ResultTable Data to .csv file with DataExporter.java 
 		 */
-		Bsave.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-
-				DataExporter d = new DataExporter(); 
-				Genus lichen = Genus.getInstance();
-				Object[][] Exdata = lichen.getExportResultTableData(); 
-
-				if(Exdata[2][0] != null){
-					JFileChooser chooser = new JFileChooser();
-					String pictureFile = fh.getLastDir();
-					System.out.println(pictureFile);
-					chooser.setSelectedFile(new File(pictureFile+".csv"));
-
-					int returnVal = chooser.showSaveDialog(null); 
-					String path;
-					if(returnVal == JFileChooser.APPROVE_OPTION){
-						try{ 
-							path = chooser.getSelectedFile().getAbsolutePath(); 
-
-							if(d.export(Exdata, path)){ 
-								JOptionPane.showMessageDialog(null, "Erfolgreich exportiert");
-							}else{ 
-								JOptionPane.showMessageDialog(null, "Export Fehler");
-							}
-
-						}catch (NullPointerException e){
-							System.err.println("no file choosen");
-						} 
-					}
-				}else{
-					JOptionPane.showMessageDialog(null, "Keine Daten vorhanden");
-				}
-
-			}
-		});
+		Bsave.addActionListener(new BsaveActionListener(this));
 
 		Bclose.addActionListener(new ActionListener() {
 
@@ -1052,37 +1018,9 @@ public class MainGUI extends JFrame{
 		}); 
 
 		/**
-		 * About this program window 
+		 * 'About this program' frame 
 		 */
-		Babout.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				JFrame aboutFrame = new JFrame("über Flechtenanalyse");
-				//				aboutFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); 
-				aboutFrame.setSize(700, 400);
-				String text = "Autor: Michael Menzel, Fachbereich MNI Technische Hochschule Mittelhessen\n\n" +
-						"Im Auftrag von Prof. Dr. Ute Windisch, Fachbereich KMUB (THM) \n\n" +
-						"Flechtenanalyseprogramm, Versionsnr: " + version + "\n"
-						+ "Erstellungsdatum: " + date  + "\n\n"+
-						"Das Programm steht unter:\nGNU General Public License, version 3 (GPL-3.0)\n" +
-						"http://opensource.org/licenses/GPL-3.0\n" +
-						"LiMo-Analyse basiert auf dem Bildanalyseprogramm ImageJ: http://rsbweb.nih.gov/ij/index.html\n" +
-						"\n\n" +
-						" Copyright (C) <2013>  <Michael Menzel>\n This program is free software: you can redistribute it and/or modify it\n " +
-						"under the terms of the GNU General Public License as published by the Free Software Foundation, \n" +
-						"either version 3 of the License, or (at your option) any later version. \n" +
-						"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; \n" +
-						"without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  \n" +
-						"See the GNU General Public License for more details. \n" +
-						"You should have received a copy of the GNU General Public License along with this program. \n" +
-						" If not, see <http://www.gnu.org/licenses/>.\n";
-				JTextArea aboutText = new JTextArea(text);
-				aboutText.setEditable(false);
-				aboutFrame.add(aboutText);
-				aboutFrame.setVisible(true);
-			}
-		});
+		Babout.addActionListener(new BaboutActionListener(this));
 
 		Breset.addActionListener(new ActionListener() {
 
@@ -1248,175 +1186,12 @@ public class MainGUI extends JFrame{
 		}); 
 
 
-		BcolorList.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				if(manualAnalyzer == null ){
-					final JFrame choose = new JFrame("Wähle Farbreihenfolge"); 
-					choose.setLayout(new BorderLayout());
-					choose.setSize(200, 280);
-
-					final Color[] colors = ColorStack.getAllColors(); 
-					final JTable chooseTable = new JTable(colors.length,2); 
-					final JTextArea notice = new JTextArea("Bitte Reihenfolge eintragen");
-					notice.setEditable(false);
-
-					chooseTable.getTableHeader().setReorderingAllowed(false);
-					chooseTable.getColumnModel().getColumn(0).setPreferredWidth(30);
-					chooseTable.getColumnModel().getColumn(1).setPreferredWidth(50); 
-
-					chooseTable.getColumnModel().getColumn(1).setCellRenderer(new ChooserColorCellRenderer()); 
-
-					JPanel buttonPanel  = new JPanel(new GridLayout(0, 2));
-					JButton finish = createButton("Fertig");
-					JButton cancel = createButton("Abbruch");
-
-					buttonPanel.add(finish);
-					buttonPanel.add(cancel);
-
-
-					JPanel choosePanel = new JPanel(new BorderLayout());
-					choosePanel.add(buttonPanel, BorderLayout.SOUTH);
-
-					choosePanel.add(chooseTable, BorderLayout.CENTER); 
-
-					choose.add(choosePanel, BorderLayout.CENTER);
-					choose.add(notice, BorderLayout.SOUTH);
-					choose.setVisible(true);
-
-					/**
-					 * Cancels the insertion and does nothing to color stack
-					 */
-					cancel.addActionListener(new ActionListener() {
-
-
-						@Override
-						public void actionPerformed(ActionEvent e) {
-
-							choose.setVisible(false); 
-							choose.setEnabled(false);
-						}
-					});
-
-					/**
-					 * Read user entered values and apply to ColorStack 
-					 */
-					finish.addActionListener(new ActionListener() {
-
-						@Override
-						public void actionPerformed(ActionEvent arg0) {
-
-							chooseTable.setEnabled(false);
-							chooseTable.clearSelection();
-							Color newColors[] = new Color[11];
-
-							for(int i =0; i< colors.length; i++){
-
-								try{ 
-									Object o =chooseTable.getModel().getValueAt(i, 0); 
-									newColors[Integer.parseInt(o.toString())] = colors[i]; 
-
-								}catch(NullPointerException n){ 
-									n.printStackTrace();
-									//No Id inserted, get value somehow 
-								}catch(IllegalArgumentException n){ 
-									n.printStackTrace();
-									//Id out of range 
-								}
-							} 
-							ColorStack.setColorPos(newColors);
-							choose.setVisible(false);
-						}
-					}); 
-
-				}else{
-
-					JOptionPane.showMessageDialog(null, "Die Wahl der Farbreihenfolge ist nur vor dem Starten der manuellen Analyse möglich");
-				}
-			}
-		});
+		BcolorList.addActionListener(new BcolorListActionListener(this));
 
 		/**
 		 * Color choose
 		 */
-		Bchooser.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				final JFrame choose = new JFrame("Wähle Farben"); 
-				choose.setLayout(new BorderLayout());
-				choose.setSize(300, 400);
-				final ColorMatcher matcher = new ColorMatcher(); 
-
-				final Color[] colors; 
-				colors = matcher.getColors();
-
-				if(colors.length == 0){
-					JOptionPane.showMessageDialog(null, "Keine Farben vorhanden");
-
-				}else{ 
-
-					final JTable chooseTable = new JTable(colors.length,3); 
-					final JTextArea notice = new JTextArea("Bitte IDs eintragen");
-
-					chooseTable.getTableHeader().setReorderingAllowed(false);
-					chooseTable.getColumnModel().getColumn(0).setPreferredWidth(30);
-					chooseTable.getColumnModel().getColumn(1).setPreferredWidth(200); 
-					chooseTable.getColumnModel().getColumn(2).setPreferredWidth(50); 
-
-					chooseTable.getColumnModel().getColumn(2).setCellRenderer(new ResultsColorCellRenderer()); 
-
-					JButton finish = createButton("Fertig");
-					JPanel choosePanel = new JPanel();
-					chooseTable.setShowGrid(true);
-
-					choosePanel.add(finish); 
-					choosePanel.add(chooseTable); 
-
-					choose.add(choosePanel, BorderLayout.CENTER);
-					choose.add(notice, BorderLayout.SOUTH);
-					choose.setVisible(true);
-
-
-					/**
-					 * Read user entered values and apply to data
-					 */
-					finish.addActionListener(new ActionListener() {
-
-						@Override
-						public void actionPerformed(ActionEvent arg0) { 
-							chooseTable.setEnabled(false);
-							chooseTable.clearSelection();
-
-							for(int i =0; i< colors.length; i++){
-
-								int id;
-								if(chooseTable.getModel().getValueAt(i, 0) == null){
-									id = Genus.getInstance().getSize();//get id of last lichen: "unbekannt"
-
-								}else{ 
-									id = Integer.parseInt(chooseTable.getModel().getValueAt(i,0).toString());
-								}
-
-								try {
-									matcher.setColor(id, i);
-
-									notice.setText("Zuweisung erfolgreich");
-									choose.setVisible(false);
-
-								} catch (NameNotFoundException e) {
-									notice.setText("ID " + id + " wurde nicht gefunden");
-									System.out.println("not found ");
-								} 
-							} 
-						}
-					}); 
-
-				}
-			}
-		}); 
+		Bchooser.addActionListener(new BchooserActionListener()); 
 
 		/**
 		 * ShowResults
@@ -1681,6 +1456,20 @@ public class MainGUI extends JFrame{
 	 */
 	public void setNewColor(boolean newColor) {
 		this.newColor = newColor;
+	}
+
+	/**
+	 * @return the version
+	 */
+	public static String getVersion() {
+		return version;
+	}
+
+	/**
+	 * @return the date
+	 */
+	public static String getDate() {
+		return date;
 	}
 
 }

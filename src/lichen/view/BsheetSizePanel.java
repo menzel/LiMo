@@ -15,13 +15,14 @@ import javax.swing.JTextField;
 
 import lichen.controller.Processor;
 
-final class BsheetSize implements ActionListener {
-	@Override
-	public void actionPerformed(ActionEvent arg0) { 
+final class BsheetSizePanel implements ActionListener {
+	
+	private static JFrame borderWidthChooser; 
 
-		final JFrame borderWidthChooser = new JFrame("Foliengröße wählen");
+
+	private static void createFrame(){
+		borderWidthChooser = new JFrame("Foliengröße wählen");
 		borderWidthChooser.setSize(400, 120);
-		borderWidthChooser.setVisible(true);
 
 		JPanel ovPanel = new JPanel(new BorderLayout()); 
 		JPanel panel = new JPanel(new GridLayout(2,2)); 
@@ -96,7 +97,15 @@ final class BsheetSize implements ActionListener {
 					infoLabel.setText("ungültiger Wert"); 
 				} 
 			}
-		}); 
-
+		});
 	}
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if(borderWidthChooser == null)
+			createFrame();
+		borderWidthChooser.setVisible(true);
+
+	} 
+
+
 }
