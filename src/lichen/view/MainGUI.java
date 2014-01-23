@@ -26,6 +26,10 @@ import java.util.Locale;
 @SuppressWarnings("serial")
 public class MainGUI extends JFrame{
 
+	
+
+	
+
 	private FileHandler fh;
 	private AutoAnalyzer auto;
 	private Toolbar t;
@@ -43,15 +47,16 @@ public class MainGUI extends JFrame{
 	private JPanel colorPanel;
 	private JPanel image;
 	private ImageCanvas ic;
-	private ManualAnalyzer manualAnalyzer;
+	protected ManualAnalyzer manualAnalyzer;
 	private UndoStack undoStack;
-	private final JTextArea text = new JTextArea();
+	protected final JTextArea text = new JTextArea();
 	private Point mousePressed = null; 
 	private ProgressBar bar; 
 	public final JTable measurements = new JTable( new DefaultTableModel(new Object[] {"Id","Name", "Fläche", "Farbe"}, 10)); //public for readding and reading values
 	private int fillColor;
 	private boolean newColor = true; 
 	private final MenuBar menuBar = new MenuBar();
+	protected JTextField id;
 
 	/**
 	 * Constructor GUI
@@ -629,7 +634,7 @@ public class MainGUI extends JFrame{
 
 		JPanel assignPanel = new JPanel(new BorderLayout()); 
 
-		final JTextField id = new JTextField();
+		 id = new JTextField();
 		id.setText("Id");
 		id.setPreferredSize(new Dimension(30, 30));
 		assignPanel.add(id, BorderLayout.WEST);
@@ -737,101 +742,16 @@ public class MainGUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
-				if(newColor) 
+				if(isNewColor()) 
 					fillColor = imp.getProcessor().getValue();
-				newColor = false;
+				setNewColor(false);
 
 				t.setTool(20);
 
 			} 
 		});
 
-		BsheetSize.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) { 
-
-				final JFrame borderWidthChooser = new JFrame("Foliengröße wählen");
-				borderWidthChooser.setSize(400, 120);
-				borderWidthChooser.setVisible(true);
-
-				JPanel ovPanel = new JPanel(new BorderLayout()); 
-				JPanel panel = new JPanel(new GridLayout(2,2)); 
-
-				ovPanel.add(panel, BorderLayout.CENTER);
-				borderWidthChooser.add(ovPanel);
-
-				final JTextField value = new JTextField("");
-
-				final JTextArea infoLabel = new JTextArea("Bitte die Länge der langen Seite in mm eintragen,\noder"
-						+ " eine Voreinstellung auswählen:");
-				infoLabel.setPreferredSize(new Dimension(400, 35));
-
-				infoLabel.setEditable(false);
-				infoLabel.setEnabled(false);
-
-				infoLabel.setBackground(Color.gray);
-				infoLabel.setDisabledTextColor(Color.white);
-
-				JButton dina4 = new JButton("DinA4");
-				JButton done = new JButton("Wert setzen");
-				JButton dina3 = new JButton("DinA3");
-
-				ovPanel.add(infoLabel, BorderLayout.NORTH);
-
-				panel.add(value); 
-				panel.add(dina4);
-				panel.add(done);
-				panel.add(dina3);
-
-				done.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						try{ 
-							double lw = Double.parseDouble(value.getText());
-							Processor.setSheetWidth(lw); 
-							borderWidthChooser.setVisible(false);
-
-						}catch (IllegalArgumentException e){
-							infoLabel.setText("ungültiger Wert"); 
-						} 
-					}
-				});
-
-				dina3.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						try{ 
-							Processor.setSheetWidth(420); 
-
-							borderWidthChooser.setVisible(false);
-
-						}catch (IllegalArgumentException e){
-							infoLabel.setText("ungültiger Wert");
-
-						} 
-					}
-				});
-
-				dina4.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						try{ 
-							Processor.setSheetWidth(297); 
-
-							borderWidthChooser.setVisible(false);
-
-						}catch (IllegalArgumentException e){
-							infoLabel.setText("ungültiger Wert"); 
-						} 
-					}
-				}); 
-
-			}
-		});
+		BsheetSize.addActionListener(new BsheetSize());
 
 		Brotate.addActionListener(new ActionListener() {
 
@@ -842,50 +762,7 @@ public class MainGUI extends JFrame{
 			}
 		});
 
-		Bborder.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) { 
-
-				final JFrame borderWidthChooser = new JFrame("Thallus Rahmendicke wählen");
-				borderWidthChooser.setSize(280, 20);
-				borderWidthChooser.setVisible(true);
-
-				JPanel panel = new JPanel(new GridLayout(2,2)); 
-
-				borderWidthChooser.add(panel);
-
-				final JTextField value = new JTextField(borderWidth + "");
-				JTextField valueLabel = new JTextField("Strichdicke in mm:");
-				final JTextField infoLabel = new JTextField("");
-
-				infoLabel.setEditable(false);
-				valueLabel.setEditable(false);
-
-				JButton done = new JButton("Wert setzen");
-
-				panel.add(valueLabel);
-				panel.add(value);
-				panel.add(infoLabel);
-				panel.add(done);
-
-				done.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						try{
-
-							borderWidth = Double.parseDouble(value.getText());
-							borderWidthChooser.setVisible(false);
-
-						}catch (IllegalArgumentException e){
-							infoLabel.setText("ungültiger Wert");
-
-						} 
-					}
-				}); 
-			}
-		});
+		Bborder.addActionListener(new assignActionListener());
 
 		BLupe.addActionListener(new ActionListener() {
 
@@ -893,9 +770,9 @@ public class MainGUI extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				t.setTool(11); 
 
-				if(newColor) 
+				if(isNewColor()) 
 					fillColor = imp.getProcessor().getValue();
-				newColor = false;
+				setNewColor(false);
 			}
 		});
 
@@ -906,7 +783,7 @@ public class MainGUI extends JFrame{
 				t.setTool(7);
 
 				imp.getProcessor().setValue(fillColor); 
-				newColor = true; 
+				setNewColor(true); 
 
 			}
 		});
@@ -1029,81 +906,7 @@ public class MainGUI extends JFrame{
 			}
 		});
 
-		/**
-		 * Assign area to lichen depeding on the selected row 
-		 * if a blank row is selected a new measurement is made
-		 */ 
-		class assignActionListener implements ActionListener {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-
-				MeasurementsFactory factory = MeasurementsFactory.getInstance();
-				int speciesID;
-
-
-				if(factory.returnAll().size() <= measurements.getSelectedRow()){
-					try{ 
-						speciesID = Integer.parseInt(id.getText()); 
-						if(manualAnalyzer.assign(speciesID)){ 
-							text.setText(text.getText() + "\n" + "Fläche erfolgreich zugewiesen"); 
-							id.setText("");	
-
-							if(measurements.getSelectedRow() < measurements.getRowCount()-1 ){ 
-								measurements.setRowSelectionInterval(measurements.getSelectedRow()+1, measurements.getSelectedRow()+1);//move selection one row down
-							}else{ 
-								text.setText(text.getText() + "\n" + "Nur 10 Einträge möglich");
-							}
-
-						}else{ 
-							text.setText(text.getText() + "\n" + "Es existiert kein Eintrag mit dieser ID, die ID besitzt bereits eine Farbe oder die gemessene Fläche ist 0"); 
-						} 
-
-					} catch(NumberFormatException e){ 
-						e.printStackTrace();
-						text.setText(text.getText() + "\n" + "Es wurde keine Nummer eingegeben");
-					} 
-				}else{ // re-adding area to existing measurement 
-
-					Object o = measurements.getValueAt(measurements.getSelectedRow(), 0); 
-					
-					int idForChangeId;
-					try{ 
-						idForChangeId = Integer.parseInt(id.getText());
-					}catch(NumberFormatException e){ 
-						//readd instead of chang id
-						idForChangeId = Integer.MAX_VALUE; 
-					}
-
-					if(manualAnalyzer.readd(o, idForChangeId )){ 
-
-						text.setText(text.getText() + "\n" + "Fläche erfolgreich zugewiesen"); 
-						id.setText("");
-					}else{ 
-						text.setText(text.getText() + "\n" + "Zuweisung nicht erfolgreich, ID nicht gefunden"); 
-					}
-				}
-
-				int index =0;
-
-				//set overview table
-				Object[][] measurementValues = getMeasurements();
-				for(Object[] row: measurementValues){
-					if(row[0] == null)
-						return;
-					int columnCount =0;
-					for(Object o: row){ 
-						measurements.setValueAt(o, index, columnCount++);
-					} 
-					index++;
-				}
-				//set table
-
-				newColor = true;
-
-
-			} 
-		} 
+		
 
 		assign.addActionListener(new assignActionListener()); 
 
@@ -1334,9 +1137,9 @@ public class MainGUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) { 
 
-				if(newColor) 
+				if(isNewColor()) 
 					fillColor = imp.getProcessor().getValue();
-				newColor = false;
+				setNewColor(false);
 
 				t.installBuiltinTool("Brush");
 
@@ -1349,9 +1152,9 @@ public class MainGUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
-				if(newColor) 
+				if(isNewColor()) 
 					fillColor = imp.getProcessor().getValue();
-				newColor = false;
+				setNewColor(false);
 
 				t.setTool(4); 
 			}
@@ -1362,9 +1165,9 @@ public class MainGUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) { 
 
-				if(newColor) 
+				if(isNewColor()) 
 					fillColor = imp.getProcessor().getValue();
-				newColor = false;
+				setNewColor(false);
 
 				t.setTool("dropper");
 			}
@@ -1654,7 +1457,7 @@ public class MainGUI extends JFrame{
 	 * Gets all measurements as Object[][] to fill the table 
 	 * @return Object array with values from measurements
 	 */
-	private Object[][] getMeasurements() {
+	protected Object[][] getMeasurements() {
 		Object[][] tableData = new Object[20][4];
 		int i =0; 
 
@@ -1864,6 +1667,20 @@ public class MainGUI extends JFrame{
 	 */
 	public static void setStyleModern(boolean styleModern) {
 		MainGUI.styleModern = styleModern;
+	}
+
+	/**
+	 * @return the newColor
+	 */
+	public boolean isNewColor() {
+		return newColor;
+	}
+
+	/**
+	 * @param newColor the newColor to set
+	 */
+	public void setNewColor(boolean newColor) {
+		this.newColor = newColor;
 	}
 
 }
