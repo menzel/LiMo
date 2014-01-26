@@ -12,9 +12,7 @@ import ij.util.Tools;
 import ij.macro.Interpreter;
 import ij.plugin.frame.ContrastAdjuster;
 import ij.plugin.frame.Recorder;
-import ij.plugin.Converter;
-import ij.plugin.Duplicator;
-import ij.plugin.RectToolOptions;
+
 
 
 /**
@@ -1749,7 +1747,10 @@ public class ImagePlus implements ImageObserver, Measurements, Cloneable {
 
 	/** Returns a copy (clone) of this ImagePlus. */
 	public ImagePlus duplicate() {
-		return (new Duplicator()).run(this);
+		ImagePlus dup = new ImagePlus();
+		dup.setProcessor(this.getProcessor().duplicate());
+		
+		return dup;
 	}
 
 	/** Returns a new ImagePlus with this image's attributes

@@ -4,12 +4,12 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+
 import ij.*;
 import ij.process.*;
 import ij.measure.*;
 import ij.plugin.frame.Recorder;
 import ij.plugin.filter.Analyzer;
-import ij.plugin.RectToolOptions;
 import ij.macro.Interpreter;
 import ij.io.RoiDecoder;
 

@@ -2,6 +2,7 @@ package ij.plugin.frame;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+
 import ij.*;
 import ij.plugin.*;
 import ij.process.*;

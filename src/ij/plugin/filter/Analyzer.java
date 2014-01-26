@@ -2,13 +2,13 @@ package ij.plugin.filter;
 import java.awt.*;
 import java.util.Vector;
 import java.util.Properties;
+
 import ij.*;
 import ij.gui.*;
 import ij.process.*;
 import ij.measure.*;
 import ij.text.*;
 import ij.plugin.MeasurementsWriter;
-import ij.plugin.Straightener;
 import ij.util.Tools;
 import ij.macro.Interpreter;
 

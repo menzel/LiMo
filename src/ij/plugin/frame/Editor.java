@@ -4,12 +4,12 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.awt.datatransfer.*;																																																																																													
+
 import ij.*;
 import ij.gui.*;
 import ij.util.Tools;
 import ij.text.*;
 import ij.macro.*;
-import ij.plugin.MacroInstaller;
 import ij.plugin.NewPlugin;
 import ij.io.SaveDialog;
 

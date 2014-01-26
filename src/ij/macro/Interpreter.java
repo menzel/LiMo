@@ -2,7 +2,6 @@ package ij.macro;
 import ij.*;
 import ij.process.*;
 import ij.gui.*;
-import ij.plugin.Macro_Runner;
 import ij.plugin.frame.*;
 import ij.util.Tools;
 import ij.text.*;

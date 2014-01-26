@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.awt.image.*;
+
 import ij.gui.*;
 import ij.process.*;
 import ij.io.*;
@@ -14,8 +15,10 @@ import ij.plugin.filter.*;
 import ij.plugin.frame.*;
 import ij.text.*;
 import ij.macro.Interpreter;
+import ij.macro.MacroInstaller;
 import ij.io.Opener;
 import ij.util.*;
+
 import javax.swing.ImageIcon;
 
 /**

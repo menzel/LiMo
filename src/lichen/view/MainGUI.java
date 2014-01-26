@@ -26,11 +26,6 @@ import java.util.Locale;
 @SuppressWarnings("serial")
 public class MainGUI extends JFrame{
 
-
-
-
-	
-
 	private static final int RESULT_ROW_COUNT = 15;
 	protected FileHandler fh;
 	private AutoAnalyzer auto;

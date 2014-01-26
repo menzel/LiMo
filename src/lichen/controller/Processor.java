@@ -4,7 +4,6 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Measurements;
 import ij.measure.ResultsTable;
-import ij.plugin.Colour_Deconvolution;
 import ij.plugin.filter.BackgroundSubtracter;
 import ij.plugin.filter.GaussianBlur;
 import ij.plugin.filter.ParticleAnalyzer;
@@ -128,27 +127,6 @@ public class Processor {
 		return new ImagePlus("bit", b); 
 	}
 
-	/**
-	 * Splits an ImagePlus picture by colors 
-	 * @param imp - image to be split
-	 * @param colorCount - count of colors on the image
-	 * @return ImageStack of Pictures with one color on each slice
-	 */
-	public ImageStack splitColors(ImagePlus imp, int colorCount){ 
-
-		Colour_Deconvolution dec = new Colour_Deconvolution(); 
-		ImageConverter con = new ImageConverter(imp);
-		dec.setUp("H&E 2", false, false);
-
-		BackgroundSubtracter sub  = new BackgroundSubtracter();
-		sub.setup("", imp); 
-
-		con.convertToRGB(); 
-		//		con.convertRGBtoIndexedColor(colorCount); // posterization
-		ImageStack stack = dec.deconvolve("wtf", imp);
-
-		return stack;
-	}
 
 	/**
 	 * @return the particleMinSize

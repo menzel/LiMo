@@ -1,9 +1,10 @@
 package ij;
 import ij.util.Tools;
 import ij.text.TextWindow;
-import ij.plugin.MacroInstaller;
+import ij.macro.MacroInstaller;
 import ij.plugin.frame.Recorder;
 import ij.io.OpenDialog;
+
 import java.io.*;
 import java.util.*;
 import java.awt.event.KeyEvent;

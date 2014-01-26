@@ -1,6 +1,6 @@
 package ij.plugin.tool;
+import ij.macro.MacroInstaller;
 import ij.macro.Program;
-import ij.plugin.MacroInstaller;
 
 public class MacroToolRunner extends PlugInTool {
 	MacroInstaller installer;

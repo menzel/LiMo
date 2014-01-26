@@ -2,7 +2,7 @@ package ij.gui;
 import ij.*;
 import ij.process.*;
 import ij.measure.*;
-import ij.plugin.Straightener;
+
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.KeyEvent;

@@ -5,7 +5,6 @@ import java.util.Properties;
 import java.awt.image.*;
 import ij.process.*;
 import ij.measure.*;
-import ij.plugin.WandToolOptions;
 import ij.plugin.frame.Recorder;
 import ij.plugin.frame.RoiManager;
 import ij.plugin.tool.PlugInTool;
@@ -1007,33 +1006,7 @@ public class ImageCanvas extends Canvas implements MouseListener, MouseMotionLis
 			setDrawingColor(ox, oy, IJ.altKeyDown());
 			break;
 		case Toolbar.WAND:
-			Roi roi = imp.getRoi();
-			if (roi!=null && roi.contains(ox, oy)) {
-				Rectangle r = roi.getBounds();
-				if (r.width==imageWidth && r.height==imageHeight)
-					imp.deleteRoi();
-				else if (!e.isAltDown()) {
-					handleRoiMouseDown(e);
-					return;
-				}
-			}
-			if (roi!=null) {
-				int handle = roi.isHandle(x, y);
-				if (handle>=0) {
-					roi.mouseDownInHandle(handle, x, y);
-					return;
-				}
-			}
-			setRoiModState(e, roi, -1);
-			String mode = WandToolOptions.getMode();
-			double tolerance = WandToolOptions.getTolerance();
-			int npoints = IJ.doWand(ox, oy, tolerance, mode);
-			if (Recorder.record && npoints>0) {
-				if (tolerance==0.0 && mode.equals("Legacy"))
-					Recorder.record("doWand", ox, oy);
-				else
-					Recorder.recordString("doWand("+ox+", "+oy+", "+tolerance+", \""+mode+"\");\n");
-			}
+				
 			break;
 		case Toolbar.OVAL:
 			if (Toolbar.getBrushSize()>0)

@@ -2,14 +2,15 @@ package ij.process;
 import java.util.*;
 import java.awt.*;
 import java.awt.image.*;
+
 import ij.gui.*;
 import ij.util.*;
 import ij.plugin.filter.GaussianBlur;
-import ij.plugin.Binner;
 import ij.process.AutoThresholder.Method;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.gui.Overlay;
+import ij.Binner;
 import ij.Prefs;
 
 /**

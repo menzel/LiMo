@@ -1,16 +1,15 @@
 package ij.gui;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.event.*;
 import java.io.File;
 import java.util.*;
+
 import ij.*;
 import ij.plugin.frame.Recorder; 
 import ij.plugin.frame.Editor; 
-import ij.plugin.MacroInstaller;
-import ij.plugin.RectToolOptions;
 import ij.plugin.tool.PlugInTool;
 import ij.plugin.tool.MacroToolRunner;
+import ij.macro.MacroInstaller;
 import ij.macro.Program;
 
 /** The ImageJ toolbar. */

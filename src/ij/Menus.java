@@ -1,9 +1,10 @@
 package ij;
+import ij.macro.MacroInstaller;
 import ij.process.*;
 import ij.util.*;
 import ij.gui.ImageWindow;
-import ij.plugin.MacroInstaller;
 import ij.gui.Toolbar;
+
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;

@@ -1,5 +1,5 @@
 package ij;
-import ij.plugin.Converter;
+
 import ij.plugin.frame.Recorder;
 import ij.plugin.frame.Editor; 
 import ij.macro.Interpreter;

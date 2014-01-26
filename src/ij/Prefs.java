@@ -11,9 +11,7 @@ import ij.util.Tools;
 import ij.gui.*;
 import ij.plugin.filter.*;
 import ij.process.ImageConverter;
-import ij.plugin.Animator;
 import ij.process.FloatBlitter;
-import ij.plugin.GelAnalyzer;
 import ij.process.ColorProcessor;
 import ij.text.TextWindow;
 
@@ -350,7 +348,6 @@ public class Prefs {
 			prefs.put(FCOLOR, Tools.c2hex(Toolbar.getForegroundColor()));
 			prefs.put(BCOLOR, Tools.c2hex(Toolbar.getBackgroundColor()));
 			prefs.put(JPEG, Integer.toString(FileSaver.getJpegQuality()));
-			prefs.put(FPS, Double.toString(Animator.getFrameRate()));
 			prefs.put(DIV_BY_ZERO_VALUE, Double.toString(FloatBlitter.divideByZeroValue));
 			prefs.put(NOISE_SD, Double.toString(Filters.getSD()));
 			if (threads>1) prefs.put(THREADS, Integer.toString(threads));
