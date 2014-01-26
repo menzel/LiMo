@@ -3,8 +3,8 @@ import ij.*;
 import ij.gui.GenericDialog;
 import ij.gui.DialogListener;
 import ij.process.*;
-import ij.plugin.filter.GaussianBlur;
 import ij.measure.Measurements;
+
 import java.awt.*;
 
 /** This plugin-filter implements ImageJ's Unsharp Mask command.

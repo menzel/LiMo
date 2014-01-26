@@ -5,11 +5,11 @@ import java.awt.event.*;
 import java.io.*;
 import java.awt.datatransfer.*;
 import java.util.*;
+
 import ij.*;
 import ij.process.*;
 import ij.util.*;
 import ij.text.TextWindow;
-import ij.plugin.filter.Analyzer;
 import ij.measure.*;
 import ij.io.SaveDialog;
 

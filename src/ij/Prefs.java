@@ -1,11 +1,13 @@
 package ij;
 import ij.util.Java2;
+
 import java.io.*;
 import java.util.*;
 import java.applet.*;
 import java.net.URL;
 import java.awt.*;
 import java.applet.Applet;
+
 import ij.io.*;
 import ij.util.Tools;
 import ij.gui.*;

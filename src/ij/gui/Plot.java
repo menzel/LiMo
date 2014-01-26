@@ -1,10 +1,10 @@
 package ij.gui;
 import java.awt.*;
 import java.util.*;
+
 import ij.*;
 import ij.process.*;
 import ij.util.*;
-import ij.plugin.filter.Analyzer;
 import ij.macro.Interpreter;
 import ij.measure.Calibration;
 

@@ -1,11 +1,11 @@
 package ij.measure;
 import ij.*;
-import ij.plugin.filter.Analyzer;
 import ij.text.*;
 import ij.process.*;
 import ij.gui.Roi;
 import ij.util.Tools;
 import ij.io.SaveDialog;
+
 import java.awt.*;
 import java.text.*;
 import java.util.Locale;
@@ -18,7 +18,7 @@ import lichen.model.MeasurementsFactory;
 /** This is a table for storing measurement results as columns of numeric values. 
 	Call the static ResultsTable.getResultsTable() method to get a reference to the 
 	ResultsTable used by the <i>Analyze/Measure</i> command. 
-	@see ij.plugin.filter.Analyzer#getResultsTable
+	@see ij.Analyzer#getResultsTable
 */
 public class ResultsTable implements Cloneable {
 

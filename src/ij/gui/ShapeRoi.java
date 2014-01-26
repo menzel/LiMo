@@ -4,11 +4,11 @@ import java.awt.image.*;
 import java.awt.geom.*;
 import java.awt.event.KeyEvent;
 import java.util.*;
+
 import ij.*;
 import ij.process.*;
 import ij.measure.*;
 import ij.plugin.frame.Recorder;
-import ij.plugin.filter.Analyzer;
 import ij.util.Tools;
 
 /**A subclass of <code>ij.gui.Roi</code> (2D Regions Of Interest) implemented in terms of java.awt.Shape.

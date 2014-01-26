@@ -3,9 +3,9 @@ import ij.*;
 import ij.plugin.frame.PlugInFrame;
 import ij.process.*;
 import ij.measure.*;
-import ij.plugin.filter.Analyzer;
 import ij.gui.*;
 import ij.util.Tools;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.datatransfer.*;

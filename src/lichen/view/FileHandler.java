@@ -53,7 +53,6 @@ public class FileHandler {
 			} 
 
 			double heapSize = Runtime.getRuntime().maxMemory()/ (1024*1024);
-			System.out.println(heapSize);
 
 			/* check picture size*/
 			if(file.length()/(1024*1024)*heapFactor > heapSize){ /* Image size bigger than maxMemory*heapFactor  */ 

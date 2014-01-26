@@ -4,7 +4,7 @@ import ij.plugin.Colors;
 import ij.io.RoiDecoder;
 import ij.process.FloatPolygon;
 import ij.measure.*;
-import ij.plugin.filter.Analyzer;
+
 import java.awt.*;
 import java.util.*;
 

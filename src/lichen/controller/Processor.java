@@ -1,12 +1,12 @@
 package lichen.controller;
 
+import ij.BackgroundSubtracter;
+import ij.GaussianBlur;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.ParticleAnalyzer;
 import ij.measure.Measurements;
 import ij.measure.ResultsTable;
-import ij.plugin.filter.BackgroundSubtracter;
-import ij.plugin.filter.GaussianBlur;
-import ij.plugin.filter.ParticleAnalyzer;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageConverter;

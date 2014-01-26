@@ -3,10 +3,10 @@ package ij.text;
 import java.awt.*;
 import java.io.*;
 import java.awt.event.*;
+
 import ij.*;
 import ij.io.*;
 import ij.gui.*;
-import ij.plugin.filter.Analyzer;
 import ij.macro.Interpreter;
 
 /** Uses a TextPanel to displays text in a window.

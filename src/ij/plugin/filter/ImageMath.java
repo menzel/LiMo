@@ -3,6 +3,7 @@ import ij.*;
 import ij.gui.*;
 import ij.process.*;
 import ij.macro.*;
+
 import java.awt.*;
 
 /** This plugin implements ImageJ's Process/Math submenu. */

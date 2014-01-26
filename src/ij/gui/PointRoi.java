@@ -2,11 +2,13 @@ package ij.gui;
 
 import java.awt.*;
 import java.awt.image.*;
+
 import ij.*;
 import ij.process.*;
 import ij.measure.*;
-import ij.plugin.filter.Analyzer;
+
 import java.awt.event.KeyEvent;
+
 import ij.plugin.frame.Recorder;
 import ij.util.Java2; 
 

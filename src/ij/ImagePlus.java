@@ -3,11 +3,11 @@ import java.awt.*;
 import java.awt.image.*;
 import java.net.URL;
 import java.util.*;
+
 import ij.process.*;
 import ij.io.*;
 import ij.gui.*;
 import ij.measure.*;
-import ij.plugin.filter.Analyzer;
 import ij.util.Tools;
 import ij.macro.Interpreter;
 import ij.plugin.frame.ContrastAdjuster;

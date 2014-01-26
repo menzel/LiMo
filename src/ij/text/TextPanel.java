@@ -5,8 +5,8 @@ import java.io.*;
 import java.awt.event.*;
 import java.util.*;
 import java.awt.datatransfer.*;
+
 import ij.*;
-import ij.plugin.filter.Analyzer;
 import ij.io.SaveDialog;
 import ij.measure.ResultsTable;
 import ij.util.Tools;

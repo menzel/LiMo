@@ -1,9 +1,9 @@
 package ij.plugin.filter;
 import java.awt.Color;
+
 import ij.*;
 import ij.gui.*;
 import ij.process.*;
-import ij.plugin.filter.ParticleAnalyzer;
 import ij.measure.*;
 import ij.util.*;
 

@@ -5,12 +5,12 @@ import java.awt.image.*;
 
 import ij.gui.*;
 import ij.util.*;
-import ij.plugin.filter.GaussianBlur;
 import ij.process.AutoThresholder.Method;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.gui.Overlay;
 import ij.Binner;
+import ij.GaussianBlur;
 import ij.Prefs;
 
 /**
