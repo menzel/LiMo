@@ -69,7 +69,7 @@ class ColorGenerator extends ColorProcessor {
         drawRamp();
         resetBW();
         flipper();
-        drawLine(0, 256, 110, 256);
+        drawLine(0, 256, 110, 256, rows);
         
         int x = 1;
         int y = 0;

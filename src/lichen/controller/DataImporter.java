@@ -27,14 +27,6 @@ public class DataImporter {
 		//	test();
 	}
 
-	/**
-	 * @deprecated	
-	 */
-	private void test() {
-		for(Species g: lichen.returnAll()){
-			System.out.println(g.toString());
-		} 
-	}
 
 	/**
 	 * Opens the INI file for parsing lichen names and species
@@ -70,10 +62,10 @@ public class DataImporter {
 	/**
 	 * Reads the INI File with the Name FLECHTE.INI
 	 * creates species objects from INI FIle 
-	 * TODO: für original INI FIle anpassen 
 	 * @pre: FLECHTE.INI must be in programm directory 
 	 * @post: species are species-object in lichen 
 	 * @post lichen.genusCount is set
+	 * @throws IOException if read failed
 	 */
 	private void readFile(FileInputStream stream) throws Exception{
 		lichen = Genus.getInstance();
@@ -87,7 +79,6 @@ public class DataImporter {
 			Pattern g = Pattern.compile(Pattern.quote("["));
 			Pattern n = Pattern.compile(Pattern.quote("Anzahl="));
 			Pattern pathPattern = Pattern.compile(Pattern.quote("inipath="));
-			Pattern newPattern = Pattern.compile(Pattern.quote(";"));
 			Pattern stylePattern = Pattern.compile(Pattern.quote("style="));
 			
 			boolean flag = false;
@@ -103,7 +94,6 @@ public class DataImporter {
 				Matcher gm = g.matcher(s);
 				Matcher nm = n.matcher(s);
 				Matcher pm = pathPattern.matcher(s); 
-				Matcher newm = newPattern.matcher(s);
 				Matcher styleM = stylePattern.matcher(s);
 				
 				if(pm.find()){
@@ -157,11 +147,11 @@ public class DataImporter {
 			this.lichen.setGenusCount(geni);
 			in.close();
 
+			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-gecatch block
 			e.printStackTrace();
+
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

@@ -4,8 +4,6 @@ import ij.process.ImageProcessor;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-
 
 /**
  * Represents a stack of the last changes as well as the last picture for first undo
@@ -21,6 +19,8 @@ public class UndoStack {
 	private int[] lastImp;
 	private int lastImpPixelCount =0;
 	private final static int undoStackSize = 100;
+	@SuppressWarnings("unused")
+	private long currentStoresPixelCount = 0;
 
 
 	/**
@@ -53,6 +53,8 @@ public class UndoStack {
 	 * @param undoPos a list of int[] which hold 
 	 */
 	public void add(ArrayList<int[]> undoPos){
+		this.currentStoresPixelCount += undoPos.size();
+				
 		if(stackSize < undoStackSize){
 			this.undoPosList.add(undoPos); 
 			stackSize++;	

@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 public class FileHandler {
 
 	private String lastdir = "";
+	private static final int heapFactor = 60;
 
 	/**
 	 * Shows FileChooser Dialog to choose a picture
@@ -51,10 +52,11 @@ public class FileHandler {
 				imp.setProcessor( imp.getProcessor().rotateRight());
 			} 
 
-			double heapSize = Runtime.getRuntime().maxMemory()/ (1024*1024); 
+			double heapSize = Runtime.getRuntime().maxMemory()/ (1024*1024);
+			System.out.println(heapSize);
 
 			/* check picture size*/
-			if(file.length()/(1024*1024)*80 > heapSize){ /* Image size bigger than maxMemory*80  */ 
+			if(file.length()/(1024*1024)*heapFactor > heapSize){ /* Image size bigger than maxMemory*heapFactor  */ 
 
 				int returnValue = JOptionPane.showConfirmDialog(MainGUI.getInstance(), "Das Bild ist möglicherweise zu groß für den verfügbaren Arbeitsspeicher. Wenn " +
 						"das Programm wenig Arbeitsspeicher hat, kann das zu " +

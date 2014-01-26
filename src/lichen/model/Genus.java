@@ -6,8 +6,6 @@ import java.awt.Color;
 import java.util.ArrayList; 
 
 import javax.naming.NameNotFoundException;
-
-import lichen.controller.Processor;
 import lichen.view.MainGUI;
 
 /**
@@ -17,15 +15,16 @@ import lichen.view.MainGUI;
  */
 public class Genus { 
 
-	private ArrayList<Species> genus = new ArrayList<Species>();
+	private ArrayList<Species> genus;
 	private static Genus instance;
 	private int genusCount;
 	private double area = 40000;
 
 	/**
-	 * 
+	 * Constructor
 	 */
 	private Genus() {
+		genus = new ArrayList<Species>();
 	}
 
 	/**

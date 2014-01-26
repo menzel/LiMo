@@ -12,8 +12,6 @@ import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
-import lichen.view.MainGUI;
-
 
 /**
  * Represents an Processor Object which processes Images 
@@ -80,8 +78,7 @@ public class Processor {
 	 * @return 
 	 */
 	public double convertFromPixel(double d, ImagePlus imp) { 
-		if(imp == null)
-			imp = MainGUI.getInstance().getImp();
+
 		return d/getPixelRate(imp);
 	}
 
@@ -92,9 +89,6 @@ public class Processor {
 	 * @return - Pixel per mm squared on imp
 	 */
 	public double getPixelRate(ImagePlus imp) {
-
-		if(imp == null)
-			imp = MainGUI.getInstance().getImp(); 
 
 		double pixelN = (imp.getWidth() > imp.getHeight())? imp.getWidth(): imp.getHeight(); 
 		return (Math.pow(pixelN/sheetWidth,2)); 

@@ -7,17 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 final class BaboutActionListener implements ActionListener {
-	/**
-	 * 
-	 */
-	private MainGUI gui;
-
-	/**
-	 * @param mainGUI
-	 */
-	BaboutActionListener(MainGUI mainGUI) {
-		gui = mainGUI;
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {

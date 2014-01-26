@@ -21,7 +21,6 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Locale;
 
 @SuppressWarnings("serial")
@@ -42,8 +41,8 @@ public class MainGUI extends JFrame{
 	private int linewidth = 3;
 	private double borderWidth = 0.76;
 	private double magnification = 1.0;
-	private static final String version = "1.0.2.2";
-	private static final String date = "24.12.2013";
+	private static final String version = "1.0.3";
+	private static final String date = "27.01.2014";
 	private static final int UNIT_INCREMENT = 1000;
 	private static boolean styleModern = false; 
 	private static MainGUI gui;
@@ -51,7 +50,6 @@ public class MainGUI extends JFrame{
 	private JPanel image;
 	private ImageCanvas ic;
 	protected ManualAnalyzer manualAnalyzer;
-	private UndoStack undoStack;
 	protected final JTextArea text = new JTextArea();
 	private Point mousePressed = null; 
 	private ProgressBar bar; 
@@ -1020,7 +1018,7 @@ public class MainGUI extends JFrame{
 		/**
 		 * 'About this program' frame 
 		 */
-		Babout.addActionListener(new BaboutActionListener(this));
+		Babout.addActionListener(new BaboutActionListener());
 
 		Breset.addActionListener(new ActionListener() {
 
@@ -1422,15 +1420,6 @@ public class MainGUI extends JFrame{
 	 */
 	public double getBorderWidth() {
 		return borderWidth;
-	}
-
-	/**
-	 * 
-	 * @param undoStack
-	 */
-	public void setUndoStack(UndoStack undoStack) {
-		this.undoStack = undoStack;
-
 	}
 
 	/**

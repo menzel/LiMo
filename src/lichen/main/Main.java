@@ -5,7 +5,6 @@ import lichen.controller.AutoAnalyzer;
 import lichen.controller.ColorStack;
 import lichen.controller.DataImporter;
 import lichen.controller.Processor;
-import lichen.controller.UndoStack;
 import lichen.view.FileHandler;
 import lichen.view.MainGUI;
 /*
@@ -26,6 +25,7 @@ import lichen.view.MainGUI;
     along with LiMo-Analyse.  If not, see <http://www.gnu.org/licenses/>.
 
  */
+@SuppressWarnings("unused")
 public class Main {
 
 
@@ -48,7 +48,6 @@ public class Main {
 
 		fh.setLastDir(data.getInipath());
 
-		@SuppressWarnings("unused")
 		MainGUI gui = new MainGUI( fh, null, myProcessor, t); 
 
 	}

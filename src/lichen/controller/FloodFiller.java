@@ -41,10 +41,10 @@ public class FloodFiller {
 	public FloodFiller(ImageProcessor ip) {
 		this.ip = ip;
 		this.undoStack = new UndoStack(ip);
-		if(MainGUI.getInstance() ==null){
+		
+		if(MainGUI.getInstance() == null){
 			return;
 		}
-		MainGUI.getInstance().setUndoStack(this.undoStack);
 
 		isFloat = ip instanceof FloatProcessor;
 	}

@@ -2,9 +2,6 @@ package lichen.controller;
 
 import ij.ImagePlus;
 import ij.gui.Toolbar;
-import ij.process.ColorProcessor;
-import ij.process.ImageProcessor;
-
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -30,6 +27,7 @@ public class ManualAnalyzer {
 
 	/**
 	 * Constructor
+	 * @pre mainGui has to exist
 	 * @param imp - image which is to be analyzed
 	 */
 	public ManualAnalyzer(ImagePlus imp) {
@@ -48,7 +46,7 @@ public class ManualAnalyzer {
 		floodfiller.setLinewidth(gui.getBorderWidth());
 		//end
 
-		MainGUI.getInstance().getIc().addMouseListener(new manualMouseListener());
+		gui.getIc().addMouseListener(new manualMouseListener());
 		MaxArea = imp.getWidth()*imp.getHeight()*(20.0/100); //set default 20.0% maxArea;
 
 		factory = MeasurementsFactory.getInstance();
@@ -56,27 +54,8 @@ public class ManualAnalyzer {
 		factory.setPixelrate(rate); 
 
 		floodfiller.setPixelrate(Math.sqrt(rate));
-		MainGUI.getInstance().setPixelrate(Math.sqrt(rate));
+		gui.setPixelrate(Math.sqrt(rate));
 
-	}
-
-	/**
-	 * returns a copy of the given ip as binary picture
-	 * @param processor
-	 * @return
-	 * @deprecated
-	 */
-	private ImageProcessor convertToBinary(ImageProcessor processor) {
-
-		int[] pixels = (int[]) processor.getPixelsCopy(); 
-
-		for(int i =0 ; i < pixels.length; i++){
-			if( pixels[i] != -1) {
-				pixels[i] = 0;
-			}
-		}
-
-		return new ColorProcessor(processor.getWidth(), processor.getHeight(), pixels) ;
 	}
 
 	/**
@@ -266,7 +245,7 @@ public class ManualAnalyzer {
 			//change ID:
 
 			Genus genus = Genus.getInstance();
-			Object tableID = MainGUI.getInstance().measurements.getValueAt(MainGUI.getInstance().measurements.getSelectedRow(), 0);
+			Object tableID = gui.measurements.getValueAt(gui.measurements.getSelectedRow(), 0);
 
 			int oldID = Integer.parseInt(tableID.toString());
 

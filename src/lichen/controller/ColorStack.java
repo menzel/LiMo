@@ -1,9 +1,6 @@
 package lichen.controller;
 
 import java.awt.Color;
-
-import lichen.view.MainGUI;
-
 /**
  * Represents a static list of different colors  
  * @author menzel
@@ -35,7 +32,7 @@ public class ColorStack {
 
 	/**
 	 * pops a color off the list until its empty, then gives the colors gray 
-	 * @return
+	 * @return next color from list or random
 	 */
 	public static Color pop(){
 		
@@ -72,6 +69,9 @@ public class ColorStack {
 	
 	}
 	
+	/**
+	 * Stack pointer is reseted, colors can be reused
+	 */
 	public static void resetStack(){
 		i = 11;
 	}

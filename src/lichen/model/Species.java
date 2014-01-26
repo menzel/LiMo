@@ -1,7 +1,5 @@
 package lichen.model;
 
-import java.awt.Color;
-
 /**
  *Represents one species
  * @author menzel
@@ -13,7 +11,7 @@ public class Species {
 	private Measurement results;
 
 	private static int count = -1;
-	private boolean s = false;
+	private boolean isS = false;
 	private String genus;
 
 
@@ -58,14 +56,14 @@ public class Species {
 		return id;
 	}
 	public void setSu(boolean b) {
-		this.s = b;
+		this.isS = b;
 
 	}
 	/**
 	 * @return the s
 	 */
 	public boolean isS() {
-		return s;
+		return isS;
 	}
 	/**
 	 * @return the results

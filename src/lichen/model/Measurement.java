@@ -131,10 +131,7 @@ public class Measurement implements Comparable<Measurement> {
 
 	@Override
 	public int compareTo(Measurement arg0) {
-		if(this.species > arg0.getSpecies())
-			return 0;
-		else
-			return -1; 
+		return Double.compare(getArea(), arg0.getArea());
 	} 
 
 }
