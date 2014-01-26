@@ -15,6 +15,7 @@ import lichen.view.MainGUI;
  */
 public class Genus { 
 
+	private static final int EXPORT_RESULT_MAX_ROWS = 1000;
 	private ArrayList<Species> genus;
 	private static Genus instance;
 	private int genusCount;
@@ -148,9 +149,8 @@ public class Genus {
 	 */
 	public Object[][] getExportResultTableData() {
 
-		Object[][] t = new Object[1000][7] ;	
-		//TODO: evaluate 500 as fixed lenght
-
+		Object[][] t = new Object[EXPORT_RESULT_MAX_ROWS][7] ;	
+		
 		int index =0;
 
 		t[index][0] = "Id";

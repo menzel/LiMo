@@ -31,6 +31,7 @@ public class MainGUI extends JFrame{
 
 	
 
+	private static final int RESULT_ROW_COUNT = 15;
 	protected FileHandler fh;
 	private AutoAnalyzer auto;
 	private Toolbar t;
@@ -326,8 +327,7 @@ public class MainGUI extends JFrame{
 
 
 		String RcolumnNames[] = {"ID", "Name","Fläche [mm^2]","Fläche %"}; 
-		DefaultTableModel model = new DefaultTableModel(RcolumnNames,15); 
-		//TODO: evaluate fixed table length 
+		DefaultTableModel model = new DefaultTableModel(RcolumnNames,RESULT_ROW_COUNT); 
 
 		final JTable data = new JTable(model);
 		//		data.setPreferredSize(new Dimension(1, 150));
