@@ -1,7 +1,10 @@
 package lichen.controller;
 
 import ij.process.ImageProcessor; 
+
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -10,13 +13,15 @@ import java.util.ArrayList;
  *
  */
 public class UndoStack {
-
-	private ArrayList<ArrayList<int[]>> undoPosList = new ArrayList<ArrayList<int[]>>();
+	
+	private LinkedList<ArrayList<int[]>> undoPosList = new LinkedList<ArrayList<int[]>>();
 	private int stackSize = 0;
 	private int[] pixels;
 	private ImageProcessor ip;
 	private int[] lastImp;
 	private int lastImpPixelCount =0;
+	private final static int undoStackSize = 100;
+
 
 	/**
 	 * Contructor
@@ -48,8 +53,13 @@ public class UndoStack {
 	 * @param undoPos a list of int[] which hold 
 	 */
 	public void add(ArrayList<int[]> undoPos){
-		this.undoPosList.add(undoPos); 
-		stackSize++;
+		if(stackSize < undoStackSize){
+			this.undoPosList.add(undoPos); 
+			stackSize++;	
+		}else{
+			this.undoPosList.removeFirst();
+			this.undoPosList.add(undoPos);
+		}
 	}
 
 	/**

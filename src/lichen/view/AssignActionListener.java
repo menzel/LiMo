@@ -10,11 +10,12 @@ import lichen.model.MeasurementsFactory;
  * if a blank row is selected a new measurement is made
  */ 
 class assignActionListener implements ActionListener {
-	MainGUI gui = MainGUI.getInstance();
+	MainGUI gui;
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 
+		gui = MainGUI.getInstance();
 		MeasurementsFactory factory = MeasurementsFactory.getInstance();
 		int speciesID;
 

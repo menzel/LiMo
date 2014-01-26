@@ -44,6 +44,7 @@ public class MainGUI extends JFrame{
 	private double magnification = 1.0;
 	private static final String version = "1.0.2.2";
 	private static final String date = "24.12.2013";
+	private static final int UNIT_INCREMENT = 1000;
 	private static boolean styleModern = false; 
 	private static MainGUI gui;
 	private JPanel colorPanel;
@@ -258,7 +259,7 @@ public class MainGUI extends JFrame{
 
 
 		final JScrollBar imageHorizontal  = new JScrollBar(0); 
-		imageHorizontal.setUnitIncrement(1000);
+		imageHorizontal.setUnitIncrement(UNIT_INCREMENT);
 
 		imageHorizontal.setPreferredSize(new Dimension(1,16)); 
 		imageHorizontal.addAdjustmentListener(new AdjustmentListener() {
@@ -914,8 +915,7 @@ public class MainGUI extends JFrame{
 
 		//manual measurement end 
 
-		pack();
-		setVisible(true);
+
 
 		// ActionListener
 		//------------------------//
@@ -1225,6 +1225,9 @@ public class MainGUI extends JFrame{
 			}
 
 		}); 
+	
+		pack();
+		setVisible(true);
 	}
 	//------------------------//
 
