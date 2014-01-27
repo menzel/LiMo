@@ -35,8 +35,8 @@ public class FloodFiller {
 	protected double linewidth = 0.76;
 	protected double pixelrate; 
 	private UndoStack undoStack;
-	private ArrayList<int[]> undoPos = new ArrayList<int[]>(); 
-	private ArrayList<String[]> thalliList = new ArrayList<String[]>();
+	private ArrayList<int[]> undoPos = new ArrayList<int[]>(20); 
+	private ArrayList<String[]> thalliList = new ArrayList<String[]>(20);
 
 	public FloodFiller(ImageProcessor ip) {
 		this.ip = ip;
@@ -65,7 +65,8 @@ public class FloodFiller {
 		tmp[0] = x + ":" + y; 
 
 		undoPos.clear();
-
+		undoPos.ensureCapacity(20);
+		
 		int width = ip.getWidth();
 		int height = ip.getHeight();
 		int color = ip.getPixel(x, y);

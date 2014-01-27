@@ -1,9 +1,7 @@
 package lichen.controller;
 
 import ij.process.ImageProcessor; 
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * Represents a stack of the last changes as well as the last picture for first undo
@@ -12,13 +10,14 @@ import java.util.LinkedList;
  */
 public class UndoStack {
 	
-	private LinkedList<ArrayList<int[]>> undoPosList = new LinkedList<ArrayList<int[]>>();
 	private int stackSize = 0;
 	private int[] pixels;
 	private ImageProcessor ip;
 	private int[] lastImp;
-	private int lastImpPixelCount =0;
-	private final static int undoStackSize = 100;
+	private int lastImpPixelCount = 0;
+	private int undoStackSize = 50;
+	private ArrayList<ArrayList<int[]>> undoPosList = new ArrayList<ArrayList<int[]>>(20);	
+
 	@SuppressWarnings("unused")
 	private long currentStoresPixelCount = 0;
 
@@ -59,7 +58,8 @@ public class UndoStack {
 			this.undoPosList.add(undoPos); 
 			stackSize++;	
 		}else{
-			this.undoPosList.removeFirst();
+			//remove first element:
+			this.undoPosList = (ArrayList<ArrayList<int[]>>) this.undoPosList.subList(1, this.undoPosList.size());
 			this.undoPosList.add(undoPos);
 		}
 	}

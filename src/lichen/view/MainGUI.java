@@ -630,7 +630,7 @@ public class MainGUI extends JFrame{
 
 		JPanel assignPanel = new JPanel(new BorderLayout()); 
 
-		 id = new JTextField();
+		id = new JTextField();
 		id.setText("Id");
 		id.setPreferredSize(new Dimension(30, 30));
 		assignPanel.add(id, BorderLayout.WEST);
@@ -902,7 +902,7 @@ public class MainGUI extends JFrame{
 			}
 		});
 
-		
+
 
 		assign.addActionListener(new assignActionListener()); 
 
@@ -953,8 +953,12 @@ public class MainGUI extends JFrame{
 						flushTable(measurements);
 						flushTable(data);
 
+						try{
+							imp = fh.openImagePlus(); 
+						}catch( Exception e){
+								JOptionPane.showMessageDialog(MainGUI.gui, "Dateiformat wird nicht unterstüzt");
+						}
 
-						imp = fh.openImagePlus(); 
 						if(imp != null){
 							pathField.setText(fh.getLastDir());
 							imp.getProcessor().setProgressBar(bar);
@@ -965,7 +969,12 @@ public class MainGUI extends JFrame{
 					}
 
 				}else{
-					imp = fh.openImagePlus(); 
+					try{
+						imp = fh.openImagePlus(); 
+					}catch( Exception e){
+						JOptionPane.showMessageDialog(MainGUI.gui, "Dateiformat wird nicht unterstüzt");
+
+					}
 					if(imp != null){
 						pathField.setText(fh.getLastDir()); 
 						imp.getProcessor().setProgressBar(bar);
@@ -1218,7 +1227,7 @@ public class MainGUI extends JFrame{
 			}
 
 		}); 
-	
+
 		pack();
 		setVisible(true);
 	}
@@ -1258,7 +1267,7 @@ public class MainGUI extends JFrame{
 	public Color convertFromIJIntToColor(int c) {
 		int r,g,b;
 		r = (c&0xff0000)>>16;	
-							g =(c&0xff00)>>8;
+						g =(c&0xff00)>>8;
 						b = c&0xff;
 
 						return new Color(r,g,b);
