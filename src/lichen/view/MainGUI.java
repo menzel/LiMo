@@ -956,7 +956,8 @@ public class MainGUI extends JFrame{
 						try{
 							imp = fh.openImagePlus(); 
 						}catch( Exception e){
-								JOptionPane.showMessageDialog(MainGUI.gui, "Dateiformat wird nicht unterstüzt");
+								JOptionPane.showMessageDialog(MainGUI.gui, "Datei konnte nicht geöffnet werden.\nMöglicherweise wird das Dateiformat nicht unterstützt,\nprobieren sie .jpg/ .jpeg. ");
+								e.printStackTrace();
 						}
 
 						if(imp != null){
@@ -972,8 +973,8 @@ public class MainGUI extends JFrame{
 					try{
 						imp = fh.openImagePlus(); 
 					}catch( Exception e){
-						JOptionPane.showMessageDialog(MainGUI.gui, "Dateiformat wird nicht unterstüzt");
-
+						JOptionPane.showMessageDialog(MainGUI.gui, "Datei konnte nicht geöffnet werden.\nMöglicherweise wird das Dateiformat nicht unterstützt,\nprobieren sie .jpg/ .jpeg. ");
+						e.printStackTrace();
 					}
 					if(imp != null){
 						pathField.setText(fh.getLastDir()); 

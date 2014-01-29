@@ -3,7 +3,6 @@ package lichen.controller;
 import ij.BackgroundSubtracter;
 import ij.GaussianBlur;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.ParticleAnalyzer;
 import ij.measure.Measurements;
 import ij.measure.ResultsTable;
@@ -248,7 +247,6 @@ public class Processor {
 
 		imp.getProcessor().sharpen();
 		int[] pixels;
-		//TODO: rewrite with instanceof
 
 		try{
 
