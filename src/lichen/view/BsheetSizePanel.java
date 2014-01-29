@@ -15,6 +15,12 @@ import javax.swing.JTextField;
 
 import lichen.controller.Processor;
 
+
+/**
+ * Panel for choosing the paper sheet size
+ * @author menzel
+ *
+ */
 final class BsheetSizePanel implements ActionListener {
 	
 	private static JFrame borderWidthChooser; 

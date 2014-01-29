@@ -38,7 +38,7 @@ public class MainGUI extends JFrame{
 	private double borderWidth = 0.76;
 	private double magnification = 1.0;
 	private static final String version = "1.0.3";
-	private static final String date = "27.01.2014";
+	private static final String date = "30.01.2014";
 	private static final int UNIT_INCREMENT = 1000;
 	private static boolean styleModern = false; 
 	private static MainGUI gui;
@@ -1232,7 +1232,7 @@ public class MainGUI extends JFrame{
 		pack();
 		setVisible(true);
 	}
-	//------------------------//
+	//------------------------ end of initGUI() //
 
 	/**
 	 * Gets all measurements as Object[][] to fill the table 

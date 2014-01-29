@@ -15,6 +15,12 @@ import javax.swing.JTextArea;
 
 import lichen.controller.ColorStack;
 
+/**
+ * ColorList ActionListener:
+ * Panel for user to choose color order
+ * @author menzel
+ *
+ */
 final class BcolorListActionListener implements ActionListener {
 	/**
 	 * 

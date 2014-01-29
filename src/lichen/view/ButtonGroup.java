@@ -7,7 +7,8 @@ import java.util.Collection;
 import javax.swing.JButton;
 
 /**
- * Holds a list of buttons of which only one is active 
+ * Holds a list of buttons of which only one is active
+ * used for highlighting this button
  * @author menzel
  *
  */

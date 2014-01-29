@@ -13,6 +13,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
+/**
+ * File Chooser Panel with picture preview
+ * @author menzel
+ *
+ */
 @SuppressWarnings("serial")
 class LichenFileChooser extends JPanel implements PropertyChangeListener {
 	private JFileChooser jfc;

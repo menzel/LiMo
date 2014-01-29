@@ -6,6 +6,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
+/**
+ * About-Dialog ActionListener
+ * @author menzel
+ *
+ */
 final class BaboutActionListener implements ActionListener {
 
 	@Override

@@ -42,10 +42,7 @@ public class Main {
 		Toolbar t = new Toolbar();
 		
 		ColorStack.ColorStackInit();
-
-
 		DataImporter data = new DataImporter(); 
-
 		fh.setLastDir(data.getInipath());
 
 		MainGUI gui = new MainGUI( fh, null, myProcessor, t); 

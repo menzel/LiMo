@@ -16,6 +16,11 @@ import javax.swing.JTextArea;
 import lichen.controller.ColorMatcher;
 import lichen.model.Genus;
 
+/**
+ * Chooser dialog for color to species assin after AutoAnalysis
+ * @author menzel
+ *
+ */
 class BchooserActionListener implements ActionListener {
 	
 	

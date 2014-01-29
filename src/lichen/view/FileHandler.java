@@ -8,8 +8,12 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.plaf.FileChooserUI;
 
+/**
+ * For opening image files
+ * @author menzel
+ *
+ */
 public class FileHandler {
 
 	private String lastdir = "";
@@ -18,6 +22,7 @@ public class FileHandler {
 	/**
 	 * Shows FileChooser Dialog to choose a picture
 	 * @return - the picture
+	 * @return null if user clicks 'cancel'
 	 */
 	public ImagePlus openImagePlus() throws Exception{
 
@@ -98,7 +103,7 @@ public class FileHandler {
 			return imp; 
 		}
 
-		return null;
+		return null; //if user clicked cancel
 
 	}
 

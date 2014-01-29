@@ -10,6 +10,11 @@ import javax.swing.JOptionPane;
 import lichen.controller.DataExporter;
 import lichen.model.Genus;
 
+/**
+ * ActionListern for saving data to file
+ * @author menzel
+ *
+ */
 final class BsaveActionListener implements ActionListener {
 	/**
 	 * 
