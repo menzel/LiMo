@@ -35,7 +35,7 @@ public class MainGUI extends JFrame{
 	private int blurValue = 1;
 	private double pixelrate;
 	private int linewidth = 3;
-	private double borderWidth = 0.76;
+	double borderWidth = 0.76;
 	private double magnification = 1.0;
 	private static final String version = "1.0.3";
 	private static final String date = "30.01.2014";
@@ -758,7 +758,7 @@ public class MainGUI extends JFrame{
 			}
 		});
 
-		Bborder.addActionListener(null); //TODO
+        Bborder.addActionListener(new BborderActionListener(this));
 
 		BLupe.addActionListener(new ActionListener() {
 
