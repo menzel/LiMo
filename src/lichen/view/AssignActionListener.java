@@ -9,9 +9,22 @@ import lichen.model.MeasurementsFactory;
  * Assign area to lichen depeding on the selected row 
  * if a blank row is selected a new measurement is made
  */ 
-class assignActionListener implements ActionListener {
-	MainGUI gui;
+class AssignActionListener implements ActionListener {
+	
+	private static AssignActionListener instance;
+	private MainGUI gui;
+	
+	
+	private AssignActionListener() {
+	}
 
+	public static AssignActionListener getInstace(){
+		if(instance == null)
+			instance = new AssignActionListener();
+		return instance;	
+		
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 

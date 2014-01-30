@@ -90,7 +90,7 @@ public class Genus {
 
 	/**
 	 * 
-	 * @return
+	 * @return result data for displaying in bottom pane in gui
 	 */
 	public Object[][] getResultTableData() { 
 
@@ -118,7 +118,7 @@ public class Genus {
 
 	/**
 	 * 
-	 * @return
+	 * @return species for displaying in gui left side pane
 	 */
 	public Object[][] getTableData() {
 		//TODO: Trennstriche zwischen Arten
@@ -145,7 +145,7 @@ public class Genus {
 	/**
 	 * Prepears the data for export, returns a formatted 2D Array with the values measured.
 	 * Can be written to a file in csv format
-	 * @return Object [][] with data and names
+	 * @return Object [][] with data and names for printing to file
 	 */
 	public Object[][] getExportResultTableData() {
 
@@ -220,6 +220,12 @@ public class Genus {
 		return t;
 	}
 
+	/**
+	 * Checks if a species with the given id exists
+	 * @param id - id to be testet
+	 * @return - true if exists
+	 * @throws NameNotFoundException - if species with 'id' not found
+	 */
 	public boolean exists(int id) throws NameNotFoundException{
 		for(Species s: genus){
 			if(s.getId() == id){
@@ -231,6 +237,7 @@ public class Genus {
 
 	/**
 	 * Deletes references to measurements from each species
+	 * to clear up measured data
 	 */
 	public void reset() {
 		for(Species s: genus){
@@ -247,6 +254,10 @@ public class Genus {
 
 	}
 
+	/**
+	 * Getter for data 
+	 * @return this.data
+	 */
 	public double getArea() {
 		return this.area;
 	}

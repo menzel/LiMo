@@ -758,7 +758,7 @@ public class MainGUI extends JFrame{
 			}
 		});
 
-		Bborder.addActionListener(new assignActionListener());
+		Bborder.addActionListener(null); //TODO
 
 		BLupe.addActionListener(new ActionListener() {
 
@@ -904,7 +904,7 @@ public class MainGUI extends JFrame{
 
 
 
-		assign.addActionListener(new assignActionListener()); 
+		assign.addActionListener(AssignActionListener.getInstace()); 
 
 		//manual measurement end 
 
