@@ -1,7 +1,9 @@
 package lichen.controller;
 
 import ij.process.ImageProcessor; 
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a stack of the last changes as well as the last picture for first undo
@@ -12,14 +14,14 @@ public class UndoStack {
 	
 
 	private static boolean longHistory = true;
-	
+	private static int undoStackSize = 50;
+
 	private int stackSize = 0;
 	private int[] pixels;
 	private ImageProcessor ip;
 	private int[] lastImp;
 	private int lastImpPixelCount = 0;
-	private int undoStackSize = 50;
-	private ArrayList<ArrayList<int[]>> undoPosList = new ArrayList<ArrayList<int[]>>(20);	
+	private List<ArrayList<int[]>> undoPosList = new ArrayList<ArrayList<int[]>>(20);	
 
 	@SuppressWarnings("unused")
 	private long currentStoresPixelCount = 0;
@@ -56,8 +58,7 @@ public class UndoStack {
 	 * @param undoPos a list of int[] which hold 
 	 */
 	public void add(ArrayList<int[]> undoPos){
-		if(!longHistory)
-			return;
+
 		
 		this.currentStoresPixelCount += undoPos.size();
 				
@@ -66,7 +67,7 @@ public class UndoStack {
 			stackSize++;	
 		}else{
 			//remove first element:
-			this.undoPosList = (ArrayList<ArrayList<int[]>>) this.undoPosList.subList(1, this.undoPosList.size());
+			this.undoPosList = this.undoPosList.subList(1, this.undoPosList.size());
 			this.undoPosList.add(undoPos);
 		}
 	}
@@ -147,7 +148,7 @@ public class UndoStack {
 
 	public static void setLongHistory(boolean b) {
 		longHistory = b;
-		
+		undoStackSize = 1;
 	}
 
 }
