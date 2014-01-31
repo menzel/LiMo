@@ -79,7 +79,7 @@ public class INIfileReader {
 	 * @pre: FLECHTE.INI must be in programm directory 
 	 * @post: species are species-object in lichen 
 	 * @post lichen.genusCount is set
-	 * @post if longHistory is disabled: flag is set in UndoStack
+	 * @post if longHistory is disabled: set Flag method is called in UndoStack
 	 * @post if modern style is enabled: flag is set in MainGui
 	 * @throws IOException if read failed
 	 */

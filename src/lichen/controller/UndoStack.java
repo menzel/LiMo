@@ -11,7 +11,7 @@ import java.util.List;
  *
  */
 public class UndoStack {
-	
+
 
 	private static boolean longHistory = true;
 	private static int undoStackSize = 50;
@@ -59,9 +59,9 @@ public class UndoStack {
 	 */
 	public void add(ArrayList<int[]> undoPos){
 
-		
+
 		this.currentStoresPixelCount += undoPos.size();
-				
+
 		if(stackSize < undoStackSize){
 			this.undoPosList.add(undoPos); 
 			stackSize++;	
@@ -105,7 +105,7 @@ public class UndoStack {
 	 * @return - pixelcount of unfilled pixels
 	 */
 	public int undo() { 
-		
+
 		if(lastImp != null){ 
 
 			undoPosList.remove(stackSize-1);
@@ -127,28 +127,34 @@ public class UndoStack {
 
 		return count;
 	}
-	
+
 	/**
 	 * Returns the size of the last flood fill without removing it from the list
 	 * @return size 
 	 */
 	public int getLastUndoCount(){
-		
+
 		ArrayList<int[]> p;
-		
+
 		if(stackSize > 0){
 			p = undoPosList.remove(stackSize-1); 
 			undoPosList.add(p);
-			
+
 			return p.size();
 		} 
-		
+
 		return 0;
 	}
 
+	/**
+	 * Sets longHistory flag to b
+	 * sets history length to 1 if b is false
+	 * @param b - longHistory flag
+	 */
 	public static void setLongHistory(boolean b) {
 		longHistory = b;
-		undoStackSize = 1;
+		if(!b)
+			undoStackSize = 1;
 	}
 
 }
