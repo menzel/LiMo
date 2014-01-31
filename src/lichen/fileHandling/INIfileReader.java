@@ -1,4 +1,4 @@
-package lichen.controller;
+package lichen.fileHandling;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -6,25 +6,39 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import lichen.controller.UndoStack;
 import lichen.model.Genus;
 import lichen.model.Species;
 import lichen.view.MainGUI;
 
-public class DataImporter {
+public class INIfileReader {
 
 	private Genus lichen;
 	private String inipath = "";
+	private ArrayList<Pattern> patternList = new ArrayList<Pattern>();
 
-	public DataImporter() {
+	
+	/**
+	 * creates pattern for INI File reading 
+	 */
+	public INIfileReader() {
 
+		patternList.add(Pattern.compile(Pattern.quote("[")));
+		patternList.add(Pattern.compile(Pattern.quote("Anzahl=")));
+		patternList.add(Pattern.compile(Pattern.quote("inipath=")));
+		patternList.add(Pattern.compile(Pattern.quote("style=")));
+		patternList.add(Pattern.compile(Pattern.quote("history=no")));
+		
+		
 		openStream();
-		//	test();
+		//	test();		
 	}
 
 
@@ -51,7 +65,7 @@ public class DataImporter {
 
 		}
 		try{ 
-			readFile(stream);
+			readLichenINIFile(stream);
 		}catch (Exception e){
 			JOptionPane.showMessageDialog(null, "Fehler in der ARTENLISTE.INI Datei:\n\n" +  e.getMessage() + "\nLiMo-Anyalse kann nicht gestartet werden.\nBitte editieren sie die FLECHTE.INI.\n",  "Fehler INI Datei" , JOptionPane.ERROR_MESSAGE );
 		}
@@ -65,9 +79,11 @@ public class DataImporter {
 	 * @pre: FLECHTE.INI must be in programm directory 
 	 * @post: species are species-object in lichen 
 	 * @post lichen.genusCount is set
+	 * @post if longHistory is disabled: flag is set in UndoStack
+	 * @post if modern style is enabled: flag is set in MainGui
 	 * @throws IOException if read failed
 	 */
-	private void readFile(FileInputStream stream) throws Exception{
+	private void readLichenINIFile(FileInputStream stream) throws Exception{
 		lichen = Genus.getInstance();
 		
 		try {
@@ -76,10 +92,7 @@ public class DataImporter {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 			String s;
 			
-			Pattern g = Pattern.compile(Pattern.quote("["));
-			Pattern n = Pattern.compile(Pattern.quote("Anzahl="));
-			Pattern pathPattern = Pattern.compile(Pattern.quote("inipath="));
-			Pattern stylePattern = Pattern.compile(Pattern.quote("style="));
+
 			
 			boolean flag = false;
 			Species species;
@@ -91,14 +104,19 @@ public class DataImporter {
 			String lastGenus = ""; 
 
 			while((s = reader.readLine()) != null){
-				Matcher gm = g.matcher(s);
-				Matcher nm = n.matcher(s);
-				Matcher pm = pathPattern.matcher(s); 
-				Matcher styleM = stylePattern.matcher(s);
+				Matcher gm = patternList.get(0).matcher(s);
+				Matcher nm = patternList.get(1).matcher(s);
+				Matcher pm = patternList.get(2).matcher(s); 
+				Matcher styleM = patternList.get(3).matcher(s);
+				Matcher memoryM = patternList.get(4).matcher(s);
 				
 				if(pm.find()){
 					this.inipath = s.substring(9,s.length()-1); 
-				} 
+				}
+				
+				if(memoryM.find()){
+					UndoStack.setLongHistory(false);
+				}
 				
 				if(styleM.find()){
 					if(s.substring(6, s.length()).equalsIgnoreCase( "modern")){

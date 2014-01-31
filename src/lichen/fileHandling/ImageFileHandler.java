@@ -1,4 +1,4 @@
-package lichen.view;
+package lichen.fileHandling;
 
 import ij.ImagePlus;
 import ij.io.FileSaver;
@@ -9,12 +9,14 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import lichen.view.MainGUI;
+
 /**
  * For opening image files
  * @author menzel
  *
  */
-public class FileHandler {
+public class ImageFileHandler {
 
 	private String lastdir = "";
 	private static final int heapFactor = 80;

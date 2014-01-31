@@ -10,6 +10,9 @@ import java.util.ArrayList;
  */
 public class UndoStack {
 	
+
+	private static boolean longHistory = true;
+	
 	private int stackSize = 0;
 	private int[] pixels;
 	private ImageProcessor ip;
@@ -49,9 +52,13 @@ public class UndoStack {
 
 	/**
 	 * Adds a new undo Position to the stack
+	 * does nothing if static longHistory is false
 	 * @param undoPos a list of int[] which hold 
 	 */
 	public void add(ArrayList<int[]> undoPos){
+		if(!longHistory)
+			return;
+		
 		this.currentStoresPixelCount += undoPos.size();
 				
 		if(stackSize < undoStackSize){
@@ -80,7 +87,7 @@ public class UndoStack {
 	 * first undo, restores picture from lastImp, not from undoPosList 
 	 * @return pixelcount substracted
 	 */
-	private int undoAll(){ 
+	private int restoreLastImp(){ 
 		ip.setPixels(lastImp);
 
 		int p = lastImpPixelCount;
@@ -103,7 +110,7 @@ public class UndoStack {
 			undoPosList.remove(stackSize-1);
 
 			stackSize--; 
-			return undoAll();
+			return restoreLastImp();
 		}
 
 		int count =0;
@@ -136,6 +143,11 @@ public class UndoStack {
 		} 
 		
 		return 0;
+	}
+
+	public static void setLongHistory(boolean b) {
+		longHistory = b;
+		
 	}
 
 }

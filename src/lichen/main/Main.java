@@ -3,9 +3,9 @@ package lichen.main;
 import ij.gui.Toolbar;
 import lichen.controller.AutoAnalyzer;
 import lichen.controller.ColorStack;
-import lichen.controller.DataImporter;
 import lichen.controller.Processor;
-import lichen.view.FileHandler;
+import lichen.fileHandling.INIfileReader;
+import lichen.fileHandling.ImageFileHandler;
 import lichen.view.MainGUI;
 /*
 
@@ -36,13 +36,13 @@ public class Main {
 	public static void main(String[] args) {
 
 
-		FileHandler fh = new FileHandler();
+		ImageFileHandler fh = new ImageFileHandler();
 	//	AutoAnalyzer auto = new AutoAnalyzer();
 		Processor myProcessor = new Processor();
 		Toolbar t = new Toolbar();
 		
 		ColorStack.ColorStackInit();
-		DataImporter data = new DataImporter(); 
+		INIfileReader data = new INIfileReader(); 
 		fh.setLastDir(data.getInipath());
 
 		MainGUI gui = new MainGUI( fh, null, myProcessor, t); 

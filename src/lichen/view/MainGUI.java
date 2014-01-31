@@ -7,6 +7,7 @@ import ij.gui.Toolbar;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import lichen.controller.*;
+import lichen.fileHandling.ImageFileHandler;
 import lichen.model.Genus;
 import lichen.model.Measurement;
 import lichen.model.MeasurementsFactory;
@@ -27,7 +28,7 @@ import java.util.Locale;
 public class MainGUI extends JFrame{
 
 	private static final int RESULT_ROW_COUNT = 15;
-	protected FileHandler fh;
+	protected ImageFileHandler fh;
 	private AutoAnalyzer auto;
 	private Toolbar t;
 	private ImagePlus imp;
@@ -42,6 +43,7 @@ public class MainGUI extends JFrame{
 	private static final int UNIT_INCREMENT = 1000;
 	private static boolean styleModern = false; 
 	private static MainGUI gui;
+	public static boolean history;
 	private JPanel colorPanel;
 	private JPanel image;
 	private ImageCanvas ic;
@@ -62,7 +64,7 @@ public class MainGUI extends JFrame{
 	 * @param auto2 
 	 * @param fh2 
 	 */
-	public MainGUI( FileHandler fh, AutoAnalyzer auto, Processor myProcessor, Toolbar t) { 
+	public MainGUI( ImageFileHandler fh, AutoAnalyzer auto, Processor myProcessor, Toolbar t) { 
 		gui  = this; 
 		t.setTool(7); 
 

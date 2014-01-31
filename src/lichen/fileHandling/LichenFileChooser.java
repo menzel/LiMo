@@ -1,4 +1,4 @@
-package lichen.view;
+package lichen.fileHandling;
 
 import java.awt.Color;
 import java.awt.Dimension;

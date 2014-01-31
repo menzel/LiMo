@@ -1,4 +1,4 @@
-package lichen.controller;
+package lichen.fileHandling;
 
 import java.io.BufferedWriter;
 import java.io.File;
