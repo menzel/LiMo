@@ -57,7 +57,6 @@ public class ImageFileHandler {
 			/* check picture size*/
 			if(file.length()/(1024*1024)*heapFactor > heapSize){ /* Image size bigger than maxMemory*heapFactor  */ 
 
-				System.out.println(heapFactor);
 				returnValue = askUser(); 
 
 			}

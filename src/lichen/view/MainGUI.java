@@ -39,7 +39,7 @@ public class MainGUI extends JFrame{
 	double borderWidth = 0.76;
 	private double magnification = 1.0;
 	private static final String version = "1.0.3";
-	private static final String date = "30.01.2014";
+	private static final String date = "01.02.2014";
 	private static final int UNIT_INCREMENT = 1000;
 	private static boolean styleModern = false; 
 	private static MainGUI gui;
@@ -448,7 +448,7 @@ public class MainGUI extends JFrame{
 
 					magnification = scaleMag(imp.getCanvas().getMagnification());
 
-					System.out.println(magnification);
+					//System.out.println(magnification);
 
 					getContentPane().revalidate(); 
 					break;

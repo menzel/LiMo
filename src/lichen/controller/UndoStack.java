@@ -14,14 +14,16 @@ public class UndoStack {
 
 
 	private static boolean longHistory = true;
-	private static int undoStackSize = 50;
+	private static int undoStackSize = 50;	
+	private static int undoStackInitSize = 20;
+
 
 	private int stackSize = 0;
 	private int[] pixels;
 	private ImageProcessor ip;
 	private int[] lastImp;
 	private int lastImpPixelCount = 0;
-	private List<ArrayList<int[]>> undoPosList = new ArrayList<ArrayList<int[]>>(20);	
+	private List<ArrayList<int[]>> undoPosList = new ArrayList<ArrayList<int[]>>(undoStackInitSize);	
 
 	@SuppressWarnings("unused")
 	private long currentStoresPixelCount = 0;
@@ -153,8 +155,10 @@ public class UndoStack {
 	 */
 	public static void setLongHistory(boolean b) {
 		longHistory = b;
-		if(!b)
+		if(!b){
 			undoStackSize = 1;
+			undoStackInitSize = 1;
+		}
 	}
 
 }
