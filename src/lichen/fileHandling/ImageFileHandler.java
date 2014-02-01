@@ -13,13 +13,14 @@ import lichen.view.MainGUI;
 
 /**
  * For opening image files
+ * checks for file size
  * @author menzel
  *
  */
 public class ImageFileHandler {
 
 	private String lastdir = "";
-	private static final int heapFactor = 80;
+	private static int heapFactor = 80;
 
 	/**
 	 * Shows FileChooser Dialog to choose a picture
@@ -56,6 +57,7 @@ public class ImageFileHandler {
 			/* check picture size*/
 			if(file.length()/(1024*1024)*heapFactor > heapSize){ /* Image size bigger than maxMemory*heapFactor  */ 
 
+				System.out.println(heapFactor);
 				returnValue = askUser(); 
 
 			}
@@ -110,7 +112,8 @@ public class ImageFileHandler {
 	}
 
 	/**
-	 * @return
+	 * ask user to shrink the image
+	 * @return answer JOPTIONPANE.YES || .NO
 	 */
 	private int askUser() {
 		int returnValue;
@@ -173,4 +176,8 @@ public class ImageFileHandler {
 		imp.setProcessor(imp.getProcessor().bin(sFactor)); 
 
 	} 
+	
+	public static void setHeapFactor(int f){
+		heapFactor = f;
+	}
 }

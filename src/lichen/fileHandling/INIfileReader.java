@@ -80,6 +80,7 @@ public class INIfileReader {
 	 * @post: species are species-object in lichen 
 	 * @post lichen.genusCount is set
 	 * @post if longHistory is disabled: set Flag method is called in UndoStack
+	 * @post if longHistory is disabled: set HeadFactor to 1
 	 * @post if modern style is enabled: flag is set in MainGui
 	 * @throws IOException if read failed
 	 */
@@ -115,7 +116,8 @@ public class INIfileReader {
 				}
 				
 				if(memoryM.find()){
-					UndoStack.setLongHistory(false);
+					UndoStack.setLongHistory(false); // set history to short and length to 1
+					ImageFileHandler.setHeapFactor(1); // set heap factor in ImageFileHanlder to 1
 				}
 				
 				if(styleM.find()){
