@@ -1374,9 +1374,9 @@ public class MainGUI extends JFrame{
 		ic.setSize(new Dimension(image.getSize().width, image.getSize().height));
 		this.ic = ic;
 
+		ic.getParent().remove(ic);
+
 		this.image.add(ic);
-
-
 	}
 
 	public ImageCanvas getIc() {
