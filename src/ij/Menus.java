@@ -2,12 +2,9 @@ package ij;
 import ij.macro.MacroInstaller;
 import ij.process.*;
 import ij.util.*;
-import ij.gui.ImageWindow;
-import ij.gui.Toolbar;
 
 import java.awt.*;
 import java.awt.image.*;
-import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 import java.applet.Applet;
@@ -41,8 +38,7 @@ public class Menus {
 	public static final int COMMAND_IN_USE = -1;
 	public static final int INVALID_SHORTCUT = -2;
 	public static final int SHORTCUT_IN_USE = -3;
-	public static final int NOT_INSTALLED = -4;
-	public static final int COMMAND_NOT_FOUND = -5;
+    public static final int COMMAND_NOT_FOUND = -5;
 	
 	public static final int MAX_OPEN_RECENT_ITEMS = 15;
 
@@ -54,8 +50,7 @@ public class Menus {
 
 	private static ImageJ ij;
 	private static Applet applet;
-	private Hashtable demoImagesTable = new Hashtable();
-	private static String pluginsPath, macrosPath;
+    private static String pluginsPath, macrosPath;
 	private static Properties menus;
 	private static Properties menuSeparators;
 	private static Menu pluginsMenu, saveAsMenu, shortcutsMenu, utilitiesMenu, macrosMenu;
@@ -69,7 +64,6 @@ public class Menus {
 	static int windowMenuItems2; // non-image windows listed in Window menu + separator
 	private String error;
 	private String jarError;
-	private String pluginError;
     private boolean isJarErrorHeading;
 	private static boolean installingJars, duplicateCommand;
 	private static Vector jarFiles;  // JAR files in plugins folder with "_" in their name
@@ -390,12 +384,7 @@ public class Menus {
 		nPlugins++;
 	}
 
-	void checkForDuplicate(String command) {
-		if (pluginsTable.get(command)!=null) {
-		}
-	}
-	
-	void addPluginsMenu() {
+    void addPluginsMenu() {
 		String value,label,className;
 		int index;
 		//pluginsMenu = new Menu("Plugins");
@@ -554,14 +543,8 @@ public class Menus {
 		}
 		menu.add(item);
 	}
-	
-	public static String getJarFileForMenuEntry(String menuEntry) {
-		if (instance == null)
-			return null;
-		return (String)instance.menuEntry2jarFile.get(menuEntry);
-	}
 
-	/** Install plugins located in JAR files. */
+    /** Install plugins located in JAR files. */
 	void installJarPlugins() {
 		if (jarFiles==null)
 			return;
@@ -883,7 +866,7 @@ public class Menus {
 			}
 		}
 		list = new String[v.size()];
-		v.copyInto((String[])list);
+		v.copyInto(list);
 		StringSorter.sort(list);
 		return list;
 	}
@@ -1078,30 +1061,9 @@ public class Menus {
 			}
 		} catch (Exception e) {}
 	}
-	
-	static boolean isColorLut(ImagePlus imp) {
-		ImageProcessor ip = imp.getProcessor();
-    	IndexColorModel cm = (IndexColorModel)ip.getColorModel();
-    	if (cm==null) return false;
-		int mapSize = cm.getMapSize();
-		byte[] reds = new byte[mapSize];
-		byte[] greens = new byte[mapSize];
-		byte[] blues = new byte[mapSize];	
-		cm.getReds(reds); 
-		cm.getGreens(greens); 
-		cm.getBlues(blues);
-		boolean isColor = false;
-		for (int i=0; i<mapSize; i++) {
-			if ((reds[i] != greens[i]) || (greens[i] != blues[i])) {
-				isColor = true;
-				break;
-			}
-		}
-		return isColor;
-	}
 
-	
-	/** Returns the path to the user plugins directory or
+
+    /** Returns the path to the user plugins directory or
 		null if the plugins directory was not found. */
 	public static String getPlugInsPath() {
 		return pluginsPath;
@@ -1163,8 +1125,7 @@ public class Menus {
 				size *= 2;
 				break;
 			default: // 8-bit
-				;
-		}
+        }
 		CheckboxMenuItem item = new CheckboxMenuItem(name + " " + size + "K");
 		item.setActionCommand("" + imp.getID());
 		window.add(item);
@@ -1235,99 +1196,9 @@ public class Menus {
 	public static PopupMenu getPopupMenu() {
 		return popup;
 	}
-	
-	public static Menu getSaveAsMenu() {
-		return saveAsMenu;
-	}
 
-	/** Adds a plugin based command to the end of a specified menu.
-	* @param plugin			the plugin (e.g. "Inverter_", "Inverter_("arg")")
-	* @param menuCode		PLUGINS_MENU, IMPORT_MENU, SAVE_AS_MENU or HOT_KEYS
-	* @param command		the menu item label (set to "" to uninstall)
-	* @param shortcut		the keyboard shortcut (e.g. "y", "Y", "F1")
-	* @param ij				ImageJ (the action listener)
-	*
-	* @return				returns an error code(NORMAL_RETURN,COMMAND_IN_USE_ERROR, etc.)
-	*/
-	public static int installPlugin(String plugin, char menuCode, String command, String shortcut, ImageJ ij) {
-		if (command.equals("")) { //uninstall
-			//Object o = pluginsPrefs.remove(plugin);
-			//if (o==null)
-			//	return NOT_INSTALLED;
-			//else
-				return NORMAL_RETURN;
-		}
-		
-		if (commandInUse(command))
-			return COMMAND_IN_USE;
-		if (!validShortcut(shortcut))
-			return INVALID_SHORTCUT;
-		if (shortcutInUse(shortcut))
-			return SHORTCUT_IN_USE;
-			
-		Menu menu;
-		switch (menuCode) {
-			case PLUGINS_MENU: menu = pluginsMenu; break;
-			case IMPORT_MENU: menu = getMenu("File>Import"); break;
-			case SAVE_AS_MENU: menu = getMenu("File>Save As"); break;
-			case SHORTCUTS_MENU: menu = shortcutsMenu; break;
-			case ABOUT_MENU: menu = getMenu("Help>About Plugins"); break;
-			case FILTERS_MENU: menu = getMenu("Process>Filters"); break;
-			case TOOLS_MENU: menu = getMenu("Analyze>Tools"); break;
-			case UTILITIES_MENU: menu = utilitiesMenu; break;
-			default: return 0;
-		}
-		int code = convertShortcutToCode(shortcut);
-		MenuItem item;
-		boolean functionKey = code>=KeyEvent.VK_F1 && code<=KeyEvent.VK_F12;
-		if (code==0)
-			item = new MenuItem(command);
-		else if (functionKey) {
-			command += " [F"+(code-KeyEvent.VK_F1+1)+"]";
-			shortcuts.put(new Integer(code),command);
-			item = new MenuItem(command);
-		}else {
-			shortcuts.put(new Integer(code),command);
-			int keyCode = code;
-			boolean shift = false;
-			if (keyCode>=265 && keyCode<=290) {
-				keyCode -= 200;
-				shift = true;
-			}
-			item = new MenuItem(command, new MenuShortcut(keyCode, shift));
-		}
-		menu.add(item);
-		item.addActionListener(ij);
-		pluginsTable.put(command, plugin);
-		shortcut = code>0 && !functionKey?"["+shortcut+"]":"";
-		//IJ.write("installPlugin: "+menuCode+",\""+command+shortcut+"\","+plugin);
-		pluginsPrefs.addElement(menuCode+",\""+command+shortcut+"\","+plugin);
-		return NORMAL_RETURN;
-	}
-	
-	/** Deletes a command installed by installPlugin. */
-	public static int uninstallPlugin(String command) {
-		boolean found = false;
-		for (Enumeration en=pluginsPrefs.elements(); en.hasMoreElements();) {
-			String cmd = (String)en.nextElement();
-			if (cmd.indexOf(command)>0) {
-				pluginsPrefs.removeElement((Object)cmd);
-				found = true;
-				break;
-			}
-		}
-		if (found)
-			return NORMAL_RETURN;
-		else
-			return COMMAND_NOT_FOUND;
-
-	}
-	
-	public static boolean commandInUse(String command) {
-		if (pluginsTable.get(command)!=null)
-			return true;
-		else
-			return false;
+    public static boolean commandInUse(String command) {
+        return pluginsTable.get(command) != null;
 	}
 
 	public static int convertShortcutToCode(String shortcut) {
@@ -1423,29 +1294,15 @@ public class Menus {
 			return true;
 		else if (len==1)
 			return true;
-		else if (shortcut.startsWith("F") && (len==2 || len==3))
-			return true;
-		else
-			return false;
+		else return shortcut.startsWith("F") && (len == 2 || len == 3);
 	}
 
 	public static boolean shortcutInUse(String shortcut) {
 		int code = convertShortcutToCode(shortcut);
-		if (shortcuts.get(new Integer(code))!=null)
-			return true;
-		else
-			return false;
+        return shortcuts.get(new Integer(code)) != null;
 	}
-	
-	/** Set the size (in points) used for the fonts in ImageJ menus. 
-		Set the size to 0 to use the Java default size. */
-	public static void setFontSize(int size) {
-		if (size<9 && size!=0) size = 9;
-		if (size>24) size = 24;
-		fontSize = size;
-	}
-	
-	/** Returns the size (in points) used for the fonts in ImageJ menus. Returns
+
+    /** Returns the size (in points) used for the fonts in ImageJ menus. Returns
 		0 if the default font size is being used or if this is a Macintosh. */
 	public static int getFontSize() {
 		return IJ.isMacintosh()?0:fontSize;
@@ -1483,6 +1340,6 @@ public class Menus {
 		if (err!=null) IJ.error(err);
 		IJ.setClassLoader(null);
 		IJ.runPlugIn("ij.plugin.ClassChecker", "");
-		IJ.showStatus("Menus updated: "+m.nPlugins + " commands, " + m.nMacros + " macros");
+		IJ.showStatus("Menus updated: "+ nPlugins + " commands, " + nMacros + " macros");
 	}
 }

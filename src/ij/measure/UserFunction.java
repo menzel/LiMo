@@ -18,6 +18,6 @@ public interface UserFunction {
      *                  Ignore it when using the minimizer.
      * @return          The result of the function.
      */
-    public double userFunction(double[] params, double x);
+    double userFunction(double[] params, double x);
 }
 

@@ -14,11 +14,8 @@ public class ScrollbarWithLabel extends Panel implements Adjustable, AdjustmentL
 	private Icon icon;
 	private StackWindow stackWindow;
 	transient AdjustmentListener adjustmentListener;
-	
-	public ScrollbarWithLabel() {
-	}
 
-	public ScrollbarWithLabel(StackWindow stackWindow, int value, int visible, int minimum, int maximum, char label) {
+    public ScrollbarWithLabel(StackWindow stackWindow, int value, int visible, int minimum, int maximum, char label) {
 		super(new BorderLayout(2, 0));
 		this.stackWindow = stackWindow;
 		bar = new Scrollbar(Scrollbar.HORIZONTAL, value, visible, minimum, maximum);
@@ -143,9 +140,8 @@ public class ScrollbarWithLabel extends Panel implements Adjustable, AdjustmentL
 		private static final int WIDTH = 12, HEIGHT=14;
 		private BasicStroke stroke = new BasicStroke(2f);
 		private char type;
-		private Image image;
 
-		public Icon(char type) {
+        public Icon(char type) {
 			addMouseListener(this);
 			addKeyListener(IJ.getInstance()); 
 			setSize(WIDTH, HEIGHT);

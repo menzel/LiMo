@@ -3,17 +3,13 @@ import java.awt.*;
 import java.awt.event.*;
 
 import ij.*;
-import ij.plugin.*;
 
 /**  This is a closeable window that plugins can extend. */
 public class PlugInFrame extends Frame implements PlugIn, WindowListener, FocusListener {
 
-	String title;
-	
 	public PlugInFrame(String title) {
 		super(title);
 		enableEvents(AWTEvent.WINDOW_EVENT_MASK);
-		this.title = title;
 		ImageJ ij = IJ.getInstance();
 		addWindowListener(this);
  		addFocusListener(this);

@@ -144,7 +144,7 @@ public class WindowManager {
 	/** Returns an array containing a list of the non-image windows. */
 	public synchronized static Frame[] getNonImageWindows() {
 		Frame[] list = new Frame[nonImageList.size()];
-		nonImageList.copyInto((Frame[])list);
+		nonImageList.copyInto(list);
 		return list;
 	}
 
@@ -274,12 +274,7 @@ public class WindowManager {
         return name;
 	}
 
-	/** If 'name' is not unique, adds -1, -2, etc. as needed to make it unique. */
-	public static String makeUniqueName(String name) {
-    	return isDuplicateName(name)?getUniqueName(name):name;
-    }
-
-	/** Removes the specified window from the Window menu. */
+    /** Removes the specified window from the Window menu. */
 	public synchronized static void removeWindow(Frame win) {
 		//IJ.write("removeWindow: "+win.getTitle());
 		if (win instanceof ImageWindow)
@@ -448,18 +443,7 @@ public class WindowManager {
 			}
 		}
 	}
-    
-	static void showList() {
-		if (IJ.debugMode) {
-			for (int i=0; i<imageList.size(); i++) {
-				ImageWindow win = (ImageWindow)imageList.elementAt(i);
-				ImagePlus imp = win.getImagePlus();
-				IJ.log(i + " " + imp.getTitle() + (win==currentWindow?"*":""));
-			}
-			IJ.log(" ");
-		}
-    }
-    
+
     public static void toFront(Frame frame) {
 		if (frame==null) return;
 		if (frame.getState()==Frame.ICONIFIED)

@@ -2,17 +2,10 @@ package ij.plugin.frame;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.io.*;
 
 import ij.*;
-import ij.plugin.*;
-import ij.plugin.frame.*; 
-import ij.text.*;
 import ij.gui.*;
 import ij.util.*;
-import ij.io.*;
-import ij.process.*;
-import ij.measure.*;
 
 /** This is ImageJ's macro recorder. */
 public class Recorder extends PlugInFrame implements PlugIn, ActionListener, ImageListener, ItemListener {
@@ -28,7 +21,6 @@ public class Recorder extends PlugInFrame implements PlugIn, ActionListener, Ima
 	private Choice mode;
 	private Button makeMacro, help;
 	private TextField fileName;
-	private String fitTypeStr = CurveFitter.fitList[0];
 	private static TextArea textArea;
 	private static Recorder instance;
 	private static String commandName;
@@ -39,48 +31,6 @@ public class Recorder extends PlugInFrame implements PlugIn, ActionListener, Ima
 	private static boolean imageUpdated;
 	private static int imageID;
 
-	public Recorder() {
-		super("Recorder");
-		if (instance!=null) {
-			WindowManager.toFront(instance);
-			return;
-		}
-		WindowManager.addWindow(this);
-		instance = this;
-		record = true;
-		scriptMode = false;
-		recordInMacros = false;
-		Panel panel = new Panel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-		panel.add(new Label("  Record:"));
-		mode = new Choice();
-		for (int i=0; i<modes.length; i++)
-			mode.addItem(modes[i]);
-		mode.addItemListener(this);
-		mode.select(Prefs.get("recorder.mode", modes[MACRO]));
-		panel.add(mode);
-		panel.add(new Label("    Name:"));
-		fileName = new TextField(defaultName, 15);
-		setFileName();
-		panel.add(fileName);
-		panel.add(new Label("   "));
-		makeMacro = new Button("Create");
-		makeMacro.addActionListener(this);
-		panel.add(makeMacro);
-		panel.add(new Label("   "));
-		help = new Button("?");
-		help.addActionListener(this);
-		panel.add(help);
-		add("North", panel);
-		textArea = new TextArea("", 15, 80, TextArea.SCROLLBARS_VERTICAL_ONLY);
-		textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-		if (IJ.isLinux()) textArea.setBackground(Color.white);
-		add("Center", textArea);
-		pack();
-		GUI.center(this);
-		show();
-		IJ.register(Recorder.class);
-	}
-	
 	public static void record(String method) {
 		if (textArea==null)
 			return;
@@ -150,11 +100,6 @@ public class Recorder extends PlugInFrame implements PlugIn, ActionListener, Ima
 			textArea.append(method+"(\""+arg1+"\", \""+arg2+"\");\n");
 		}
 	}
-	
-	public static void record(String method, String arg1, String arg2, String arg3) {
-		if (textArea==null) return;
-		textArea.append(method+"(\""+arg1+"\", \""+arg2+"\",\""+arg3+"\");\n");
-	}
 
 	public static void record(String method, int a1) {
 		if (textArea==null) return;
@@ -182,12 +127,6 @@ public class Recorder extends PlugInFrame implements PlugIn, ActionListener, Ima
 		textArea.append(method+"(\""+a1+"\", "+a2+");\n");
 	}
 
-	public static void record(String method, String args, int a1, int a2) {
-		if (textArea==null) return;
-		method = "//"+method;
-		textArea.append(method+"(\""+args+"\", "+a1+", "+a2+");\n");
-	}
-
 	public static void record(String method, int a1, int a2, int a3, int a4) {
 		if (textArea==null) return;
 		if (scriptMode&&method.startsWith("make")) {
@@ -209,13 +148,6 @@ public class Recorder extends PlugInFrame implements PlugIn, ActionListener, Ima
 		textArea.append(method+"("+a1+", "+a2+", "+a3+", "+a4+", "+IJ.d2s(a5,2)+");\n");
 	}
 
-	public static void record(String method, String path, String args, int a1, int a2, int a3, int a4, int a5) {
-		if (textArea==null) return;
-		path = fixPath(path);
-		method = "//"+method;
-		textArea.append(method+"(\""+path+"\", "+"\""+args+"\", "+a1+", "+a2+", "+a3+", "+a4+", "+a5+");\n");
-	}
-	
 	public static void recordString(String str) {
 		if (textArea!=null)
 			textArea.append(str);
@@ -551,11 +483,6 @@ public class Recorder extends PlugInFrame implements PlugIn, ActionListener, Ima
 		ed.setTitle(name);
 	}
 
-	/** Temporarily disables path recording. */
-	public static void disablePathRecording() {
-		recordPath = false;
-	}
-	
 	public static boolean scriptMode() {
 		return scriptMode;
 	}

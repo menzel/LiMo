@@ -11,9 +11,6 @@ import java.text.*;
 import java.util.Locale;
 import java.io.*;
 
-import lichen.model.Measurement;
-import lichen.model.MeasurementsFactory;
-
 
 /** This is a table for storing measurement results as columns of numeric values. 
 	Call the static ResultsTable.getResultsTable() method to get a reference to the 
@@ -27,16 +24,41 @@ public class ResultsTable implements Cloneable {
 	
 	public static final int COLUMN_NOT_FOUND = -1;
 	public static final int COLUMN_IN_USE = -2;
-	public static final int TABLE_FULL = -3; // no longer used
-	
-	public static final int AREA=0, MEAN=1, STD_DEV=2, MODE=3, MIN=4, MAX=5,
-		X_CENTROID=6, Y_CENTROID=7, X_CENTER_OF_MASS=8, Y_CENTER_OF_MASS=9,
-		PERIMETER=10, ROI_X=11, ROI_Y=12, ROI_WIDTH=13, ROI_HEIGHT=14,
-		MAJOR=15, MINOR=16, ANGLE=17, CIRCULARITY=18, FERET=19, 
-		INTEGRATED_DENSITY=20, MEDIAN=21, SKEWNESS=22, KURTOSIS=23, 
-		AREA_FRACTION=24, RAW_INTEGRATED_DENSITY=25, CHANNEL=26, SLICE=27, FRAME=28, 
-		FERET_X=29, FERET_Y=30, FERET_ANGLE=31, MIN_FERET=32, ASPECT_RATIO=33,
-		ROUNDNESS=34, SOLIDITY=35, LAST_HEADING=35;
+
+	public static final int AREA=0;
+	public static final int MEAN=1;
+	public static final int STD_DEV=2;
+	public static final int MODE=3;
+	public static final int MIN=4;
+	public static final int MAX=5;
+	public static final int X_CENTROID=6;
+	public static final int Y_CENTROID=7;
+	public static final int X_CENTER_OF_MASS=8;
+	public static final int Y_CENTER_OF_MASS=9;
+	public static final int PERIMETER=10;
+	public static final int ROI_X=11;
+	public static final int ROI_Y=12;
+	public static final int ROI_WIDTH=13;
+	public static final int ROI_HEIGHT=14;
+	public static final int MAJOR=15;
+	public static final int MINOR=16;
+	public static final int ANGLE=17;
+	public static final int CIRCULARITY=18;
+	public static final int FERET=19;
+	public static final int INTEGRATED_DENSITY=20;
+	public static final int MEDIAN=21;
+	public static final int SKEWNESS=22;
+	public static final int KURTOSIS=23;
+	public static final int AREA_FRACTION=24;
+	public static final int RAW_INTEGRATED_DENSITY=25;
+	public static final int FERET_X=29;
+	public static final int FERET_Y=30;
+	public static final int FERET_ANGLE=31;
+	public static final int MIN_FERET=32;
+	public static final int ASPECT_RATIO=33;
+	public static final int ROUNDNESS=34;
+	public static final int SOLIDITY=35;
+	public static final int LAST_HEADING=35;
 	private static final String[] defaultHeadings = {"Area","Mean","StdDev","Mode","Min","Max",
 		"X","Y","XM","YM","Perim.","BX","BY","Width","Height","Major","Minor","Angle",
 		"Circ.", "Feret", "IntDen", "Median","Skew","Kurt", "%Area", "RawIntDen", "Ch", "Slice", "Frame", 
@@ -66,15 +88,6 @@ public class ResultsTable implements Cloneable {
 		table must be displayed in the "Results" window. */
 	public static ResultsTable getResultsTable() {
 		return Analyzer.getResultsTable();
-	}
-		
-	/** Returns the "Results" TextWindow. */
-	public static TextWindow getResultsWindow() {
-		Frame f = WindowManager.getFrame("Results");
-		if (f==null || !(f instanceof TextWindow))
-			return null;
-		else
-			return (TextWindow)f;
 	}
 
 	/** Increments the measurement counter by one. */
@@ -155,13 +168,6 @@ public class ResultsTable implements Cloneable {
 		addValue(index, value);
 		keep[index] = true;
 	}
-	
-	/** Adds a label to the beginning of the current row. Counter must be >0. */
-	public void addLabel(String label) {
-		if (rowLabelHeading.equals(""))
-			rowLabelHeading = "Label";
-		addLabel(rowLabelHeading, label);
-	}
 
 	/** Adds a label to the beginning of the current row. Counter must be >0. */
 	public void addLabel(String columnHeading, String label) {
@@ -207,56 +213,6 @@ public class ResultsTable implements Cloneable {
 				data[i] = (float)columns[column][i];
 			return data;
 		}
-	}
-	
-	/** Returns a copy of the given column as a double array,
-		or null if the column is empty. */
-	public double[] getColumnAsDoubles(int column) {
-		if ((column<0) || (column>=maxColumns))
-			throw new IllegalArgumentException("Index out of range: "+column);
-		if (columns[column]==null)
-			return null;
-		else {
-			double[] data = new double[counter];
-			for (int i=0; i<counter; i++)
-				data[i] = columns[column][i];
-			return data;
-		}
-	}
-	
-	/** Returns the contents of this ResultsTable as a FloatProcessor. */
-	public ImageProcessor getTableAsImage() {
-		FloatProcessor fp = null;
-		int columns = 0;
-		int[] col = new int[lastColumn+1];
-		for (int i=0; i<=lastColumn; i++) {
-			if (columnExists(i)) {
-				col[columns] = i;
-				columns++;
-			}
-		}
-		if (columns==0) return null;
-		int rows = getCounter();
-		if (rows==0) return null;
-		fp = new FloatProcessor(columns, rows);
-		for (int x=0; x<columns; x++) {
-			for (int y=0; y<rows; y++)
-				fp.setf(x,y,(float)getValueAsDouble(col[x],y));
-		}
-		return fp;
-	}
-	
-	/** Creates a ResultsTable from an image or image selection. */
-	public static ResultsTable createTableFromImage(ImageProcessor ip) {
-		ResultsTable rt = new ResultsTable();
-		Rectangle r = ip.getRoi();
-		for (int y=r.y; y<r.y+r.height; y++) {
-			rt.incrementCounter();
-			rt.addLabel(" ", "Y"+y);
-			for (int x=r.x; x<r.x+r.width; x++)
-				rt.addValue("X"+x, ip.getPixelValue(x,y));
-		}
-		return rt;
 	}
 
 	/** Returns true if the specified column exists and is not empty. */
@@ -569,17 +525,6 @@ public class ResultsTable implements Cloneable {
 		return lastColumn;
 	}
 
-	/** Adds the last row in this table to the Results window without updating it. */
-	public void addResults() {
-		if (counter==1)
-			IJ.setColumnHeadings(getColumnHeadings());		
-		TextPanel textPanel = IJ.getTextPanel();
-		String s = getRowAsString(counter-1);
-		if (textPanel!=null)
-				textPanel.appendWithoutUpdate(s);
-		//TODO: results go through here
-	}
-
 	/** Updates the Results window. */
 	public void updateResults() {
 		TextPanel textPanel = IJ.getTextPanel();
@@ -686,23 +631,8 @@ public class ResultsTable implements Cloneable {
 	String[] getRowLabels() {
 		return rowLabels;
 	}
-	
-	/** Opens a tab or comma delimited text file and returns it 
-	* as a ResultsTable, without requiring a try/catch statement.
-	* Displays a file open dialog if 'path' is empty or null.
-	*/
-	public static ResultsTable open2(String path) {
-		ResultsTable rt = null;
-		try {
-			rt = open(path);
-		} catch (IOException e) {
-			IJ.error("Open Results", e.getMessage());
-			rt = null;
-		}
-		return rt;
-	}
-	
-	/** Opens a tab or comma delimited text file and returns it as a 
+
+	/** Opens a tab or comma delimited text file and returns it as a
 	* ResultsTable. Displays a file open dialog if 'path' is empty or null.
 	* Displays non-numeric tables in a TextWindow and returns null.
 	* @see #open2(String)

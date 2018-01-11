@@ -1,9 +1,9 @@
 package ij.plugin.frame;
 import ij.*;
-import ij.plugin.*;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Vector;
+
 import ij.process.*;
 import ij.gui.*;
 
@@ -12,50 +12,10 @@ public class ColorPicker extends PlugInFrame {
 	static final String LOC_KEY = "cp.loc";
 	static ColorPicker instance;
 
-    public ColorPicker() {
-		super("CP");
-		if (instance!=null) {
-			WindowManager.toFront(instance);
-			return;
-		}
-		instance = this;
-		WindowManager.addWindow(this);
-        int colorWidth = 22;
-        int colorHeight = 16;
-        int columns = 5;
-        int rows = 20;
-        int width = columns*colorWidth;
-        int height = rows*colorHeight;
-        addKeyListener(IJ.getInstance());
-		setLayout(new BorderLayout());
-        ColorGenerator cg = new ColorGenerator(width, height, new int[width*height]);
-        cg.drawColors(colorWidth, colorHeight, columns, rows);
-        Canvas colorCanvas = new ColorCanvas(width, height, this, cg);
-        Panel panel = new Panel();
-        panel.add(colorCanvas);
-        add(panel);
-		setResizable(false);
-		pack();
-		Point loc = Prefs.getLocation(LOC_KEY);
-		if (loc!=null)
-			setLocation(loc);
-		else
-			GUI.center(this);
-		show();
-    }
-    
-    public void close() {
-	 	super.close();
-		instance = null;
-		Prefs.saveLocation(LOC_KEY, getLocation());
-		IJ.notifyEventListeners(IJEventListener.COLOR_PICKER_CLOSED);
-	}
-
 }
 
 class ColorGenerator extends ColorProcessor {
     int w, h;
-    int[] colors = {0xff0000, 0x00ff00, 0x0000ff, 0xffffff, 0x00ffff, 0xff00ff, 0xffff00, 0x000000};
 
     public ColorGenerator(int width, int height, int[] pixels) {
         super(width, height, pixels);
@@ -98,12 +58,6 @@ class ColorGenerator extends ColorProcessor {
         drawSpectrum(h);        
         resetRoi();
     }
-       
-    void drawColor(int x, int y, Color c) {
-        setRoi(x*w, y*h, w, h);
-        setColor(c);
-        fill();
-    }
 
     public void refreshBackground() {
         //Boundary for Background Selection
@@ -133,7 +87,7 @@ class ColorGenerator extends ColorProcessor {
 			for ( int y=0; y<32; y++) {
 				float hue = (float)(y/(2*h)-.15);        
 				c = Color.getHSBColor(hue, 1f, 1f);
-				setRoi(x*(int)(w/2), y*(int)(h/2), (int)w/2, (int)h/2);
+				setRoi(x* w/2, y*(int)(h/2), w /2, (int)h/2);
 				setColor(c);
 				fill();
 			}
@@ -197,8 +151,7 @@ class ColorGenerator extends ColorProcessor {
 
 class ColorCanvas extends Canvas implements MouseListener, MouseMotionListener{
 	int width, height;
-	Vector colors;
-	boolean background;
+    boolean background;
 	long mouseDownTime;
 	ColorGenerator ip;
 	Frame frame;
@@ -319,14 +272,8 @@ class ColorCanvas extends Canvas implements MouseListener, MouseMotionListener{
 		else
 			Toolbar.setForegroundColor(c);
 	}
-	
-	public void refreshColors() {
-		ip.refreshBackground();
-		ip.refreshForeground();
-		repaint();
-	}
 
-	public void mouseReleased(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 	public void mouseClicked(MouseEvent e) {}
 	public void mouseEntered(MouseEvent e) {}

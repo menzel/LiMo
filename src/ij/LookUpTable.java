@@ -5,9 +5,7 @@ import ij.process.*;
 
 /** This class represents a color look-up table. */
 public class LookUpTable extends Object {
-	private int width, height;
-	private byte[] pixels;
-	private int mapSize = 0;
+    private int mapSize = 0;
 	private ColorModel cm;
 	private byte[] rLUT, gLUT,bLUT;
 
@@ -18,8 +16,8 @@ public class LookUpTable extends Object {
 			pg.grabPixels();
 			cm = pg.getColorModel();
 		}
-		catch (InterruptedException e){};
-		getColors(cm);
+		catch (InterruptedException e){}
+        getColors(cm);
 	}
 
 	/** Constructs a LookUpTable object from a ColorModel. */
@@ -74,23 +72,8 @@ public class LookUpTable extends Object {
 				isGray = false;
 		return isGray;
 	}
-			
-	public void drawColorBar(Graphics g, int x, int y, int width, int height) {
-		if (mapSize == 0)
-			return;
-		ColorProcessor cp = new ColorProcessor(width, height);
-		double scale = 256.0/mapSize;
-		for (int i = 0; i<256; i++) {
-			int index = (int)(i/scale);
-			cp.setColor(new Color(rLUT[index]&0xff,gLUT[index]&0xff,bLUT[index]&0xff));
-			cp.moveTo(i,0); cp.lineTo(i,height);
-		}
-		g.drawImage(cp.createImage(),x,y,null);
-		g.setColor(Color.black);
-		g.drawRect(x, y, width, height);
-	}
 
-	public void drawUnscaledColorBar(ImageProcessor ip, int x, int y, int width, int height) {
+    public void drawUnscaledColorBar(ImageProcessor ip, int x, int y, int width, int height) {
 		ImageProcessor bar = null;
 		if (ip instanceof ColorProcessor)
 			bar = new ColorProcessor(width, height);

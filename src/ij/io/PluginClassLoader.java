@@ -16,7 +16,6 @@ import java.net.*;
  * <p> The class loader does not recurse into subdirectories beyond the first level.
 */
 public class PluginClassLoader extends URLClassLoader {
-    protected String path;
 
     /**
      * Creates a new PluginClassLoader that searches in the directory path
@@ -37,9 +36,8 @@ public class PluginClassLoader extends URLClassLoader {
 	}
 
 	void init(String path) {
-		this.path = path;
 
-		//find all JAR files on the path and subdirectories
+        //find all JAR files on the path and subdirectories
 		File f = new File(path);
         try {
             // Add plugin directory to search path

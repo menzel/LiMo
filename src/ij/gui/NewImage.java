@@ -1,9 +1,5 @@
 package ij.gui;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.io.*;
-import java.awt.event.*;
 import java.util.*;
 import ij.*;
 import ij.process.*;
@@ -29,13 +25,9 @@ public class NewImage {
     private static int fillWith = Prefs.getInt(FILL, OLD_FILL_WHITE);
     private static String[] types = {"8-bit", "16-bit", "32-bit", "RGB"};
     private static String[] fill = {"White", "Black", "Ramp"};
-    
-	
-    public NewImage() {
-    	openImage();
-    }
-    
-	static boolean createStack(ImagePlus imp, ImageProcessor ip, int nSlices, int type, int options) {
+
+
+    static boolean createStack(ImagePlus imp, ImageProcessor ip, int nSlices, int type, int options) {
 		int fill = getFill(options);
 		int width = imp.getWidth();
 		int height = imp.getHeight();
@@ -86,8 +78,8 @@ public class NewImage {
 				if (fill!=FILL_BLACK || type==RGB)
 					System.arraycopy(ip.getPixels(), 0, pixels2, 0, width*height);
 				stack.addSlice(null, pixels2);
-				if (IJ.escapePressed()) {IJ.beep(); break;};
-			}
+				if (IJ.escapePressed()) {IJ.beep(); break;}
+            }
 		}
 		catch(OutOfMemoryError e) {
 			IJ.outOfMemory(imp.getTitle());

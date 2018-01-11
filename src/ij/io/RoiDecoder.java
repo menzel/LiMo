@@ -3,8 +3,6 @@ import ij.gui.*;
 import ij.ImagePlus;
 import ij.process.*;
 import java.io.*;
-import java.util.*;
-import java.net.*;
 import java.awt.*;
 
 /*	ImageJ/NIH Image 64 byte ROI outline header
@@ -72,8 +70,7 @@ public class RoiDecoder {
 	public static final int NAME_LENGTH = 20;
 	public static final int OVERLAY_LABEL_COLOR = 24;
 	public static final int OVERLAY_FONT_SIZE = 28; //short
-	public static final int AVAILABLE_BYTE1 = 30;  //byte
-	public static final int IMAGE_OPACITY = 31;  //byte
+    public static final int IMAGE_OPACITY = 31;  //byte
 	public static final int IMAGE_SIZE = 32;  //int
 	public static final int FLOAT_STROKE_WIDTH = 36;  //float
 		
@@ -95,8 +92,16 @@ public class RoiDecoder {
 	public static final int DRAW_OFFSET = 256;
 	
 	// types
-	private final int polygon=0, rect=1, oval=2, line=3, freeline=4, polyline=5, noRoi=6,
-		freehand=7, traced=8, angle=9, point=10;
+	private final int polygon=0;
+    private final int rect=1;
+    private final int oval=2;
+    private final int line=3;
+    private final int freeline=4;
+    private final int polyline=5;
+    private final int freehand=7;
+    private final int traced=8;
+    private final int angle=9;
+    private final int point=10;
 	
 	private byte[] data;
 	private String path;
@@ -356,7 +361,7 @@ public class RoiDecoder {
 		}
 	}
 
-	public Roi getShapeRoi() throws IOException {
+	public Roi getShapeRoi() {
 		int type = getByte(TYPE);
 		if (type!=rect)
 			throw new IllegalArgumentException("Invalid composite ROI type");

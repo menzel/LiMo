@@ -15,8 +15,7 @@ import java.awt.Menu;
 public class Executer implements Runnable {
 
 	private static String previousCommand;
-	private static CommandListener listener;
-	private static Vector listeners = new Vector();
+    private static Vector listeners = new Vector();
 	
 	private String command;
 	private Thread thread;
@@ -155,22 +154,6 @@ public class Executer implements Runnable {
 		}
 		return false;
     }
-
-	/** Returns the last command executed. Returns null
-		if no command has been executed. */
-	public static String getCommand() {
-		return previousCommand;
-	}
-	
-	/** Adds the specified command listener. */
-	public static void addCommandListener(CommandListener listener) {
-		listeners.addElement(listener);
-	}
-	
-	/** Removes the specified command listener. */
-	public static void removeCommandListener(CommandListener listener) {
-		listeners.removeElement(listener);
-	}
 
 }
 

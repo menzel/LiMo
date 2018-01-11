@@ -1,13 +1,6 @@
 package ij;
-import ij.process.*;
-import ij.gui.*;
 import ij.io.*;
-import ij.measure.*;
-import ij.plugin.filter.*;
-import ij.macro.Interpreter;
-import java.awt.*;
-import java.awt.image.*;
-import java.io.*;
+
 import java.util.Locale;
 import java.util.Hashtable;
 
@@ -21,52 +14,6 @@ public class Macro {
 	static private Hashtable table = new Hashtable();
 	static boolean abort;
 
-	public static boolean open(String path) {
-		if (path==null || path.equals("")) {
-			Opener o = new Opener();
-			return true;
-		}
-		Opener o = new Opener();
-		ImagePlus img = o.openImage(path);
-		if (img==null)
-			return false;
-		img.show();	
-		return true;
-	}
-
-	public static boolean saveAs(String path) {
-		ImagePlus imp = WindowManager.getCurrentImage();
-		if (imp==null)
-			return false;
-		FileSaver fs = new FileSaver(imp);
-		if (path==null || path.equals(""))
-			return fs.saveAsTiff();
-		if (imp.getStackSize()>1)
-			return fs.saveAsTiffStack(path);
-		else
-			return fs.saveAsTiff(path);
-	}
-
-	public static String getName(String path) {
-		int i = path.lastIndexOf('/');
-		if (i==-1)
-			i = path.lastIndexOf('\\');
-		if (i>0)
-			return path.substring(i+1);
-		else
-			return path;
-	}
-	
-	public static String getDir(String path) {
-		int i = path.lastIndexOf('/');
-		if (i==-1)
-			i = path.lastIndexOf('\\');
-		if (i>0)
-			return path.substring(0, i+1);
-		else
-			return "";
-	}
-	
 	/** Aborts the currently running macro or any plugin using IJ.run(). */
 	public static void abort() {
 		abort = true;
@@ -99,16 +46,6 @@ public class Macro {
 			table.remove(Thread.currentThread());
 		else
 			table.put(Thread.currentThread(), options);
-	}
-
-	/** Define a set of Macro options for a Thread. */
-	public static void setOptions(Thread thread, String options) {
-		if (null==thread)
-			throw new RuntimeException("Need a non-null thread instance");
-		if (null==options)
-			table.remove(thread);
-		else
-			table.put(thread, options);
 	}
 
 	public static String getValue(String options, String key, String defaultValue) {

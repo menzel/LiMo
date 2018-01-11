@@ -10,13 +10,11 @@ import ij.macro.Interpreter;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
-import java.net.URL;
 import java.net.*;
 import java.util.Hashtable;
 import java.util.zip.*;
 import java.util.Locale;
 import javax.swing.*;
-import javax.swing.filechooser.*;
 import java.awt.event.KeyEvent;
 import javax.imageio.ImageIO;
 
@@ -30,7 +28,6 @@ public class Opener {
 		TIFF_AND_DICOM=14,CUSTOM=15, AVI=16, OJJ=17, TABLE=18; // don't forget to also update 'types'
 	public static final String[] types = {"unknown","tif","dcm","fits","pgm",
 		"jpg","gif","lut","bmp","zip","java/txt","roi","txt","png","t&d","custom","ojj","table"};
-	private static String defaultDirectory = null;
 	private static int fileType;
 	private boolean error;
 	private boolean isRGB48;
@@ -65,51 +62,7 @@ public class Opener {
 		}
 	}
 
-	/** Displays a JFileChooser and then opens the tiff, dicom, 
-		fits, pgm, jpeg, bmp, gif, lut, roi, or text files selected by 
-		the user. Displays error messages if one or more of the selected 
-		files is not in one of the supported formats. This is the method
-		that ImageJ's File/Open command uses to open files if
-		"Open/Save Using JFileChooser" is checked in EditOptions/Misc. */
-	public void openMultiple() {
-		Java2.setSystemLookAndFeel();
-		// run JFileChooser in a separate thread to avoid possible thread deadlocks
-		try {
-			EventQueue.invokeAndWait(new Runnable() {
-				public void run() {
-					JFileChooser fc = new JFileChooser();
-					fc.setMultiSelectionEnabled(true);
-					File dir = null;
-					String sdir = OpenDialog.getDefaultDirectory();
-					if (sdir!=null)
-						dir = new File(sdir);
-					if (dir!=null)
-						fc.setCurrentDirectory(dir);
-					int returnVal = fc.showOpenDialog(IJ.getInstance());
-					if (returnVal!=JFileChooser.APPROVE_OPTION)
-						return;
-					omFiles = fc.getSelectedFiles();
-					if (omFiles.length==0) { // getSelectedFiles does not work on some JVMs
-						omFiles = new File[1];
-						omFiles[0] = fc.getSelectedFile();
-					}
-					omDirectory = fc.getCurrentDirectory().getPath()+File.separator;
-				}
-			});
-		} catch (Exception e) {}
-		if (omDirectory==null) return;
-		OpenDialog.setDefaultDirectory(omDirectory);
-		for (int i=0; i<omFiles.length; i++) {
-			String path = omDirectory + omFiles[i].getName();
-			open(path);
-			if (i==0 && Recorder.record)
-				Recorder.recordPath("open", path);
-			if (i==0 && !error)
-				Menus.addOpenRecentItem(path);
-		}
-	}
-
-	/** Opens and displays a tiff, dicom, fits, pgm, jpeg, bmp, gif, lut, 
+	/** Opens and displays a tiff, dicom, fits, pgm, jpeg, bmp, gif, lut,
 		roi, or text file. Displays an error message if the specified file
 		is not in one of the supported formats. */
 	public void open(String path) {
@@ -209,10 +162,8 @@ public class Opener {
 		int lastSlash = path.lastIndexOf("/");
 		if (lastSlash==-1) lastSlash = 0;
 		int lastDot = path.lastIndexOf(".");
-		if (lastDot==-1 || lastDot<lastSlash || (path.length()-lastDot)>6)
-			return true;  // no extension
-		else
-			return false;
+        // no extension
+        return lastDot == -1 || lastDot < lastSlash || (path.length() - lastDot) > 6;
 	}
 	
 	/** Opens the specified file and adds it to the File/Open Recent menu.
@@ -479,7 +430,7 @@ public class Opener {
 			if (imp.getType()==ImagePlus.COLOR_RGB)
 				convertGrayJpegTo8Bits(imp);
 			FileInfo fi = new FileInfo();
-			fi.fileFormat = fi.GIF_OR_JPG;
+			fi.fileFormat = FileInfo.GIF_OR_JPG;
 			fi.fileName = name;
 			fi.directory = dir;
 			imp.setFileInfo(fi);
@@ -509,7 +460,7 @@ public class Opener {
 		}
 		imp = new ImagePlus(f.getName(), img);
 		FileInfo fi = new FileInfo();
-		fi.fileFormat = fi.IMAGEIO;
+		fi.fileFormat = FileInfo.IMAGEIO;
 		fi.fileName = f.getName();
 		fi.directory = f.getParent()+File.separator;
 		imp.setFileInfo(fi);
@@ -863,14 +814,7 @@ public class Opener {
 			IJ.error("Open Results", e.getMessage());
 		}
 	}
-	
-	public static String getFileFormat(String path) {
-		if (!((new File(path)).exists()))
-			return("not found");
-		else
-			return Opener.types[(new Opener()).getFileType(path)];
-	}
-	
+
 	/**
 	Attempts to determine the image file type by looking for
 	'magic numbers' and the file name extension.
@@ -995,7 +939,7 @@ public class Opener {
 	}
 
 	/** Returns an InputStream for the image described by this FileInfo. */
-	InputStream createInputStream(FileInfo fi) throws IOException, MalformedURLException {
+	InputStream createInputStream(FileInfo fi) throws IOException {
 		if (fi.inputStream!=null)
 			return fi.inputStream;
 		else if (fi.url!=null && !fi.url.equals(""))
@@ -1032,9 +976,4 @@ public class Opener {
 		openUsingPlugins = b;
 	}
 
-	/** Returns the state of the openUsingPlugins flag. */
-	public static boolean getOpenUsingPlugins() {
-		return openUsingPlugins;
-	}
-	
 }

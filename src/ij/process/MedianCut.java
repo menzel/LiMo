@@ -39,28 +39,9 @@ public class MedianCut {
 	public MedianCut(ColorProcessor ip) {
 		this((int[])ip.getPixels(), ip.getWidth(), ip.getHeight());
 	}
-	
-	int getColorCount() {
-		int count = 0;
-		for (int i=0; i<HSIZE; i++)
-			if (hist[i]>0) count++;
-		return count;
-	}
-	
 
-	Color getModalColor() {
-		int max=0;
-		int c = 0;
-		for (int i=0; i<HSIZE; i++)
-			if (hist[i]>max) {
-				max = hist[i];
-				c = i;
-			}
-		return new Color(red(c), green(c), blue(c));
-	}
-	
 
-	// Convert from 24-bit to 15-bit color
+    // Convert from 24-bit to 15-bit color
 	private final int rgb(int c) {
 		int r = (c&0xf80000)>>19;
 		int g = (c&0xf800)>>6;
@@ -84,16 +65,7 @@ public class MedianCut {
 	}
 
 
-	/** Uses Heckbert's median-cut algorithm to divide the color space defined by
-	"hist" into "maxcubes" cubes. The centroids (average value) of each cube
-	are are used to create a color table. "hist" is then updated to function
-	as an inverse color map that is used to generate an 8-bit image. */
-	public Image convert(int maxcubes) {
-		ImageProcessor ip = convertToByte(maxcubes);
-		return ip.createImage();
-	}
-
-	/** This is a version of convert that returns a ByteProcessor. */
+    /** This is a version of convert that returns a ByteProcessor. */
 	public ImageProcessor convertToByte(int maxcubes) {
 		int lr, lg, lb;
 		int i, median, color;
@@ -386,12 +358,8 @@ class Cube {			// structure for a cube in color space
 	int  rmin, rmax;
 	int  gmin, gmax;
 	int  bmin, bmax;
-	
-	Cube() {
-		count = 0;
-	}   
 
-	public String toString() {
+    public String toString() {
 		String s = "lower=" + lower + " upper=" + upper;
 		s = s + " count=" + count + " level=" + level;
 		s = s + " rmin=" + rmin + " rmax=" + rmax;

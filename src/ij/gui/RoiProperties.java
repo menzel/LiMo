@@ -1,15 +1,13 @@
 package ij.gui;
 import ij.*;
 import ij.plugin.Colors;
-import ij.io.RoiDecoder;
 import ij.process.FloatPolygon;
 import ij.measure.*;
 
 import java.awt.*;
-import java.util.*;
 
 
- /** Displays a dialog that allows the user to specify ROI properties such as color and line width. */
+/** Displays a dialog that allows the user to specify ROI properties such as color and line width. */
 public class RoiProperties {
 	private Roi roi;
 	private String title;
@@ -40,19 +38,8 @@ public class RoiProperties {
 		}
 		this.roi = roi;
 	}
-	
-	private String decodeColor(Color color, Color defaultColor) {
-		if (color==null)
-			color = defaultColor;
-		String str = "#"+Integer.toHexString(color.getRGB());
-		if (str.length()==9 && str.startsWith("#ff"))
-			str = "#"+str.substring(3);
-		String lc = Colors.hexToColor(str);
-		if (lc!=null) str = lc;
-		return str;
-	}
-	
-	/** Displays the dialog box and returns 'false' if the user cancels it. */
+
+    /** Displays the dialog box and returns 'false' if the user cancels it. */
 	public boolean showDialog() {
 		Color strokeColor = null;
 		Color fillColor = null;
@@ -123,7 +110,7 @@ public class RoiProperties {
 		if (!isLine)
 			fillc = gd.getNextString();
 		boolean applyToOverlay = false;
-		boolean newOverlay = addToOverlay?gd.getNextBoolean():false;
+		boolean newOverlay = addToOverlay && gd.getNextBoolean();
 		if (overlayOptions) {
 			if (existingOverlay)
 				applyToOverlay = gd.getNextBoolean();
@@ -182,7 +169,7 @@ public class RoiProperties {
 		roi.setName(name.length()>0?name:null);
 		double opacity = gd.getNextNumber()/100.0;
 		((ImageRoi)roi).setOpacity(opacity);
-		boolean newOverlay = addToOverlay?gd.getNextBoolean():false;
+		boolean newOverlay = addToOverlay && gd.getNextBoolean();
 		if (newOverlay) roi.setName("new-overlay");
 		return true;
 	}

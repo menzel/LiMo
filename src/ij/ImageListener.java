@@ -4,10 +4,10 @@ package ij;
 		an image window is opened, closed or updated. */
 	public interface ImageListener {
 
-	public void imageOpened(ImagePlus imp);
+	void imageOpened(ImagePlus imp);
 
-	public void imageClosed(ImagePlus imp);
+	void imageClosed(ImagePlus imp);
 
-	public void imageUpdated(ImagePlus imp);
+	void imageUpdated(ImagePlus imp);
 
 }

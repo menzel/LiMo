@@ -1,18 +1,14 @@
 package ij;
-import ij.util.Java2;
 
 import java.io.*;
 import java.util.*;
 import java.applet.*;
 import java.net.URL;
 import java.awt.*;
-import java.applet.Applet;
 
 import ij.io.*;
 import ij.util.Tools;
 import ij.gui.*;
-import ij.plugin.filter.*;
-import ij.process.ImageConverter;
 import ij.process.FloatBlitter;
 import ij.process.ColorProcessor;
 import ij.text.TextWindow;
@@ -32,25 +28,43 @@ public class Prefs {
 	public static final String ROICOLOR = "roicolor";
 	public static final String SHOW_ALL_COLOR = "showcolor";
 	public static final String JPEG = "jpeg";
-	public static final String FPS = "fps";
-    public static final String DIV_BY_ZERO_VALUE = "div-by-zero";
+	public static final String DIV_BY_ZERO_VALUE = "div-by-zero";
     public static final String NOISE_SD = "noise.sd";
     public static final String MENU_SIZE = "menu.size";
     public static final String THREADS = "threads";
 	public static final String KEY_PREFIX = ".";
  
-	private static final int USE_POINTER=1<<0, ANTIALIASING=1<<1, INTERPOLATE=1<<2, ONE_HUNDRED_PERCENT=1<<3,
-		BLACK_BACKGROUND=1<<4, JFILE_CHOOSER=1<<5, UNUSED=1<<6, BLACK_CANVAS=1<<7, WEIGHTED=1<<8, 
-		AUTO_MEASURE=1<<9, REQUIRE_CONTROL=1<<10, USE_INVERTING_LUT=1<<11, ANTIALIASED_TOOLS=1<<12,
-		INTEL_BYTE_ORDER=1<<13, DOUBLE_BUFFER=1<<14, NO_POINT_LABELS=1<<15, NO_BORDER=1<<16,
-		SHOW_ALL_SLICE_ONLY=1<<17, COPY_HEADERS=1<<18, NO_ROW_NUMBERS=1<<19,
-		MOVE_TO_MISC=1<<20, ADD_TO_MANAGER=1<<21, RUN_SOCKET_LISTENER=1<<22,
-		MULTI_POINT_MODE=1<<23, ROTATE_YZ=1<<24, FLIP_XZ=1<<25,
-		DONT_SAVE_HEADERS=1<<26, DONT_SAVE_ROW_NUMBERS=1<<27, NO_CLICK_TO_GC=1<<28,
-		AVOID_RESLICE_INTERPOLATION=1<<29, KEEP_UNDO_BUFFERS=1<<30; 
+	private static final int USE_POINTER=1<<0;
+	private static final int ANTIALIASING=1<<1;
+	private static final int INTERPOLATE=1<<2;
+	private static final int ONE_HUNDRED_PERCENT=1<<3;
+	private static final int BLACK_BACKGROUND=1<<4;
+	private static final int JFILE_CHOOSER=1<<5;
+	private static final int BLACK_CANVAS=1<<7;
+	private static final int WEIGHTED=1<<8;
+	private static final int AUTO_MEASURE=1<<9;
+	private static final int REQUIRE_CONTROL=1<<10;
+	private static final int USE_INVERTING_LUT=1<<11;
+	private static final int ANTIALIASED_TOOLS=1<<12;
+	private static final int INTEL_BYTE_ORDER=1<<13;
+	private static final int DOUBLE_BUFFER=1<<14;
+	private static final int NO_POINT_LABELS=1<<15;
+	private static final int NO_BORDER=1<<16;
+	private static final int SHOW_ALL_SLICE_ONLY=1<<17;
+	private static final int COPY_HEADERS=1<<18;
+	private static final int NO_ROW_NUMBERS=1<<19;
+	private static final int MOVE_TO_MISC=1<<20;
+	private static final int ADD_TO_MANAGER=1<<21;
+	private static final int RUN_SOCKET_LISTENER=1<<22;
+	private static final int MULTI_POINT_MODE=1<<23;
+	private static final int ROTATE_YZ=1<<24;
+	private static final int FLIP_XZ=1<<25;
+	private static final int DONT_SAVE_HEADERS=1<<26;
+	private static final int DONT_SAVE_ROW_NUMBERS=1<<27;
+	private static final int NO_CLICK_TO_GC=1<<28;
+	private static final int AVOID_RESLICE_INTERPOLATION=1<<29;
+	private static final int KEEP_UNDO_BUFFERS=1<<30;
     public static final String OPTIONS = "prefs.options";
-    
-	public static final String vistaHint = "";  // no longer used
 
 	private static final int USE_SYSTEM_PROXIES=1<<0, USE_FILE_CHOOSER=1<<1,
 		SUBPIXEL_RESOLUTION=1<<2;
@@ -104,14 +118,10 @@ public class Prefs {
 	public static boolean moveToMisc;
 	/** Add points to ROI Manager. */
 	public static boolean pointAddToManager;
-	/** Extend the borders to foreground for binary erosions and closings. */
-	public static boolean padEdges;
 	/** Run the SocketListener. */
 	public static boolean runSocketListener;
 	/** Use MultiPoint tool. */
 	public static boolean multiPointMode;
-	/** Open DICOMs as 32-bit float images */
-	public static boolean openDicomsAsFloat;
 	/** Plot rectangular selectons vertically */
 	public static boolean verticalProfile;
 	/** Rotate YZ orthogonal views 90 degrees */
@@ -208,25 +218,9 @@ public class Prefs {
 		return null;
 	}
 
-	/** Returns the URL of the directory that contains the ImageJ sample images. */
-	public static String getImagesURL() {
-		return imagesURL;
-	}
-
-	/** Sets the URL of the directory that contains the ImageJ sample images. */
-	public static void setImagesURL(String url) {
-		imagesURL = url;
-	}
-
 	/** Returns the path to the ImageJ directory. */
 	public static String getHomeDir() {
 		return homeDir;
-	}
-
-	/** Gets the path to the directory where the 
-		preferences file (IJPrefs.txt) is saved. */
-	public static String getPrefsDir() {
-		return prefsDir;
 	}
 
 	/** Sets the path to the ImageJ directory. */
@@ -247,27 +241,6 @@ public class Prefs {
 	/** Finds an string in IJ_Props or IJ_Prefs.txt. */
 	public static String getString(String key) {
 		return props.getProperty(key);
-	}
-
-	/** Finds an string in IJ_Props or IJ_Prefs.txt. */
-	public static String getString(String key, String defaultString) {
-		if (props==null)
-			return defaultString;
-		String s = props.getProperty(key);
-		if (s==null)
-			return defaultString;
-		else
-			return s;
-	}
-
-	/** Finds a boolean in IJ_Props or IJ_Prefs.txt. */
-	public static boolean getBoolean(String key, boolean defaultValue) {
-		if (props==null) return defaultValue;
-		String s = props.getProperty(key);
-		if (s==null)
-			return defaultValue;
-		else
-			return s.equals("true");
 	}
 
 	/** Finds an int in IJ_Props or IJ_Prefs.txt. */
@@ -304,11 +277,6 @@ public class Prefs {
 		if (i == 0xaaa)
 			return defaultColor;
 		return new Color((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF);
-	}
-
-	/** Returns the file.separator system property. */
-	public static String getFileSeparator() {
-		return separator;
 	}
 
 	/** Opens the IJ_Prefs.txt file. */
@@ -382,11 +350,6 @@ public class Prefs {
 				IJ.wait(delay);
 			} catch (Throwable t2) {}
 		}
-	}
-
-	/** Delete the preferences file when ImageJ quits. */
-	public static void resetPreferences() {
-		resetPreferences = true;
 	}
 
 	static void loadOptions() {
@@ -578,28 +541,6 @@ public class Prefs {
 		}
 		return threads;
 	}
-	
-	/** Sets the number of threads (1-32) used by PlugInFilters to process stacks. */
-	public static void setThreads(int n) {
-		if (n<1) n = 1;
-		if (n>32) n = 32;
-		threads = n;
-	}
-	
-	/** Sets the transparent index (0-255), or set to -1 to disable transparency. */
-	public static void setTransparentIndex(int index) {
-		if (index<-1 || index>255) index = -1;
-		transparentIndex = index;
-	}
 
-	/** Returns the transparent index (0-255), or -1 if transparency is disabled. */
-	public static int getTransparentIndex() {
-		return transparentIndex;
-	}
-	
-	public static Properties getControlPanelProperties() {
-		return ijPrefs;
-	}
-	
 }
 

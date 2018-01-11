@@ -2,8 +2,7 @@ package ij.measure;
 import ij.*;
 import ij.gui.*;
 import ij.macro.*;
-import ij.util.Tools;
-import java.util.Arrays;
+
 import java.util.Hashtable;
 
 /** Curve fitting class based on the Simplex method in the Minimizer class
@@ -75,11 +74,7 @@ public class CurveFitter implements UserFunction {
 	"y = a+bx+cx^2+dx^3+ex^4+fx^5+gx^6+hx^7", "y = a+bx+cx^2+dx^3+ex^4+fx^5+gx^6+hx^7+ix^8"
 	};
 
-	/** @deprecated, now in the Minimizer class (since ImageJ 1.46f).
-	 *  (probably of not much value for anyone anyhow?) */
-	public static final int IterFactor = 500;
-
-	private static final int CUSTOM = 100;   // user function defined in macro or plugin
+    private static final int CUSTOM = 100;   // user function defined in macro or plugin
 	private static final int GAUSSIAN_INTERNAL = 101;   // Gaussian with separate offset & multiplier
 	private static final int RODBARD_INTERNAL = 102;    // Rodbard with separate offset & multiplier
 
@@ -121,16 +116,7 @@ public class CurveFitter implements UserFunction {
         this.yData = yData;
         numPoints = xData.length;
     }
-    
-    /** Perform curve fitting with one of the built-in functions
-     *          doFit(fitType) does the fit quietly
-     *  Use getStatus() and/or getStatusString() to see whether fitting was (probably) successful and
-     *  getParams() to access the result.
-     */
-    public void doFit(int fitType) {
-        doFit(fitType, false);
-    }
-    
+
     /** Perform curve fitting with one of the built-in functions
      *          doFit(fitType, true) pops up a dialog allowing the user to set the initial
      *                      fit parameters and various numbers controlling the Minimizer
@@ -233,74 +219,6 @@ public class CurveFitter implements UserFunction {
 		doFit(CUSTOM, showSettings);
 		return customParamCount;
 	}
-
-    /** Fit a function defined in a user plugin implementing the UserFunction interface
-     *
-     *  Use getStatus() and/or getStatusString() to see whether fitting was (probably) successful and
-     *  getParams() to access the result.
-     *
-     *  @param userFunction     A plugin where the fit function is defined by the
-     *                          userFunction(params, x) method.
-     *                          This function must allow simultaneous calls in multiple threads.
-     *  @param numParams        Number of parameters of the fit function.
-     *  @params formula         A String describing the fit formula, may be null.
-     *  @param initialParams    Starting point for the parameters; may be null (than values
-     *                          of 0 are used). The fit function with these parameters must
-     *                          not return NaN for any of the data points given in the
-     *                          constructor (xData).
-     *  @param initialParamVariations Each parameter is initially varied by up to +/- this value.
-     *                          If not given (null), initial variations are taken as
-     *                          10% of initial parameter value or 0.01 for parameters that are zero.
-     *                          When this array is given, all elements must be positive (nonzero).
-     *                          See Minimizer.minimize for details.
-     *  @param showSettings     Displays a popup dialog for modifying the initial parameters and
-     *                          a few numbers controlling the minimizer.
-     */
-	public void doCustomFit(UserFunction userFunction, int numParams, String formula,
-	        double[] initialParams, double[] initialParamVariations, boolean showSettings) {
-	    this.userFunction = userFunction;
-	    this.customParamCount = numParams;
-	    this.initialParams = initialParams;
-	    this.initialParamVariations = initialParamVariations;
-	    customFormula = formula==null ? "(defined in plugin)" : formula;
-	    doFit(CUSTOM, showSettings);
-	}
-
-	/** Sets the initial parameters, which override the default initial parameters. */
-	public void setInitialParameters(double[] initialParams) {
-		this.initialParams = initialParams;
-	}
-
-    /** Returns a reference to the Minimizer used, for accessing Minimizer methods directly.
-     *  Note that no Minimizer is used if fitType is any of STRAIGHT_LINE, EXP_REGRESSION,
-     *  and POWER_REGRESSION. */
-    public Minimizer getMinimizer() {
-        return minimizer;
-    }
-
-    /** For improved fitting performance when using a custom fit formula, one may
-     *  specify parameters that can be calculated directly by linear regression.
-     *  For values not used, set the index to -1
-     *
-     * @param offsetParam  Index of a parameter that is a pure offset:
-     *                     E.g. '0' if  f(p0, p1, p2...) = p0 + function(p1, p2, ...).
-     * @param multiplyParam  Index of a parameter that is purely multiplicative.
-     *                     E.g. multiplyParams=1 if f(p0, p1, p2, p3...) can be expressed as
-     *                     p1*func(p0, p2, p3, ...) or p0 +p1*func(p0, p2, p3, ...) with '0' being
-     *                     the offsetparam.
-     * @param slopeParam   Index of a parameter that is multiplied with x and then summed to the function.
-     *                     E.g. '1' for f(p0, p1, p2, p3...) = p1*x + func(p0, p2, p3, ...)
-     *                     Only one, multiplyParam and slopeParam can be used (ie.e, the other
-     *                     should be set to -1)
-     */
-    public void setOffsetMultiplySlopeParams(int offsetParam, int multiplyParam, int slopeParam) {
-        this.offsetParam = offsetParam;
-        hasSlopeParam = slopeParam >= 0;
-        factorParam = hasSlopeParam ? slopeParam : multiplyParam;
-        numRegressionParams = 0;
-        if (offsetParam >=0) numRegressionParams++;
-        if (factorParam >=0) numRegressionParams++;
-    }
 
     /** Get number of parameters for current fit formula
      *  Do not use before 'doFit', because the fit function would be undefined.  */
@@ -488,22 +406,6 @@ public class CurveFitter implements UserFunction {
         return rSquared;
     }
 
-    /** Get a measure of "goodness of fit" where 1.0 is best.
-     *  Approaches R^2 if the number of points is much larger than the number of fit parameters.
-     *  For power, exp by linear regression and 'Rodbard NIH Image', this is calculated for the
-     *  fit actually done, not for the residuals of the original data.
-     */
-    public double getFitGoodness() {
-        if (Double.isNaN(sumY)) calculateSumYandY2();
-        double sumMeanDiffSqr = sumY2 - sumY*sumY/numPoints;
-        double fitGoodness = 0.0;
-        int degreesOfFreedom = numPoints - getNumParams();
-        if (sumMeanDiffSqr > 0.0 && degreesOfFreedom > 0)
-            fitGoodness = 1.0 - (getSumResidualsSqr()/ sumMeanDiffSqr) * numPoints / (double)degreesOfFreedom;
-
-        return fitGoodness;
-    }
-
     public int getStatus() {
         return linearRegressionUsed ? Minimizer.SUCCESS : minimizerStatus;
     }
@@ -513,7 +415,7 @@ public class CurveFitter implements UserFunction {
      *  better explains the problem in some cases of initialization failure (data not
      *  compatible with the fit function chosen) */
     public String getStatusString() {
-        return errorString != null ? errorString : minimizer.STATUS_STRING[getStatus()];
+        return errorString != null ? errorString : Minimizer.STATUS_STRING[getStatus()];
     }
     
     /** Get a string with detailed description of the curve fitting results (several lines,
@@ -539,11 +441,6 @@ public class CurveFitter implements UserFunction {
         return resultS;
     }
 
-    /** Set maximum number of simplex restarts to do. See Minimizer.setMaxRestarts for details. */
-    public void setRestarts(int maxRestarts) {
-        minimizer.setMaxRestarts(maxRestarts);
-    }
-
     /** Set the maximum error. by which the sum of residuals may deviate from the true value
      *  (relative w.r.t. full sum of rediduals). Possible range: 0.1 ... 10^-16 */
     public void setMaxError(double maxRelError) {
@@ -556,21 +453,6 @@ public class CurveFitter implements UserFunction {
     /** Get number of iterations performed. Returns 1 in case the fit was done by linear regression only. */
     public int getIterations() {
         return linearRegressionUsed ? 1 : minimizer.getIterations();
-    }
-    
-    /** Get maximum number of iterations allowed (sum of iteration count for all restarts) */
-    public int getMaxIterations() {
-        return minimizer.getMaxIterations();
-    }
-    
-    /** Set maximum number of iterations allowed (sum of iteration count for all restarts) */
-    public void setMaxIterations(int maxIter) {
-        minimizer.setMaxIterations(maxIter);
-    }
-    
-    /** Get maximum number of simplex restarts to do. See Minimizer.setMaxRestarts for details. */
-    public int getRestarts() {
-        return minimizer.getMaxRestarts();
     }
 
     /** Returns the status of the Minimizer after doFit.  Minimizer.SUCCESS indicates a
@@ -590,11 +472,6 @@ public class CurveFitter implements UserFunction {
 		return yData;
 	}
 
-	/** returns the code of the fit type of the fit performed */
-	public int getFit() {
-		return fitType;
-	}
-
     /** returns the name of the fit function of the fit performed */
 	public String getName() {
 		if (fitType==CUSTOM)
@@ -611,17 +488,6 @@ public class CurveFitter implements UserFunction {
 			return fList[fitType];
 	}
 
-    /** Returns an array of fit names with nicer sorting */
-    public static String[] getSortedFitList() {
-        if (sortedFitList == null) {
-            String[] l = new String[fitList.length];
-            for (int i=0; i<fitList.length; i++)
-                sortedFitList[i] = fitList[sortedTypes[i]];
-            sortedFitList = l;
-        }
-        return sortedFitList;
-    }
-
     /** Returns the code for a fit with given name as defined in fitList, or -1 if not found */
     public static int getFitCode(String fitName) {
         if (namesTable == null) {
@@ -630,7 +496,7 @@ public class CurveFitter implements UserFunction {
                 h.put(fitList[i], new Integer(i));
             namesTable = h;
         }
-        Integer i = (Integer)namesTable.get(fitName);
+        Integer i = namesTable.get(fitName);
         return i!=null? i.intValue() : -1;
     }
 
@@ -1125,24 +991,6 @@ public class CurveFitter implements UserFunction {
             minimizer.setMaxRestarts((int)n);
         n = gd.getNextNumber();
         setMaxError(Math.pow(10.0, -n));
-    }
-    
-     /**
-     * Gets index of highest value in an array.
-     * 
-     * @param              Double array.
-     * @return             Index of highest value.
-     */
-    public static int getMax(double[] array) {
-        double max = array[0];
-        int index = 0;
-        for(int i = 1; i < array.length; i++) {
-            if(max < array[i]) {
-            	max = array[i];
-            	index = i;
-            }
-        }
-        return index;
     }
 
 }

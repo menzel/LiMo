@@ -5,8 +5,8 @@ import ij.*;
    
 public class Calibration implements Cloneable {
 
-	public static final int STRAIGHT_LINE=0,POLY2=1,POLY3=2,POLY4=3,
-		EXPONENTIAL=4,POWER=5,LOG=6,RODBARD=7,GAMMA_VARIATE=8, LOG2=9, RODBARD2=10;
+	public static final int STRAIGHT_LINE=0;
+    public static final int RODBARD2=10;
 	public static final int NONE=20, UNCALIBRATED_OD=21, CUSTOM=22;
 	public static final String DEFAULT_VALUE_UNIT = "Gray Value";
 
@@ -103,18 +103,8 @@ public class Calibration implements Cloneable {
  		}
  		units = null;
  	}
- 	
-   	/** Sets the X length unit. */
- 	public void setXUnit(String unit) {
-		setUnit(unit);
-	}
 
-   	/** Sets the Y length unit. */
- 	public void setYUnit(String unit) {
- 		yunit = unit;
-	}
-
-   	/** Sets the Z length unit. */
+    /** Sets the Z length unit. */
  	public void setZUnit(String unit) {
  		zunit = unit;
 	}
@@ -171,13 +161,8 @@ public class Calibration implements Cloneable {
  	public double getX(double x) {
  		return (x-xOrigin)*pixelWidth;
  	}
- 	
-  	/** Converts a y-coordinate in pixels to physical units (e.g. mm). */
- 	public double getY(double y) {
- 		return (y-yOrigin)*pixelHeight;
- 	}
- 	
- 	/** Converts a y-coordinate in pixels to physical units (e.g. mm),
+
+    /** Converts a y-coordinate in pixels to physical units (e.g. mm),
  		taking into account the invertY and global "Invert Y Coordinates" flags. */
  	public double getY(double y, int imageHeight) {
  		if (invertY || (Analyzer.getMeasurements()&Measurements.INVERT_Y)!=0) {
@@ -198,13 +183,8 @@ public class Calibration implements Cloneable {
  	public double getRawX(double x) {
  		return x/pixelWidth + xOrigin;
  	}
- 	
-   	/** Converts a y-coodinate in physical units to pixels. */
- 	public double getRawY(double y) {
-  		return y/pixelHeight + yOrigin;
-	}
- 	
- 	/** Converts a y-coodinate in physical units to pixels,
+
+    /** Converts a y-coodinate in physical units to pixels,
  		taking into account the 'invertY' flag. */
  	public double getRawY(double y, int imageHeight) {
  		if (invertY || (Analyzer.getMeasurements()&Measurements.INVERT_Y)!=0) {
@@ -266,14 +246,8 @@ public class Calibration implements Cloneable {
  	public String getValueUnit() {
  		return valueUnit;
  	}
- 	
-	/** Sets the value unit. */
- 	public void setValueUnit(String unit) {
- 		if (unit!=null)
- 			valueUnit = unit;
- 	}
 
- 	/** Returns the calibration function coefficients. */
+    /** Returns the calibration function coefficients. */
  	public double[] getCoefficients() {
  		return coefficients;
  	}
@@ -296,22 +270,8 @@ public class Calibration implements Cloneable {
  			makeCTable();
  		return cTable;
  	}
- 	
-	/** Sets the calibration table. With 8-bit images, the table must 
-		have a length of 256. With 16-bit images, it must be 65536. */
- 	public void setCTable(float[] table, String unit) {
- 		if (table==null)
- 			{disableDensityCalibration(); return;}
- 		if (bitDepth==16 && table.length!=65536)
- 			throw new IllegalArgumentException("Table.length!=65536");
- 		cTable = table;
- 		function = CUSTOM;
- 		coefficients = null;
- 		zeroClip = false;
- 		if (unit!=null) valueUnit = unit;
- 	}
 
- 	void makeCTable() {
+    void makeCTable() {
  		if (bitDepth==16)
  			{make16BitCTable(); return;}
  		if (bitDepth!=8)

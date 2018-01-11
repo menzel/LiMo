@@ -1,7 +1,6 @@
 package ij;
 import ij.process.*;
 import ij.io.*;
-import ij.gui.ImageCanvas;
 import ij.util.Tools;
 import java.io.*;
 import java.awt.Font;
@@ -15,46 +14,13 @@ public class VirtualStack extends ImageStack {
 	private String[] names;
 	private String[] labels;
 	private int bitDepth;
-	
-	/** Default constructor. */
-	public VirtualStack() { }
 
-	/** Creates a new, empty virtual stack. */
-	public VirtualStack(int width, int height, ColorModel cm, String path) {
-		super(width, height, cm);
-		this.path = path;
-		names = new String[INITIAL_SIZE];
-		labels = new String[INITIAL_SIZE];
-		//IJ.log("VirtualStack: "+path);
-	}
-
-	 /** Adds an image to the end of the stack. */
-	public void addSlice(String name) {
-		if (name==null) 
-			throw new IllegalArgumentException("'name' is null!");
-		nSlices++;
-	   //IJ.log("addSlice: "+nSlices+"	"+name);
-	   if (nSlices==names.length) {
-			String[] tmp = new String[nSlices*2];
-			System.arraycopy(names, 0, tmp, 0, nSlices);
-			names = tmp;
-			tmp = new String[nSlices*2];
-			System.arraycopy(labels, 0, tmp, 0, nSlices);
-			labels = tmp;
-		}
-		names[nSlices-1] = name;
-	}
-
-   /** Does nothing. */
+	/** Does nothing. */
 	public void addSlice(String sliceLabel, Object pixels) {
 	}
 
 	/** Does nothing.. */
 	public void addSlice(String sliceLabel, ImageProcessor ip) {
-	}
-	
-	/** Does noting. */
-	public void addSlice(String sliceLabel, ImageProcessor ip, int n) {
 	}
 
 	/** Deletes the specified slice, were 1<=n<=nslices. */
@@ -138,13 +104,8 @@ public class VirtualStack extends ImageStack {
 		}
 		return ip;
 	 }
- 
-	/** Currently not implemented */
-	public int saveChanges(int n) {
-		return -1;
-	}
 
-	 /** Returns the number of slices in this stack. */
+	/** Returns the number of slices in this stack. */
 	public int getSize() {
 		return nSlices;
 	}
@@ -186,11 +147,6 @@ public class VirtualStack extends ImageStack {
 	/** Returns the file name of the specified slice, were 1<=n<=nslices. */
 	public String getFileName(int n) {
 		return names[n-1];
-	}
-	
-	/** Sets the bit depth (8, 16, 24 or 32). */
-	public void setBitDepth(int bitDepth) {
-		this.bitDepth = bitDepth;
 	}
 
 	/** Returns the bit depth (8, 16, 24 or 32), or 0 if the bit depth is not known. */

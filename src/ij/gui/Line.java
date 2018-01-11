@@ -4,9 +4,7 @@ import ij.process.*;
 import ij.measure.*;
 
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.event.KeyEvent;
-import java.awt.geom.*;
 
 
 /** This class represents a straight line selection. */
@@ -15,9 +13,7 @@ public class Line extends Roi {
 	public int x1, y1, x2, y2;	// the line
 	public double x1d, y1d, x2d, y2d;	// the line using sub-pixel coordinates
 	protected double x1R, y1R, x2R, y2R;  // the line, relative to base of bounding rect
-	private double xHandleOffset, yHandleOffset;
 	protected double startxd, startyd;
-	static boolean widthChanged;
 	private boolean drawOffset;
 
 	/** Creates a new straight line selection using the specified
@@ -480,7 +476,6 @@ public class Line extends Roi {
 			if (w>max) w = max;
 		}
 		lineWidth = w;
-		widthChanged = true;
 	}
 		
 	public void setStrokeWidth(float width) {

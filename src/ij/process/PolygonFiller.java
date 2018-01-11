@@ -1,13 +1,9 @@
 package ij.process;
-import ij.*;
-import ij.gui.*;
-import java.awt.Rectangle;
 
 
 /** This class fills polygons using the scan-line filling algorithm 
 	described at "http://www.cs.rit.edu/~icss571/filling/". */
 public class PolygonFiller {
-	int BLACK=0xff000000, WHITE=0xffffffff;
 	int edges; // number of edges
 	int activeEdges; // number of  active edges
 
@@ -30,11 +26,6 @@ public class PolygonFiller {
 
 	/** Constructs a PolygonFiller. */
 	public PolygonFiller() {
-	 }
-
-	/** Constructs a PolygonFiller using the specified polygon. */
-	public PolygonFiller(int[] x, int[] y, int n) {
-		setPolygon(x, y, n);
 	 }
 
 	/** Specifies the polygon to be filled. */
@@ -84,25 +75,6 @@ public class PolygonFiller {
 		//quickSort(sedge);
 	}
 
-
-	/** Currently not used since searching the entire edge table
-		does not seem to take a significant amount of time. */
-	void addToSortedTable(int edge) {
-		int index = 0;
-		while (index<edges && ey1[edges]>ey1[sedge[index]]) {
-			index++;
-		}
-		for (int i=edges-1; i>=index; i--) {
-			sedge[i+1] = sedge[i];
-			//IJ.log((i+1)+"="+i);
-		}
-		sedge[index] = edges;
-	}
-
-	/** Fills the polygon using the ImageProcessor's current drawing color. */
-	public void fill(ImageProcessor ip, Rectangle r) {
-		ip.fill(getMask(r.width, r.height));
-	}
 
 	/** Returns a byte mask containing a filled version of the polygon. */
 	public ImageProcessor getMask(int width, int height) {
@@ -188,22 +160,6 @@ public class PolygonFiller {
 				aedge[index] = edge;
 				activeEdges++;
 			}
-		}
-	}
-
-	/** Display the contents of the edge table*/
-	void printEdges() {
-		for (int i=0; i<edges; i++) {
-			int index = sedge[i];
-			IJ.log(i+"	"+ex[index]+"  "+ey1[index]+"  "+ey2[index] + "  " + IJ.d2s(eslope[index],2) );
-		}
-	}
-
-	/** Display the contents of the active edge table*/
-	void printActiveEdges() {
-		for (int i=0; i<activeEdges; i++) {
-			int index =aedge[i];
-			IJ.log(i+"	"+ex[index]+"  "+ey1[index]+"  "+ey2[index] );
 		}
 	}
 

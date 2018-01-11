@@ -17,12 +17,7 @@ public class ByteBlitter implements Blitter {
 		pixels = (byte[])ip.getPixels();
 	}
 
-	public void setTransparentColor(Color c) {
-		transparent = ip.getBestIndex(c);
-		//ij.IJ.write(c+" "+transparent);
-	}
-	
-	/** Copies the byte image in 'ip' to (x,y) using the specified mode. */
+    /** Copies the byte image in 'ip' to (x,y) using the specified mode. */
 	public void copyBits(ImageProcessor ip, int xloc, int yloc, int mode) {
 		Rectangle r1, r2;
 		int srcIndex, dstIndex;

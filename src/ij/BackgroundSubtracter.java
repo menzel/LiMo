@@ -1,10 +1,8 @@
 package ij;
 import ij.*;
 import ij.gui.*;
-import ij.plugin.filter.ExtendedPlugInFilter;
 import ij.plugin.filter.PlugInFilterRunner;
 import ij.process.*;
-import ij.measure.*;
 import ij.util.Tools;
 
 import java.awt.*;
@@ -66,40 +64,6 @@ public class BackgroundSubtracter implements ExtendedPlugInFilter, DialogListene
     private int pass;
     private int flags = DOES_ALL|FINAL_PROCESSING|KEEP_PREVIEW|PARALLELIZE_STACKS;
 
-    public int setup(String arg, ImagePlus imp) {
-        if (arg.equals("final")) {
-            imp.getProcessor().resetMinAndMax();
-            return DONE;
-        } else
-            return flags;
-    }
-
-    public int showDialog(ImagePlus imp, String command, PlugInFilterRunner pfr) {
-        isRGB = imp.getProcessor() instanceof ColorProcessor;
-        String options = Macro.getOptions();
-        if  (options!=null)
-            Macro.setOptions(options.replaceAll("white", "light"));
-        GenericDialog gd = new GenericDialog(command);
-        gd.addNumericField("Rolling ball radius:", radius, 1, 6, "pixels");
-        gd.addCheckbox("Light background", lightBackground);
-        if (isRGB) gd.addCheckbox("Separate colors", separateColors);
-        gd.addCheckbox("Create background (don't subtract)", createBackground);
-        gd.addCheckbox("Sliding paraboloid", useParaboloid);
-        gd.addCheckbox("Disable smoothing", !doPresmooth);
-        gd.addPreviewCheckbox(pfr);
-        gd.addDialogListener(this);
-        previewing = true;
-		gd.addHelp(IJ.URL+"/docs/menus/process.html#background");
-        gd.showDialog();
-        previewing = false;
-        if (gd.wasCanceled()) return DONE;
-        IJ.register(this.getClass());       //protect static class variables (filter parameters) from garbage collection
-        Prefs.set("bs.background", lightBackground);
-        if ((imp.getProcessor() instanceof FloatProcessor) && !createBackground)
-            flags |= SNAPSHOT;              //FloatProcessors need the original to subtract it from the background
-        return IJ.setupDialog(imp, flags);  //ask whether to process all slices of stack (if a stack)
-    }
-
     public boolean dialogItemChanged(GenericDialog gd, AWTEvent e) {
         radius = gd.getNextNumber();
         if (radius <= 0.0001 || gd.invalidNumber())
@@ -110,26 +74,6 @@ public class BackgroundSubtracter implements ExtendedPlugInFilter, DialogListene
         useParaboloid = gd.getNextBoolean();
         doPresmooth = !gd.getNextBoolean();
         return true;
-    }
-
-    /** Background for any image type */
-    public void run(ImageProcessor ip) {
-        if (isRGB && !separateColors)
-            rollingBallBrightnessBackground((ColorProcessor)ip, radius, createBackground, lightBackground, useParaboloid, doPresmooth, true);
-        else
-            rollingBallBackground(ip, radius, createBackground, lightBackground, useParaboloid, doPresmooth, true);
-        if (previewing && (ip instanceof FloatProcessor || ip instanceof ShortProcessor)) {
-            ip.resetMinAndMax();
-        }
-    }
-
-    /** Depracated. For compatibility with previous ImageJ versions */
-    public void subtractRGBBackround(ColorProcessor ip, int ballRadius) {
-        rollingBallBrightnessBackground(ip, (double)ballRadius, false, lightBackground, false, true, true);
-    }
-    /** Depracated. For compatibility with previous ImageJ versions */
-    public void subtractBackround(ImageProcessor ip, int ballRadius) {
-        rollingBallBackground(ip, (double)ballRadius, false, lightBackground, false, true, true);
     }
 
     /** Create or subtract a background, based on the brightness of an RGB image (keeping
@@ -734,13 +678,6 @@ public class BackgroundSubtracter implements ExtendedPlugInFilter, DialogListene
         return shiftBy;
     }
 
-
-    public void setNPasses(int nPasses) {
-        if (isRGB && separateColors) nPasses *= 3;
-        this.nPasses = nPasses;
-        if (useParaboloid) nPasses*= (doPresmooth) ? DIRECTION_PASSES+2 : DIRECTION_PASSES;
-        pass = 0;
-    }
 
     private void showProgress(double percent) {
         if (nPasses <= 0) return;

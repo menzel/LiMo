@@ -2,7 +2,6 @@ package ij.util;
 import java.awt.Color;
 import java.util.*;
 import java.io.*;
-import java.util.Comparator;
 
 /** This class contains static utility methods. */
  public class Tools {
@@ -20,20 +19,8 @@ import java.util.Comparator;
 		}
 		return new String(buf7);
 	}
-		
-	/** Converts a float to an 9 byte hex string starting with '#'. */
-	public static String f2hex(float f) {
-		int i = Float.floatToIntBits(f);
-		char[] buf9 = new char[9];
-		buf9[0] = '#';
-		for (int pos=8; pos>=1; pos--) {
-			buf9[pos] = hexDigits[i&0xf];
-			i >>>= 4;
-		}
-		return new String(buf9);
-	}
-		
-	public static double[] getMinMax(double[] a) {
+
+    public static double[] getMinMax(double[] a) {
 		double min = Double.MAX_VALUE;
 		double max = -Double.MAX_VALUE;
 		double value;
@@ -66,17 +53,8 @@ import java.util.Comparator;
 		minAndMax[1] = max;
 		return minAndMax;
 	}
-	
-	/** Converts the float array 'a' to a double array. */
-	public static double[] toDouble(float[] a) {
-		int len = a.length;
-		double[] d = new double[len];
-		for (int i=0; i<len; i++)
-			d[i] = a[i];
-		return d;
-	}
-	
-	/** Converts the double array 'a' to a float array. */
+
+    /** Converts the double array 'a' to a float array. */
 	public static float[] toFloat(double[] a) {
 		int len = a.length;
 		float[] f = new float[len];
@@ -182,7 +160,7 @@ import java.util.Comparator;
             br.close();
         } catch(Exception e) { }
 		String[] lines = new String[v.size()];
-		v.copyInto((String[])lines);
+		v.copyInto(lines);
 		return lines;
 	}
 	
@@ -224,12 +202,6 @@ import java.util.Comparator;
 			indexes2[i] = indexes[i].intValue();
 		return indexes2;
 	}
-	
-	/** Opens a text file in ij.jar as a String (example path: "/macros/Macro_Tool.txt"). */
-	public static String openFromIJJarAsString(String path) {
-		return (new ij.macro.MacroInstaller()).openFromIJJar(path);
-	}
-
 
 
 }

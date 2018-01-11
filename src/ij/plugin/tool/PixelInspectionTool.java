@@ -9,7 +9,6 @@ import ij.util.Tools;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.datatransfer.*;
-import java.awt.geom.*;
 
 /**
  * This plugin continuously displays the pixel values of the cursor and
@@ -120,19 +119,16 @@ class PixelInspector extends PlugInFrame
 	final static int MAX_RADIUS = 10;//the largest radius possible (ImageJ can hang if too large)
 	int grayDisplayType = 0;		//how to display 8-bit&16-bit grayscale pixels
 	final static String[] GRAY_DISPLAY_TYPES = {"Raw","Calibrated","Hex"};
-	final static int GRAY_RAW = 0, GRAY_CAL = 1, GRAY_HEX = 2;
+	final static int GRAY_RAW = 0;
+    final static int GRAY_HEX = 2;
 	int rgbDisplayType = 0;			//how to display rgb pixels
 	final static String[] RGB_DISPLAY_TYPES = {"R,G,B","Gray Value","Hex"};
 	final static int RGB_RGB = 0, RGB_GRAY = 1, RGB_HEX = 2;
 	int copyType = 0;				//what to copy to the clipboard
 	final static String[] COPY_TYPES = {"Data Only","x y and Data","Header and Data"};
-	final static int COPY_DATA = 0, COPY_XY = 1, COPY_HEADER = 2;
-	int colorNumber = 0;			//color of the position marker in fixed mode
-	final static String[] COLOR_STRINGS = {"red","orange","yellow","green","cyan","blue","magenta",};
-	final static Color[] COLORS = {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA};
-	int fixKey = '!';				//the key (keycode+0x10000 or char) for fixing/unfixing the position
-	final static int KEYCODE_OFFSET = 0x10000;	//we add this to keycodes to separate them from key characters
-	/* current status */
+    final static int COPY_XY = 1;
+    final static int COPY_HEADER = 2;
+    /* current status */
 	private int x0,y0;				//the current position
 	int nextUpdate;					//type of next update
 	final static int POSITION_UPDATE = 1, FULL_UPDATE = 2;
@@ -230,7 +226,7 @@ class PixelInspector extends PlugInFrame
 	}
 
 	private void addImageListeners() {
-		imp.addImageListener(this);
+		ImagePlus.addImageListener(this);
 		ImageWindow win = imp.getWindow();
 		if (win == null) close();
 		canvas = win.getCanvas();
@@ -238,7 +234,7 @@ class PixelInspector extends PlugInFrame
 	}
 
 	private void removeImageListeners() {
-		imp.removeImageListener(this);
+		ImagePlus.removeImageListener(this);
 		canvas.removeKeyListener(this);
 	}
 

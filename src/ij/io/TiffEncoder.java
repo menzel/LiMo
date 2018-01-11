@@ -76,7 +76,7 @@ public class TiffEncoder {
 		}
 		if (fi.unit!=null && fi.pixelWidth!=0 && fi.pixelHeight!=0)
 			nEntries += 3; // XResolution, YResolution and ResolutionUnit
-		if (fi.fileType==fi.GRAY32_FLOAT)
+		if (fi.fileType== FileInfo.GRAY32_FLOAT)
 			nEntries++; // SampleFormat tag
 		makeDescriptionString();
 		if (description!=null)
@@ -286,7 +286,7 @@ public class TiffEncoder {
 				unit = 3;
 			writeEntry(out, TiffDecoder.RESOLUTION_UNIT, 3, 1, unit);
 		}
-		if (fi.fileType==fi.GRAY32_FLOAT) {
+		if (fi.fileType== FileInfo.GRAY32_FLOAT) {
 			int format = TiffDecoder.FLOATING_POINT;
 			writeEntry(out, TiffDecoder.SAMPLE_FORMAT, 3, 1, format);
 		}

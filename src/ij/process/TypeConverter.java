@@ -1,9 +1,6 @@
 package ij.process;
 import java.awt.*;
 import java.awt.image.*;
-import ij.*;
-import ij.gui.*;
-import ij.measure.*;
 
 /** This class converts an ImageProcessor to another data type. */
 public class TypeConverter {
@@ -137,7 +134,7 @@ public class TypeConverter {
 			// apply custom LUT
 			ip = convertToRGB();
 			ip = convertRGBToByte();
-			return (ShortProcessor)convertByteToShort();
+			return convertByteToShort();
 		}
 		byte[] pixels8 = (byte[])ip.getPixels();
 		short[] pixels16 = new short[width * height];
@@ -196,7 +193,7 @@ public class TypeConverter {
 			// apply custom LUT
 			ip = convertToRGB();
 			ip = convertRGBToByte();
-			return (FloatProcessor)convertByteToFloat(null);
+			return convertByteToFloat(null);
 		}
 		byte[] pixels8 = (byte[])ip.getPixels();
 		float[] pixels32 = new float[width*height];

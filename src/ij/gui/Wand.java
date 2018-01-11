@@ -79,16 +79,6 @@ public class Wand {
         autoOutline(startX, startY, 0.0, mode|THRESHOLDED_MODE);
     }
 
-    /** Traces an object defined by lower and upper threshold values or an
-      * interior hole; whatever is found first ('legacy mode').
-      * For compatibility with previous versions of ImageJ.
-      * The start coordinates must be inside the area or left of it.
-      * When successful, npoints>0 and the boundary points can be accessed
-      * in the public xpoints and ypoints fields. */
-    public void autoOutline(int startX, int startY, double lower, double upper) {
-        autoOutline(startX, startY, lower, upper, THRESHOLDED_MODE|LEGACY_MODE);
-    }
-
     /** This is a variation of legacy autoOutline that uses int threshold arguments. */
     public void autoOutline(int startX, int startY, int lower, int upper) {
         autoOutline(startX, startY, (double)lower, (double)upper, THRESHOLDED_MODE|LEGACY_MODE);

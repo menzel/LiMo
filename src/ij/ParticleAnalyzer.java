@@ -5,15 +5,12 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import lichen.controller.FloodFiller;
-import ij.*;
 import ij.gui.*;
 import ij.process.*;
 import ij.measure.*;
 import ij.text.*;
 import ij.plugin.filter.PlugInFilter;
-import ij.plugin.frame.Recorder;
 import ij.plugin.frame.RoiManager;
-import ij.macro.Interpreter;
 import ij.util.Tools;
 
 /** Implements ImageJ's Analyze Particles command.
@@ -108,9 +105,14 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 	protected Analyzer analyzer;
 	protected int slice;
 	protected boolean processStack;
-	protected boolean showResults,excludeEdgeParticles,showSizeDistribution,
-	resetCounter,showProgress, recordStarts, displaySummary, floodFill,
-	addToManager, inSituShow;
+	protected boolean showResults;
+	protected boolean excludeEdgeParticles;
+	protected boolean resetCounter;
+	protected boolean showProgress;
+	protected boolean displaySummary;
+	protected boolean floodFill;
+	protected boolean addToManager;
+	protected boolean inSituShow;
 
 	private boolean showResultsWindow = true;
 	private String summaryHdr = "Slice\tCount\tTotal Area\tAverage Size\t%Area";
@@ -121,9 +123,7 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 	private int options;
 	private int measurements;
 	private Calibration calibration;
-	private String arg;
 	private double fillColor;
-	private boolean thresholdingLUT;
 	private ImageProcessor drawIP;
 	private int width,height;
 	private boolean canceled;
@@ -133,7 +133,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 	private int maxParticleCount = 0;
 	private int totalCount;
 	private TextWindow tw;
-	private Wand wand;
 	private int imageType, imageType2;
 	private boolean roiNeedsImage;
 	private int minX, maxX, minY, maxY;
@@ -213,7 +212,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 	}
 
 	public int setup(String arg, ImagePlus imp) {
-		this.arg = arg;
 		this.imp = imp;
 		IJ.register(ParticleAnalyzer.class);
 		if (imp==null)
@@ -431,7 +429,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 		resetCounter = (options&CLEAR_WORKSHEET)!=0;
 		showProgress = (options&SHOW_PROGRESS)!=0;
 		floodFill = (options&INCLUDE_HOLES)==0;
-		recordStarts = (options&RECORD_STARTS)!=0;
 		addToManager = (options&ADD_TO_MANAGER)!=0;
 		if (staticRoiManager!=null) {
 			addToManager = true;
@@ -814,8 +811,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 		return true;
 	}
 
-	int counter = 0;
-
 	/**
 	 * 
 	 * @param x
@@ -875,7 +870,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 			particleCount++;
 			if (roiNeedsImage)
 				roi.setImage(imp);
-			stats.xstart=x; stats.ystart=y;
 			saveResults(stats, roi);
 
 			this.AllResults.add(stats);
@@ -1049,48 +1043,6 @@ public class ParticleAnalyzer implements PlugInFilter, Measurements {
 			Analyzer.lastParticle = Analyzer.getCounter()-1;
 		} else
 			Analyzer.firstParticle = Analyzer.lastParticle = 0;
-	}
-
-	/** Returns the "Outlines", "Masks", "Elipses" or "Count Masks" image,
-		or null if "Nothing" is selected in the "Show:" menu. */
-	public ImagePlus getOutputImage() {
-		return outputImage;
-	}
-
-	/** Set 'hideOutputImage' true to not display the "Show:" image. */
-	public void setHideOutputImage(boolean hideOutputImage) {
-		this.hideOutputImage = hideOutputImage;
-	}
-
-	/** Sets the size of the font used to label outlines in the next particle analyzer instance. */
-	public static void setFontSize(int size) {
-		nextFontSize = size;
-	}
-
-	/** Sets the outline line width for the next ParticleAnalyzer instance. */
-	public static void setLineWidth(int width) {
-		nextLineWidth = width;
-	}
-
-	/** Sets the RoiManager to be used by the next ParticleAnalyzer 
-		instance. There is a JavaScript example at
-		http://imagej.nih.gov/ij/macros/js/HiddenRoiManager.js
-	 */
-	public static void setRoiManager(RoiManager manager) {
-		staticRoiManager = manager;
-	}
-
-	/** Sets the ResultsTable to be used by the next  
-		ParticleAnalyzer instance.	*/
-	public static void setResultsTable(ResultsTable rt) {
-		staticResultsTable = rt;
-	}
-
-	int getColumnID(String name) {
-		int id = rt.getFreeColumn(name);
-		if (id==ResultsTable.COLUMN_IN_USE)
-			id = rt.getColumnIndex(name);
-		return id;
 	}
 
 	void makeCustomLut() {

@@ -29,21 +29,8 @@ public class StringSorter {
 		}
 		return true;
 	}
-	
-	/** Sorts file names containing numerical components.
-	* @author Norbert Vischer
-	*/
-	public static String[] sortNumerically(String[] list) {
-		int n = list.length;
-		String[] paddedList = getPaddedNames(list);
-		String[] sortedList = new String[n];
-		int[] indexes = Tools.rank(paddedList);
-		for (int i = 0; i < n; i++)
-			sortedList[i] = list[indexes[i]];
-		return sortedList;
-	}
 
-	// Pads individual numeric string components with zeroes for correct sorting
+    // Pads individual numeric string components with zeroes for correct sorting
 	private static String[] getPaddedNames(String[] names) {
 		int nNames = names.length;
 		String[] paddedNames = new String[nNames];

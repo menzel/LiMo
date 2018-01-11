@@ -4,17 +4,12 @@ import java.awt.*;
 /** This class does bit blitting of 16-bit images. */
 public class ShortBlitter implements Blitter {
 
-	private ShortProcessor ip;
-	private int width, height;
+    private int width, height;
 	private short[] pixels;
-	
-	public void setTransparentColor(Color c) {
-	}
 
-	/** Constructs a ShortBlitter from a ShortProcessor. */
+    /** Constructs a ShortBlitter from a ShortProcessor. */
 	public ShortBlitter(ShortProcessor ip) {
-		this.ip = ip;
-		width = ip.getWidth();
+        width = ip.getWidth();
 		height = ip.getHeight();
 		pixels = (short[])ip.getPixels();
 	}

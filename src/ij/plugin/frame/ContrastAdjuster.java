@@ -1,9 +1,8 @@
 package ij.plugin.frame;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.*;
+
 import ij.*;
-import ij.plugin.*;
 import ij.process.*;
 import ij.gui.*;
 import ij.measure.*;
@@ -31,16 +30,15 @@ public class ContrastAdjuster extends PlugInFrame implements Runnable,
 	int sliderRange = 256;
 	boolean doAutoAdjust,doReset,doSet,doApplyLut;
 	
-	Panel panel, tPanel;
-	Button autoB, resetB, setB, applyB;
+	Panel panel;
+    Button autoB, resetB, setB, applyB;
 	int previousImageID;
 	int previousType;
 	int previousSlice = 1;
 	Object previousSnapshot;
 	ImageJ ij;
 	double min, max;
-	double previousMin, previousMax;
-	double defaultMin, defaultMax;
+    double defaultMin, defaultMax;
 	int contrast, brightness;
 	boolean RGBImage;
 	Scrollbar minSlider, maxSlider, contrastSlider, brightnessSlider;
@@ -303,7 +301,7 @@ public class ContrastAdjuster extends PlugInFrame implements Runnable,
 		int type = imp.getType();
 		int slice = imp.getCurrentSlice();
 		RGBImage = type==ImagePlus.COLOR_RGB;
-		boolean snapshotChanged = RGBImage && previousSnapshot!=null && ((ColorProcessor)ip).getSnapshotPixels()!=previousSnapshot;
+		boolean snapshotChanged = RGBImage && previousSnapshot!=null && ip.getSnapshotPixels()!=previousSnapshot;
 		if (imp.getID()!=previousImageID || snapshotChanged || type!=previousType || slice!=previousSlice)
 			setupNewImage(imp, ip);
 		previousImageID = imp.getID();
@@ -315,11 +313,9 @@ public class ContrastAdjuster extends PlugInFrame implements Runnable,
 	void setupNewImage(ImagePlus imp, ImageProcessor ip)  {
 		//IJ.write("setupNewImage");
 		Undo.reset();
-		previousMin = min;
-		previousMax = max;
-	 	if (RGBImage) {
+        if (RGBImage) {
 	 		ip.snapshot();
-	 		previousSnapshot = ((ColorProcessor)ip).getSnapshotPixels();
+	 		previousSnapshot = ip.getSnapshotPixels();
 	 	} else
 			previousSnapshot = null;
 		double min2 = imp.getDisplayRangeMin();
@@ -407,8 +403,8 @@ public class ContrastAdjuster extends PlugInFrame implements Runnable,
 	
 	void updateLabels(ImagePlus imp) {
 		double min = imp.getDisplayRangeMin();
-		double max = imp.getDisplayRangeMax();;
-		int type = imp.getType();
+		double max = imp.getDisplayRangeMax();
+        int type = imp.getType();
 		Calibration cal = imp.getCalibration();
 		boolean realValue = type==ImagePlus.GRAY32;
 		if (cal.calibrated()) {
@@ -727,7 +723,7 @@ public class ContrastAdjuster extends PlugInFrame implements Runnable,
 	void setThreshold(ImageProcessor ip) {
 		if (!(ip instanceof ByteProcessor))
 			return;
-		if (((ByteProcessor)ip).isInvertedLut())
+		if (ip.isInvertedLut())
 			ip.setThreshold(max, 255, ImageProcessor.NO_LUT_UPDATE);
 		else
 			ip.setThreshold(0, max, ImageProcessor.NO_LUT_UPDATE);
@@ -996,10 +992,16 @@ public class ContrastAdjuster extends PlugInFrame implements Runnable,
 		}
 	}
 	
-	static final int RESET=0, AUTO=1, SET=2, APPLY=3, THRESHOLD=4, MIN=5, MAX=6, 
-		BRIGHTNESS=7, CONTRAST=8, UPDATE=9;
+	static final int RESET=0;
+    static final int AUTO=1;
+    static final int SET=2;
+    static final int APPLY=3;
+    static final int MIN=5;
+    static final int MAX=6;
+    static final int BRIGHTNESS=7;
+    static final int CONTRAST=8;
 
-	// Separate thread that does the potentially time-consuming processing 
+    // Separate thread that does the potentially time-consuming processing
 	public void run() {
 		while (!done) {
 			synchronized(this) {
@@ -1108,12 +1110,6 @@ public class ContrastAdjuster extends PlugInFrame implements Runnable,
 		notify();
 	}
 
-    /** Resets this ContrastAdjuster and brings it to the front. */
-    public void updateAndDraw() {
-        previousImageID = 0;
-        toFront();
-    }
-    
     /** Updates the ContrastAdjuster. */
     public static void update() {
 		if (instance!=null) {
@@ -1216,7 +1212,7 @@ class ContrastPlot extends Canvas implements MouseListener {
 				osg.fillRect(0, 0, WIDTH, HEIGHT);
 				osg.setColor(color);
 				for (int i = 0; i < WIDTH; i++)
-					osg.drawLine(i, HEIGHT, i, HEIGHT - ((int)(HEIGHT * histogram[i])/hmax));
+					osg.drawLine(i, HEIGHT, i, HEIGHT - (HEIGHT * histogram[i] /hmax));
 				osg.dispose();
 			}
 			if (os!=null) g.drawImage(os, 0, 0, this);

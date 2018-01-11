@@ -1,28 +1,12 @@
 package ij.util;
 import ij.*;
 import ij.process.*;
-import ij.plugin.DICOM;
 
 /** DICOM utilities */
 public class DicomTools {
 	private static final int MAX_DIGITS = 5;
 	private static String[] sliceLabels;
 
-	/** Sorts a DICOM stack by image number. */
-	public static ImageStack sort(ImageStack stack) {
-		if (IJ.debugMode) IJ.log("Sorting by DICOM image number");
-		if (stack.getSize()==1) return stack;
-		String[] strings = getSortStrings(stack, "0020,0013");
-		if (strings==null) return stack;
-		StringSorter.sort(strings);
-		ImageStack stack2 = null;
-		if (stack.isVirtual())
-			stack2 = ((VirtualStack)stack).sortDicom(strings, sliceLabels, MAX_DIGITS);
-		else
-			stack2 = sortStack(stack, strings);
-		return stack2!=null?stack2:stack;
-	}
-	
 	private static ImageStack sortStack(ImageStack stack, String[] strings) {
 		ImageProcessor ip = stack.getProcessor(1);
 		ImageStack stack2 = new ImageStack(ip.getWidth(), ip.getHeight(), ip.getColorModel());
@@ -74,29 +58,6 @@ public class DicomTools {
 				info = name + "\n" + info;
 		}
 		return info;
-	}
-
-	/** Calculates the voxel depth of the specified DICOM stack based 
-		on the distance between the first and last slices. */
-	public static double getVoxelDepth(ImageStack stack) {
-		if (stack.isVirtual()) stack.getProcessor(1);
-		String pos0 = getTag(stack.getSliceLabel(1), "0020,0032");
-		String posn = null;
-		double voxelDepth = -1.0;
-		if (pos0!=null) {
-			String[] xyz = pos0.split("\\\\");
-			if (xyz.length!=3) return voxelDepth;
-			double z0 = Double.parseDouble(xyz[2]);
-			if (stack.isVirtual()) stack.getProcessor(stack.getSize());
-			posn = getTag(stack.getSliceLabel(stack.getSize()), "0020,0032");
-			if (posn==null) return voxelDepth;
-			xyz = posn.split("\\\\");
-			if (xyz.length!=3) return voxelDepth;
-			double zn = Double.parseDouble(xyz[2]);
-			voxelDepth = Math.abs((zn - z0) / (stack.getSize() - 1));
-		}
-		if (IJ.debugMode) IJ.log("DicomTools.getVoxelDepth: "+voxelDepth+"  "+pos0+"  "+posn);
-		return voxelDepth;
 	}
 
 	/** Returns the value (as a string) of the specified DICOM tag id (in the form "0018,0050")

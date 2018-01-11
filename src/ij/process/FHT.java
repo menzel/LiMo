@@ -1,8 +1,7 @@
 package ij.process;
 import ij.*;
-import ij.plugin.FFT;
-import ij.plugin.ContrastEnhancer;
-import java.awt.image.ColorModel; 
+
+import java.awt.image.ColorModel;
 
 /**
 This class contains a Java implementation of the Fast Hartley
@@ -48,10 +47,6 @@ public class FHT extends FloatProcessor {
 		resetRoi();
 	}
 
-	public FHT() {
-		super(8,8); //create dummy FloatProcessor
-	}
-
 	/** Returns true of this FHT contains a square image with a width that is a power of two. */
 	public boolean powerOf2Size() {
 		int i=2;
@@ -59,19 +54,7 @@ public class FHT extends FloatProcessor {
 		return i==width && width==height;
 	}
 
-	/** Performs a forward transform, converting this image into the frequency domain. 
-		The image contained in this FHT must be square and its width must be a power of 2. */
-	public void transform() {
-		transform(false);
-	}
-
-	/** Performs an inverse transform, converting this image into the space domain. 
-		The image contained in this FHT must be square and its width must be a power of 2. */
-	public void inverseTransform() {
-		transform(true);
-	}
-	
-	/** Returns an inverse transform of this image, which is assumed to be in the frequency domain. */ 
+	/** Returns an inverse transform of this image, which is assumed to be in the frequency domain. */
 	//public FloatProcessor getInverseTransform() {
 	//	if (!isFrequencyDomain) {
 	//		throw new  IllegalArgumentException("Frequency domain image required");
@@ -280,76 +263,6 @@ public class FHT extends FloatProcessor {
 		return temp & 0x0000ffff;
 	}
 
-	private int bset (int x, int bit) {
-		x |= (1<<bit);
-		return x;
-	}
-
-	/** Returns an 8-bit power spectrum, log-scaled to 1-254. The image in this
-		FHT is assumed to be in the frequency domain. */
-	public ImageProcessor getPowerSpectrum () {
-		if (!isFrequencyDomain)
-			throw new  IllegalArgumentException("Frequency domain image required");
-		int base;
-		float  r, scale;
-		float min = Float.MAX_VALUE;
-  		float max = Float.MIN_VALUE;
-   		float[] fps = new float[maxN*maxN];
- 		byte[] ps = new byte[maxN*maxN];
-		float[] fht = (float[])getPixels();
-
-  		for (int row=0; row<maxN; row++) {
-			FHTps(row, maxN, fht, fps);
-			base = row * maxN;
-			for (int col=0; col<maxN; col++) {
-				r = fps[base+col];
-				if (r<min) min = r;
-				if (r>max) max = r;
-			}
-		}
-
-		if (min<1.0)
-			min = 0f;
-		else
-			min = (float)Math.log(min);
-		max = (float)Math.log(max);
-		scale = (float)(253.0/(max-min));
-
-		for (int row=0; row<maxN; row++) {
-			base = row*maxN;
-			for (int col=0; col<maxN; col++) {
-				r = fps[base+col];
-				if (r<1f)
-					r = 0f;
-				else
-					r = (float)Math.log(r);
-				ps[base+col] = (byte)(((r-min)*scale+0.5)+1);
-			}
-		}
-		ImageProcessor ip = new ByteProcessor(maxN, maxN, ps, null);
-		swapQuadrants(ip);
-		if (FFT.displayRawPS) {
-			ImageProcessor ip2 = new FloatProcessor(maxN, maxN, fps, null);
-			swapQuadrants(ip2);
-			new ImagePlus("PS of "+FFT.fileName, ip2).show();
-		}
-		if (FFT.displayFHT) {
-			ImageProcessor ip3 = new FloatProcessor(maxN, maxN, fht, null);
-			ImagePlus imp2 = new ImagePlus("FHT of "+FFT.fileName, ip3.duplicate());
-			(new ContrastEnhancer()).stretchHistogram(imp2, 0.1);
-			imp2.show();
-		}
-		if (FFT.displayComplex) {
-			ImageStack ct = getComplexTransform();
-			ImagePlus imp2 = new ImagePlus("Complex of "+FFT.fileName, ct);
-			(new ContrastEnhancer()).stretchHistogram(imp2, 0.1);
-			imp2.setProperty("FFT width", ""+originalWidth);
-			imp2.setProperty("FFT height", ""+originalHeight);
-			imp2.show();
-		}
-		return ip;
-	}
-
 	/** Power Spectrum of one row from 2D Hartley Transform. */
  	void FHTps(int row, int maxN, float[] fht, float[] ps) {
  		int base = row*maxN;
@@ -404,16 +317,6 @@ public class FHT extends FloatProcessor {
             }
       }
 
-	ImageProcessor calculateAmplitude(float[] fht, int maxN) {
-   		float[] amp = new float[maxN*maxN];
-   		for (int row=0; row<maxN; row++) {
-			amplitude(row, maxN, fht, amp);
-		}
-		ImageProcessor ip = new FloatProcessor(maxN, maxN, amp, null);
-		swapQuadrants(ip);
-		return ip;
-	}
-
 	/** Amplitude of one row from 2D Hartley Transform. */
  	void amplitude(int row, int maxN, float[] fht, float[] amplitude) {
  		int base = row*maxN;
@@ -454,39 +357,6 @@ public class FHT extends FloatProcessor {
 		ip.resetRoi();
 	}
 
-	/**	Swap quadrants 1 and 3 and 2 and 4 of the image
-		contained in this FHT. */
- 	public void swapQuadrants () {
- 		swapQuadrants(this);
- 	}
- 	
-	void changeValues(ImageProcessor ip, int v1, int v2, int v3) {
-		byte[] pixels = (byte[])ip.getPixels();
-		int v;
-		//IJ.log(v1+" "+v2+" "+v3+" "+pixels.length);
-		for (int i=0; i<pixels.length; i++) {
-			v = pixels[i]&255;
-			if (v>=v1 && v<=v2)
-				pixels[i] = (byte)v3;
-		}
-	}
-
-	/** Returns the image resulting from the point by point Hartley multiplication
-		of this image and the specified image. Both images are assumed to be in
-		the frequency domain. Multiplication in the frequency domain is equivalent 
-		to convolution in the space domain. */
-	public FHT multiply(FHT fht) {
-		return multiply(fht, false);
-	}
-
-	/** Returns the image resulting from the point by point Hartley conjugate 
-		multiplication of this image and the specified image. Both images are 
-		assumed to be in the frequency domain. Conjugate multiplication in
-		the frequency domain is equivalent to correlation in the space domain. */
-	public FHT conjugateMultiply(FHT fht) {
-		return multiply(fht, true);
-	}
-
 	FHT multiply(FHT fht, boolean  conjugate) {
 		int rowMod, cMod, colMod;
 		double h2e, h2o;
@@ -509,54 +379,7 @@ public class FHT extends FloatProcessor {
 		fht2.isFrequencyDomain = true;
 		return fht2;
 	}
-		
-	/** Returns the image resulting from the point by point Hartley division
-		of this image by the specified image. Both images are assumed to be in
-		the frequency domain. Division in the frequency domain is equivalent 
-		to deconvolution in the space domain. */
-	public FHT divide(FHT fht) {
-		int rowMod, cMod, colMod;
-		double mag, h2e, h2o;
-		float[] h1 = (float[])getPixels();
-		float[] h2 = (float[])fht.getPixels();
-		float[] out = new float[maxN*maxN];
-		for (int r=0; r<maxN; r++) {
-			rowMod = (maxN - r) % maxN;
-			for (int c=0; c<maxN; c++) {
-				colMod = (maxN - c) % maxN;
-				mag =h2[r*maxN+c] * h2[r*maxN+c] + h2[rowMod*maxN+colMod] * h2[rowMod*maxN+colMod];
-				if (mag<1e-20)
-					mag = 1e-20;
-				h2e = (h2[r*maxN+c] + h2[rowMod*maxN+colMod]);
-				h2o = (h2[r*maxN+c] - h2[rowMod*maxN+colMod]);
-				double tmp = (h1[r*maxN+c] * h2e - h1[rowMod*maxN+colMod] * h2o);
-				out[r*maxN+c] = (float)(tmp/mag);
-			}
-		}
-		FHT fht2 = new FHT(new FloatProcessor(maxN, maxN, out, null));
-		fht2.isFrequencyDomain = true;
-		return fht2;
-	}
-			
-	/** Enables/disables display of the progress bar during transforms. */
-	public void setShowProgress(boolean showProgress) {
-		this.showProgress = showProgress;
-	}
-	
-	/** Returns a clone of this FHT. */
-	public FHT getCopy() {
-		ImageProcessor ip = super.duplicate();
-		FHT fht = new FHT(ip);
-		fht.isFrequencyDomain = isFrequencyDomain;
-		fht.quadrantSwapNeeded = quadrantSwapNeeded;
-		fht.rgb = rgb;
-		fht.originalWidth = originalWidth;
-		fht.originalHeight = originalHeight;
-		fht.originalBitDepth = originalBitDepth;		
-		fht.originalColorModel = originalColorModel;		
-		return fht;
-	}
-		
+
 	/** Returns a string containing information about this FHT. */
 	public String toString() {
 		return "FHT, " + getWidth() + "x"+getHeight() + ", fd=" + isFrequencyDomain;

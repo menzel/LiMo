@@ -1,8 +1,5 @@
 package ij.process;
-import ij.*;
-import ij.gui.*;
 import java.awt.*;
-import ij.plugin.filter.*;
 
 /*
 Best-fitting ellipse routines by:
@@ -101,14 +98,12 @@ public class EllipseFitter {
  	private double   n;
 	private double   xm, ym;   //mean values
 	private double   u20, u02, u11;  //central moments
-	private ImageProcessor ip;
 	//private double pw, ph;
 	private boolean record;
 
 	/** Fits an ellipse to the current ROI. The 'stats' argument, currently not used, 
 		can be null. The fit parameters are returned in public fields. */
 	public void fit(ImageProcessor ip, ImageStatistics stats) {
-		this.ip = ip;
 		mask = ip.getMaskArray();
 		Rectangle r = ip.getRoi();
 		left = r.x;
@@ -326,19 +321,7 @@ public class EllipseFitter {
 				ip.lineTo(xc + x, yc + y);
 		}
 	}
-	
-	/** Generates the xCoordinates, yCoordinates public arrays 
-		that can be used to create an ROI. */
-	public void makeRoi(ImageProcessor ip) {
-		record = true;
-		int size = ip.getHeight()*3;
-		xCoordinates = new int[size];
-		yCoordinates = new int[size];
-		nCoordinates = 0;
-		drawEllipse(ip);
-		record = false;
-	}
-	
+
 	private double sqr(double x) {
 		return x*x;
 	}

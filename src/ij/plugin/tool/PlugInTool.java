@@ -50,6 +50,5 @@ public abstract class PlugInTool implements PlugIn {
 	/** These methods are overridden by MacroToolRunner. */
 	public void runMacroTool(String name) { }
 	public void runMenuTool(String name, String command) { }
-	public Program getMacroProgram() {return null;}
 
 }

@@ -1,5 +1,4 @@
 package ij.process;
-import java.awt.*;
 import ij.*;
 import ij.process.*;
 import ij.macro.Interpreter;
@@ -60,44 +59,7 @@ public class StackProcessor {
 		IJ.showProgress(1.0);
 	}
 
-	public void invert() {
-		process(INVERT);
-	}
-	
-	public void flipHorizontal() {
-		process(FLIPH);
-	}
-	
-	public void flipVertical() {
-		process(FLIPV);
-	}
-	
-	public void applyTable(int[] table) {
-		this.table = table;
-		process(APPLY_TABLE);
-	}
-
-	public void scale(double xScale, double yScale) {
-		this.xScale = xScale;
-		this.yScale = yScale;
-		process(SCALE);
- 	}
-
-	public void scale(double xScale, double yScale, double fillValue) {
-		this.xScale = xScale;
-		this.yScale = yScale;
-		this.fillValue = fillValue;
-		process(SCALE_WITH_FILL);
- 	}
-
-	/** Creates a new stack with dimensions 'newWidth' x 'newHeight'.
-		To reduce memory requirements, the orginal stack is deleted
-		as the new stack is created. */
-	public ImageStack resize(int newWidth, int newHeight) {
-		return resize(newWidth, newHeight, false);
-	}
-
-	public ImageStack resize(int newWidth, int newHeight, boolean averageWhenDownsizing) {
+    public ImageStack resize(int newWidth, int newHeight, boolean averageWhenDownsizing) {
 	    ImageStack stack2 = new ImageStack(newWidth, newHeight);
  		ImageProcessor ip2;
 		try {
@@ -121,24 +83,7 @@ public class StackProcessor {
 		return stack2;
 	}
 
-	/** Crops the stack to the specified rectangle. */
-	public ImageStack crop(int x, int y, int width, int height) {
-	    ImageStack stack2 = new ImageStack(width, height);
- 		ImageProcessor ip2;
-		for (int i=1; i<=nSlices; i++) {
-			ImageProcessor ip1 = stack.getProcessor(1);
-			ip1.setRoi(x, y, width, height);
-			String label = stack.getSliceLabel(1);
-			stack.deleteSlice(1);
-			ip2 = ip1.crop();
-			stack2.addSlice(label, ip2);
-			IJ.showProgress((double)i/nSlices);
-		}
-		IJ.showProgress(1.0);
-		return stack2;
-	}
-
-	ImageStack rotate90Degrees(boolean clockwise) {
+    ImageStack rotate90Degrees(boolean clockwise) {
  	    ImageStack stack2 = new ImageStack(stack.getHeight(), stack.getWidth());
  		ImageProcessor ip2;
     	for (int i=1; i<=nSlices; i++) {
@@ -167,16 +112,8 @@ public class StackProcessor {
 	public ImageStack rotateLeft() {
 		return rotate90Degrees(false);
  	}
- 	
- 	public void copyBits(ImageProcessor src, int xloc, int yloc, int mode) {
- 		copyBits(src, null, xloc, yloc, mode);
- 	}
 
- 	public void copyBits(ImageStack src, int xloc, int yloc, int mode) {
- 		copyBits(null, src, xloc, yloc, mode);
- 	}
-
- 	private void copyBits(ImageProcessor srcIp, ImageStack srcStack, int xloc, int yloc, int mode) {
+    private void copyBits(ImageProcessor srcIp, ImageStack srcStack, int xloc, int yloc, int mode) {
 	    int inc = nSlices/20;
 	    if (inc<1) inc = 1;
 	    boolean stackSource = srcIp==null;

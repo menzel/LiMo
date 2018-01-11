@@ -1,16 +1,10 @@
 package ij.io;
 
-import java.awt.*;
-import java.awt.image.*;
 import java.io.*;
 import java.util.*;
 import ij.*;
 import ij.gui.*;
 import ij.process.*;
-import ij.util.StringSorter;
-import ij.plugin.frame.Recorder;
-import ij.plugin.FolderOpener;
-import ij.plugin.FileInfoVirtualStack;
 import ij.measure.Calibration;
 
 
@@ -27,8 +21,7 @@ public class ImportDialog {
 	static final String OPTIONS = "raw.options";
 	static final int WHITE_IS_ZERO = 1;
 	static final int INTEL_BYTE_ORDER = 2;
-	static final int OPEN_ALL = 4;
-	
+
     // default settings
     private static int choiceSelection = Prefs.getInt(TYPE,0);
     private static int width = Prefs.getInt(WIDTH,512);
@@ -138,40 +131,8 @@ public class ImportDialog {
 			imp.show();
 		}
 	}
-	
-	/** Displays the dialog and opens the specified image or images.
-		Does nothing if the dialog is canceled. */
-	public void openImage() {
-		FileInfo fi = getFileInfo();
-		if (fi==null) return;
-		if (openAll) {
-			if (virtual) {
-				virtual = false;
-				IJ.error("Import Raw", "\"Open All\" does not currently support virtual stacks");
-				return;
-			}
-			String[] list = new File(directory).list();
-			if (list==null) return;
-			openAll(list, fi);
-		} else if (virtual)
-			new FileInfoVirtualStack(fi);
-		else {
-			FileOpener fo = new FileOpener(fi);
-			ImagePlus imp = fo.open(false);
-			if (imp!=null) {
-				imp.show();
-				int n = imp.getStackSize();
-				if (n>1) {
-					imp.setSlice(n/2);
-					ImageProcessor ip = imp.getProcessor();
-					ip.resetMinAndMax();
-					imp.setDisplayRange(ip.getMin(),ip.getMax());
-				}
-			}
-		}
-	}
 
-	/** Displays the dialog and returns a FileInfo object that can be used to
+    /** Displays the dialog and returns a FileInfo object that can be used to
 		open the image. Returns null if the dialog is canceled. The fileName 
 		and directory fields are null if the no argument constructor was used. */
 	public FileInfo getFileInfo() {
@@ -179,7 +140,7 @@ public class ImportDialog {
 			return null;
 		String imageType = types[choiceSelection];
 		FileInfo fi = new FileInfo();
-		fi.fileFormat = fi.RAW;
+		fi.fileFormat = FileInfo.RAW;
 		fi.fileName = fileName;
 		fi.directory = directory;
 		fi.width = width;
@@ -243,12 +204,6 @@ public class ImportDialog {
 		//if (openAll)
 		//	options |= OPEN_ALL;
 		prefs.put(OPTIONS, Integer.toString(options));
-	}
-	
-	/** Returns the FileInfo object used to import the last raw image,
-		or null if a raw image has not been imported. */
-	public static FileInfo getLastFileInfo() {
-		return lastFileInfo;
 	}
 
 }

@@ -1,9 +1,7 @@
 package ij;
 import java.awt.*;
-import java.util.Vector;
 import java.util.Properties;
 
-import ij.*;
 import ij.gui.*;
 import ij.process.*;
 import ij.measure.*;
@@ -15,14 +13,12 @@ import ij.macro.Interpreter;
 
 /** This plugin implements ImageJ's Analyze/Measure and Analyze/Set Measurements commands. */
 public class Analyzer implements PlugInFilter, Measurements {
-	
-	private String arg;
-	private ImagePlus imp;
+
+    private ImagePlus imp;
 	private ResultsTable rt;
 	private int measurements;
-	private StringBuffer min,max,mean,sd;
-	
-	// Order must agree with order of checkboxes in Set Measurements dialog box
+
+    // Order must agree with order of checkboxes in Set Measurements dialog box
 	private static final int[] list = {AREA,MEAN,STD_DEV,MODE,MIN_MAX,
 		CENTROID,CENTER_OF_MASS,PERIMETER,RECT,ELLIPSE,SHAPE_DESCRIPTORS, FERET,
 		INTEGRATED_DENSITY,MEDIAN,SKEWNESS,KURTOSIS,AREA_FRACTION,STACK_POSITION,
@@ -33,8 +29,7 @@ public class Analyzer implements PlugInFilter, Measurements {
 	private static final String PRECISION = "precision";
 	//private static int counter;
 	private static boolean unsavedMeasurements;
-	public static Color darkBlue = new Color(0,0,160);
-	private static int systemMeasurements = Prefs.getInt(MEASUREMENTS,AREA+MEAN+MIN_MAX);
+    private static int systemMeasurements = Prefs.getInt(MEASUREMENTS,AREA+MEAN+MIN_MAX);
 	public static int markWidth = Prefs.getInt(MARK_WIDTH,0);
 	public static int precision = Prefs.getInt(PRECISION,3);
 	private static float[] umeans = new float[MAX_STANDARDS];
@@ -70,8 +65,7 @@ public class Analyzer implements PlugInFilter, Measurements {
 	}
 	
 	public int setup(String arg, ImagePlus imp) {
-		this.arg = arg;
-		this.imp = imp;
+        this.imp = imp;
 		IJ.register(Analyzer.class);
 		if (arg.equals("set"))
 			{doSetDialog(); return DONE;}
@@ -158,9 +152,9 @@ public class Analyzer implements PlugInFilter, Measurements {
 		labels[0]="Limit to threshold"; states[0]=(systemMeasurements&LIMIT)!=0;
 		labels[1]="Display label"; states[1]=(systemMeasurements&LABELS)!=0;
 		labels[2]="Invert Y coordinates"; states[2]=(systemMeasurements&INVERT_Y)!=0;
-		labels[3]="Scientific notation"; states[3]=(systemMeasurements&SCIENTIFIC_NOTATION)!=0;;
-		labels[4]="Add to overlay"; states[4]=(systemMeasurements&ADD_TO_OVERLAY)!=0;;
-		gd.setInsets(0, 0, 0);
+		labels[3]="Scientific notation"; states[3]=(systemMeasurements&SCIENTIFIC_NOTATION)!=0;
+        labels[4]="Add to overlay"; states[4]=(systemMeasurements&ADD_TO_OVERLAY)!=0;
+        gd.setInsets(0, 0, 0);
 		gd.addCheckboxGroup(3, 2, labels, states);
 		gd.setInsets(15, 0, 0);
         gd.addChoice("Redirect to:", titles, target);
@@ -257,23 +251,8 @@ public class Analyzer implements PlugInFilter, Measurements {
 	public static boolean isRedirectImage() {
 		return redirectTarget!=0;
 	}
-	
-	/** Set the "Redirect To" image. Pass 'null' as the 
-	    argument to disable redirected sampling. */
-	public static void setRedirectImage(ImagePlus imp) {
-		if (imp==null) {
-			redirectTarget = 0;
-			redirectTitle = null;
-			redirectImage = null;
-		} else {
-			redirectTarget = imp.getID();
-			redirectTitle = imp.getTitle();
-			if (imp.getWindow()==null)
-				redirectImage = imp;
-		}
-	}
-	
-	private ImagePlus getRedirectImageOrStack(ImagePlus cimp) {
+
+    private ImagePlus getRedirectImageOrStack(ImagePlus cimp) {
 		ImagePlus rimp = getRedirectImage(cimp);
 		if (rimp!=null) {
 			int depth = rimp.getStackSize();
@@ -378,7 +357,7 @@ public class Analyzer implements PlugInFilter, Measurements {
 			}
 		}
 		boolean straightLine = roi.getType()==Roi.LINE;
-		int lineWidth = (int)Math.round(roi.getStrokeWidth());
+		int lineWidth = Math.round(roi.getStrokeWidth());
 		ImageProcessor ip2;
 		Rectangle saveR = null;
 		if (straightLine && lineWidth>1) {
@@ -690,22 +669,7 @@ public class Analyzer implements PlugInFilter, Measurements {
 		IJ.write(rt.getRowAsString(counter-1));
 	}
 
-	/** Redisplays the results table. */
-	public void updateHeadings() {
-		rt.show("Results");
-	}
-
-	/** Converts a number to a formatted string with a tab at the end. */
-	public String n(double n) {
-		String s;
-		if (Math.round(n)==n)
-			s = ResultsTable.d2s(n,0);
-		else
-			s = ResultsTable.d2s(n,precision);
-		return s+"\t";
-	}
-		
-	void incrementCounter() {
+    void incrementCounter() {
 		//counter++;
 		if (rt==null) rt = systemRT;
 		rt.incrementCounter();
@@ -816,12 +780,7 @@ public class Analyzer implements PlugInFilter, Measurements {
 		prefs.put(MARK_WIDTH, Integer.toString(markWidth));
 		prefs.put(PRECISION, Integer.toString(precision));	}
 
-	/** Returns an array containing the first 20 uncalibrated means. */
-	public static float[] getUMeans() {
-		return umeans;
-	}
-
-	/** Returns the default results table. This table should only
+    /** Returns the default results table. This table should only
 		be displayed in a the "Results" window. */
 	public static ResultsTable getResultsTable() {
 		return systemRT;
@@ -839,28 +798,7 @@ public class Analyzer implements PlugInFilter, Measurements {
 		precision = decimalPlaces;
 	}
 
-	/** Returns an updated Y coordinate based on
-		the current "Invert Y Coordinates" flag. */
-	public static int updateY(int y, int imageHeight) {
-		if ((systemMeasurements&INVERT_Y)!=0)
-			y = imageHeight-y-1;
-		return y;
-	}
-	
-	/** Returns an updated Y coordinate based on
-		the current "Invert Y Coordinates" flag. */
-	public static double updateY(double y, int imageHeight) {
-		if ((systemMeasurements&INVERT_Y)!=0)
-			y = imageHeight-y-1;
-		return y;
-	}
-	
-	/** Sets the default headings ("Area", "Mean", etc.). */
-	public static void setDefaultHeadings() {
-		systemRT.setDefaultHeadings();
-	}
-
-	public static void setOption(String option, boolean b) {
+    public static void setOption(String option, boolean b) {
 		if (option.indexOf("min")!=-1)
 			showMin = b;
 	}

@@ -18,18 +18,5 @@ public class GUI {
 	}
 	
     static private Frame frame;
-    
-    /** Creates a white AWT Image image of the specified size. */
-    public static Image createBlankImage(int width, int height) {
-        if (width==0 || height==0)
-            throw new IllegalArgumentException("");
-		if (frame==null) {
-			frame = new Frame();
-			frame.pack();
-			frame.setBackground(Color.white);
-		}
-        Image img = frame.createImage(width, height);
-        return img;
-    }
-    
+
 }

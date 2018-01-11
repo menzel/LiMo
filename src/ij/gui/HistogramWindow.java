@@ -28,62 +28,27 @@ public class HistogramWindow extends ImageWindow implements Measurements, Action
 	protected long[] histogram;
 	protected LookUpTable lut;
 	protected Rectangle frame = null;
-	protected Button list, save, copy, log, live, rgb;
+	protected Button list;
+    protected Button copy;
+    protected Button log;
+    protected Button live;
+    protected Button rgb;
 	protected Label value, count;
-	protected static String defaultDirectory = null;
-	protected int decimalPlaces;
+    protected int decimalPlaces;
 	protected int digits;
 	protected long newMaxCount;
-	protected int plotScale = 1;
-	protected boolean logScale;
+    protected boolean logScale;
 	protected Calibration cal;
 	protected int yMax;
-	public static int nBins = 256;
-		
-	private int srcImageID;			// ID of source image
+
+    private int srcImageID;			// ID of source image
 	private ImagePlus srcImp;		// source image for live histograms
 	private Thread bgThread;		// thread background drawing
 	private boolean doUpdate;	// tells background thread to update
 	private int channel;				// RGB channel
 	private String blankLabel;
-	    
-	/** Displays a histogram using the title "Histogram of ImageName". */
-	public HistogramWindow(ImagePlus imp) {
-		super(NewImage.createRGBImage("Histogram of "+imp.getShortTitle(), WIN_WIDTH, WIN_HEIGHT, 1, NewImage.FILL_WHITE));
-		showHistogram(imp, 256, 0.0, 0.0);
-	}
 
-	/** Displays a histogram using the specified title and number of bins. 
-		Currently, the number of bins must be 256 expect for 32 bit images. */
-	public HistogramWindow(String title, ImagePlus imp, int bins) {
-		super(NewImage.createRGBImage(title, WIN_WIDTH, WIN_HEIGHT, 1, NewImage.FILL_WHITE));
-		showHistogram(imp, bins, 0.0, 0.0);
-	}
-
-	/** Displays a histogram using the specified title, number of bins and histogram range.
-		Currently, the number of bins must be 256 and the histogram range range must be the 
-		same as the image range expect for 32 bit images. */
-	public HistogramWindow(String title, ImagePlus imp, int bins, double histMin, double histMax) {
-		super(NewImage.createRGBImage(title, WIN_WIDTH, WIN_HEIGHT, 1, NewImage.FILL_WHITE));
-		showHistogram(imp, bins, histMin, histMax);
-	}
-
-	/** Displays a histogram using the specified title, number of bins, histogram range and yMax. */
-	public HistogramWindow(String title, ImagePlus imp, int bins, double histMin, double histMax, int yMax) {
-		super(NewImage.createRGBImage(title, WIN_WIDTH, WIN_HEIGHT, 1, NewImage.FILL_WHITE));
-		this.yMax = yMax;
-		showHistogram(imp, bins, histMin, histMax);
-	}
-
-	/** Displays a histogram using the specified title and ImageStatistics. */
-	public HistogramWindow(String title, ImagePlus imp, ImageStatistics stats) {
-		super(NewImage.createRGBImage(title, WIN_WIDTH, WIN_HEIGHT, 1, NewImage.FILL_WHITE));
-		//IJ.log("HistogramWindow: "+stats.histMin+"  "+stats.histMax+"  "+stats.nBins);
-		this.yMax = stats.histYMax;
-		showHistogram(imp, stats);
-	}
-
-	/** Draws the histogram using the specified title and number of bins.
+    /** Draws the histogram using the specified title and number of bins.
 		Currently, the number of bins must be 256 expect for 32 bit images. */
 	public void showHistogram(ImagePlus imp, int bins) {
 		showHistogram(imp, bins, 0.0, 0.0);
@@ -176,10 +141,8 @@ public class HistogramWindow extends ImageWindow implements Measurements, Action
 		add(buttons);
 		pack();
     }
-    
-	public void setup() {setup(null);}
 
-	public void mouseMoved(int x, int y) {
+    public void mouseMoved(int x, int y) {
 		if (value==null || count==null)
 			return;
 		if ((frame!=null)  && x>=frame.x && x<=(frame.x+frame.width)) {
@@ -201,12 +164,8 @@ public class HistogramWindow extends ImageWindow implements Measurements, Action
 			count.setText(blankLabel);
 		}
 	}
-	
-	protected void drawHistogram(ImageProcessor ip, boolean fixedRange) {
-		drawHistogram(null, ip, fixedRange, 0.0, 0.0);
-	}
 
-	void drawHistogram(ImagePlus imp, ImageProcessor ip, boolean fixedRange, double xMin, double xMax) {
+    void drawHistogram(ImagePlus imp, ImageProcessor ip, boolean fixedRange, double xMin, double xMax) {
 		int x, y;
 		long maxCount2 = 0;
 		int mode2 = 0;
@@ -603,7 +562,7 @@ public class HistogramWindow extends ImageWindow implements Measurements, Action
 		ic.addMouseListener(this);
 		ic.addMouseMotionListener(this);
 		ic.addKeyListener(this);
-		srcImp.addImageListener(this);
+		ImagePlus.addImageListener(this);
 		Font font = live.getFont();
 		live.setFont(new Font(font.getName(), Font.BOLD, font.getSize()));
 		live.setForeground(Color.red);
@@ -616,7 +575,7 @@ public class HistogramWindow extends ImageWindow implements Measurements, Action
 		ic.removeMouseListener(this);
 		ic.removeMouseMotionListener(this);
 		ic.removeKeyListener(this);
-		srcImp.removeImageListener(this);
+		ImagePlus.removeImageListener(this);
 		Font font = live.getFont();
 		live.setFont(new Font(font.getName(), Font.PLAIN, font.getSize()));
 		live.setForeground(Color.black);

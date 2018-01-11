@@ -138,7 +138,7 @@ public class TextWindow extends Frame implements ActionListener, FocusListener, 
 		m.add(new MenuItem("Make Text Smaller"));
 		m.add(new MenuItem("Make Text Larger"));
 		m.addSeparator();
-		antialiased = new CheckboxMenuItem("Antialiased", Prefs.get(FONT_ANTI, IJ.isMacOSX()?true:false));
+		antialiased = new CheckboxMenuItem("Antialiased", Prefs.get(FONT_ANTI, IJ.isMacOSX()));
 		antialiased.addItemListener(this);
 		m.add(antialiased);
 		m.add(new MenuItem("Save Settings"));

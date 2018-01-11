@@ -5,11 +5,9 @@ import ij.gui.*;
 
 import java.awt.*;
 import java.awt.image.*;
-import java.util.*;
 import java.awt.event.*;
 
 import ij.measure.*;
-import ij.plugin.*;
 
 /*	This plugin isolates pixels in an RGB image or stack according to a range of Hue.
 	Original PassBand2 by Bob Dougherty. Some code borrowed from ThresholdAdjuster by Wayne Rasband.
@@ -58,11 +56,16 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 	private BandPlot splot = new BandPlot();
 	private BandPlot bplot = new BandPlot();
 	private int sliderRange = 256;
-	private Panel panel, panelt;
-	private Button  originalB, filteredB, stackB, helpB, sampleB, resetallB, newB, macroB, selectB;
+    private Panel panelt;
+	private Button  originalB;
+    private Button filteredB;
+    private Button stackB;
+    private Button helpB;
+    private Button sampleB;
+    private Button macroB;
+    private Button selectB;
 	private Checkbox bandPassH, bandPassS, bandPassB, darkBackground;
-	private CheckboxGroup colourMode;
-	private Choice colorSpaceChoice, methodChoice, modeChoice;
+    private Choice colorSpaceChoice, methodChoice, modeChoice;
 	private int previousImageID = -1;
 	private int previousSlice = -1;
 	private ImageJ ij;
@@ -86,380 +89,7 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 	private ImageStack stack;
 	private int width, height, numPixels;
 
-	public ColorThresholder() {
-		super("Threshold Color (experimental)");
-		if (instance!=null) {
-			WindowManager.toFront(instance);
-			return;
-		}
-		thread = new Thread(this, "BandAdjuster");
-		WindowManager.addWindow(this);
-		instance = this;
-
-		ij = IJ.getInstance();
-		Font font = new Font("SansSerif", Font.PLAIN, 10);
-		GridBagLayout gridbag = new GridBagLayout();
-		GridBagConstraints c = new GridBagConstraints();
-		setLayout(gridbag);
-
-		int y = 0;
-		c.gridx = 0;
-		c.gridy = y;
-		c.gridwidth = 1;
-		c.weightx = 0;
-		c.insets = new Insets(5, 0, 0, 0);
-		labelh = new Label("Hue", Label.CENTER);
-		add(labelh, c);
-
-		c.gridx = 1;
-		c.gridy = y++;
-		c.gridwidth = 1;
-		c.weightx = 0;
-		c.insets = new Insets(7, 0, 0, 0);
-		labelf = new Label("", Label.RIGHT);
-		add(labelf, c);
-
-		// plot
-		c.gridx = 0;
-		c.gridy = y;
-		c.gridwidth = 1;
-		c.fill = c.BOTH;
-		c.anchor = c.CENTER;
-		c.insets = new Insets(0, 5, 0, 0);
-		add(plot, c);
-
-		// checkboxes
-		bandPassH = new Checkbox("Pass");
-		bandPassH.addItemListener(this);
-		bandPassH.setState(true);
-		c.gridx = 1;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		c.insets = new Insets(5, 5, 0, 5);
-		add(bandPassH, c);
-
-		// minHue slider
-		minSlider = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 0, sliderRange);
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 1;
-		c.weightx = IJ.isMacintosh()?90:100;
-		c.fill = c.HORIZONTAL;
-		c.insets = new Insets(5, 5, 0, 0);
-
-		add(minSlider, c);
-		minSlider.addAdjustmentListener(this);
-		minSlider.setUnitIncrement(1);
-
-		// minHue slider label
-		c.gridx = 1;
-		c.gridwidth = 1;
-		c.weightx = IJ.isMacintosh()?10:0;
-		c.insets = new Insets(5, 0, 0, 0);
-		label1 = new Label("       ", Label.LEFT);
-		label1.setFont(font);
-		add(label1, c);
-
-		// maxHue sliderHue
-		maxSlider = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 0, sliderRange);
-		c.gridx = 0;
-		c.gridy = y;
-		c.gridwidth = 1;
-		c.weightx = 100;
-		c.insets = new Insets(5, 5, 0, 0);
-		add(maxSlider, c);
-		maxSlider.addAdjustmentListener(this);
-		maxSlider.setUnitIncrement(1);
-
-		// maxHue slider label
-		c.gridx = 1;
-		c.gridwidth = 1;
-		c.gridy = y++;
-		c.weightx = 0;
-		c.insets = new Insets(5, 0, 0, 0);
-		label2 = new Label("       ", Label.LEFT);
-		label2.setFont(font);
-		add(label2, c);
-
-		//=====
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 1;
-		c.weightx = 0;
-		c.insets = new Insets(10, 0, 0, 0);
-		labels = new Label("Saturation", Label.CENTER);
-		add(labels, c);
-
-		// plot
-		c.gridx = 0;
-		c.gridy = y;
-		c.gridwidth = 1;
-		c.fill = c.BOTH;
-		c.anchor = c.CENTER;
-		c.insets = new Insets(0, 5, 0, 0);
-		add(splot, c);
-
-		// checkboxes
-		bandPassS = new Checkbox("Pass");
-		bandPassS.addItemListener(this);
-		bandPassS.setState(true);
-		c.gridx = 1;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		c.insets = new Insets(5, 5, 0, 5);
-		add(bandPassS, c);
-
-		// minSat slider
-		minSlider2 = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 0, sliderRange);
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 1;
-		c.weightx = IJ.isMacintosh()?90:100;
-		c.fill = c.HORIZONTAL;
-		c.insets = new Insets(5, 5, 0, 0);
-		add(minSlider2, c);
-		minSlider2.addAdjustmentListener(this);
-		minSlider2.setUnitIncrement(1);
-
-		// minSat slider label
-		c.gridx = 1;
-		c.gridwidth = 1;
-		c.weightx = IJ.isMacintosh()?10:0;
-		c.insets = new Insets(5, 0, 0, 0);
-		label3 = new Label("       ", Label.LEFT);
-		label3.setFont(font);
-		add(label3, c);
-
-		// maxSat slider
-		maxSlider2 = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 0, sliderRange);
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 1;
-		c.weightx = 100;
-		c.insets = new Insets(5, 5, 0, 0);
-		add(maxSlider2, c);
-		maxSlider2.addAdjustmentListener(this);
-		maxSlider2.setUnitIncrement(1);
-
-		// maxSat slider label
-		c.gridx = 1;
-		c.gridwidth = 1;
-		c.weightx = 0;
-		c.insets = new Insets(5, 0, 0, 0);
-		label4 = new Label("       ", Label.LEFT);
-		label4.setFont(font);
-		add(label4, c);
-
-		//=====
-		c.gridx = 0;
-		c.gridwidth = 1;
-		c.gridy = y++;
-		c.weightx = 0;
-		c.insets = new Insets(10, 0, 0, 0);
-		labelb = new Label("Brightness", Label.CENTER);
-		add(labelb, c);
-
-		c.gridx = 0;
-		c.gridwidth = 1;
-		c.gridy = y;
-		c.fill = c.BOTH;
-		c.anchor = c.CENTER;
-		c.insets = new Insets(0, 5, 0, 0);
-		add(bplot, c);
-
-		// checkboxes
-		bandPassB = new Checkbox("Pass");
-		bandPassB.addItemListener(this);
-		bandPassB.setState(true);
-		c.gridx = 1;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		c.insets = new Insets(5, 5, 0, 5);
-		add(bandPassB, c);
-
-		// minBri slider
-		minSlider3 = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 0, sliderRange);
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 1;
-		c.weightx = IJ.isMacintosh()?90:100;
-		c.fill = c.HORIZONTAL;
-		c.insets = new Insets(5, 5, 0, 0);
-		add(minSlider3, c);
-		minSlider3.addAdjustmentListener(this);
-		minSlider3.setUnitIncrement(1);
-
-		// minBri slider label
-		c.gridx = 1;
-		c.gridwidth = 1;
-		c.weightx = IJ.isMacintosh()?10:0;
-		c.insets = new Insets(5, 0, 0, 0);
-		label5 = new Label("       ", Label.LEFT);
-		label5.setFont(font);
-		add(label5, c);
-
-		// maxBri slider
-		maxSlider3 = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 0, sliderRange);
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 1;
-		c.weightx = 100;
-		c.insets = new Insets(5, 5, 0, 0);
-		add(maxSlider3, c);
-		maxSlider3.addAdjustmentListener(this);
-		maxSlider3.setUnitIncrement(1);
-
-		// maxBri slider label
-		c.gridx = 1;
-		c.gridwidth = 1;
-		c.weightx = 0;
-		c.insets = new Insets(5, 0, 0, 0);
-		label6 = new Label("       ", Label.LEFT);
-		label6.setFont(font);
-		add(label6, c);
-
-		GridBagLayout gridbag2 = new GridBagLayout();
-		GridBagConstraints c2 = new GridBagConstraints();
-		int y2 = 0;
-		Panel panel = new Panel();
-		panel.setLayout(gridbag2);
-		
-		// threshoding method choice
-		c2.gridx = 0; c2.gridy = y2;
-		c2.anchor = GridBagConstraints.EAST;
-		c2.gridwidth = 1;
-		c2.insets = new Insets(5, 0, 0, 0);
-		Label theLabel = new Label("Thresholding method:");
-		gridbag2.setConstraints(theLabel, c2);
-		panel.add(theLabel);
-		methodChoice = new Choice();
-		for (int i=0; i<methodNames.length; i++)
-			methodChoice.addItem(methodNames[i]);
-		methodChoice.select(method);
-		methodChoice.addItemListener(this);
-		c2.gridx = 1; c2.gridy = y2;
-		c2.anchor = GridBagConstraints.WEST;
-		gridbag2.setConstraints(methodChoice, c2);
-		panel.add(methodChoice);
-		y2++;
-		
-		// display mode choice
-		c2.gridx = 0; c2.gridy = y2;
-		c2.anchor = GridBagConstraints.EAST;
-		c2.insets = new Insets(0, 0, 0, 0);
-		theLabel = new Label("Threshold color:");
-		gridbag2.setConstraints(theLabel, c2);
-		panel.add(theLabel);
-		modeChoice = new Choice();
-		for (int i=0; i<modes.length; i++)
-			modeChoice.addItem(modes[i]);
-		modeChoice.select(mode);
-		modeChoice.addItemListener(this);
-		c2.gridx = 1; c2.gridy = y2;
-		c2.anchor = GridBagConstraints.WEST;
-		gridbag2.setConstraints(modeChoice, c2);
-		panel.add(modeChoice);
-		y2++;
-
-		// color space choice
-		c2.gridx = 0; c2.gridy = y2;
-		c2.anchor = GridBagConstraints.EAST;
-		theLabel = new Label("Color space:");
-		gridbag2.setConstraints(theLabel, c2);
-		panel.add(theLabel);
-		colorSpaceChoice = new Choice();
-		for (int i=0; i<colorSpaces.length; i++)
-			colorSpaceChoice.addItem(colorSpaces[i]);
-		colorSpaceChoice.select(HSB);
-		colorSpaceChoice.addItemListener(this);
-		c2.gridx = 1; c2.gridy = y2;
-		c2.anchor = GridBagConstraints.WEST;
-		gridbag2.setConstraints(colorSpaceChoice, c2);
-		panel.add(colorSpaceChoice);
-		y2++;
-
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		c.insets = new Insets(5, 0, 0, 0);
-		c.anchor = GridBagConstraints.CENTER;
-		c.fill = GridBagConstraints.NONE;
-		add(panel, c);
-
-		//=====
-		panelt = new Panel();
-		boolean db = Prefs.get("cthresholder.dark", true);
-		darkBackground = new Checkbox("Dark background", db);
-		darkBackground.addItemListener(this);
-		panelt.add(darkBackground);
-
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		c.insets = new Insets(0, 0, 0, 0);
-		add(panelt, c);
-
-		// buttons
-		int trim = IJ.isMacOSX()?10:0;
-		panel = new Panel();
-		panel.setLayout(new GridLayout(0, 4, 0, 0));
-		originalB = new TrimmedButton("Original", trim);
-		//originalB.setEnabled(false);
-		originalB.addActionListener(this);
-		originalB.addKeyListener(ij);
-		panel.add(originalB);
-
-		filteredB = new TrimmedButton("Filtered", trim);
-		filteredB.setEnabled(false);
-		filteredB.addActionListener(this);
-		filteredB.addKeyListener(ij);
-		panel.add(filteredB);
-
-		selectB = new TrimmedButton("Select", trim);
-		selectB.addActionListener(this);
-		selectB.addKeyListener(ij);
-		panel.add(selectB);
-
-		sampleB = new TrimmedButton("Sample", trim);
-		sampleB.addActionListener(this);
-		sampleB.addKeyListener(ij);
-		panel.add(sampleB);
-		
-		stackB = new TrimmedButton("Stack", trim);
-		stackB.addActionListener(this);
-		stackB.addKeyListener(ij);
-		panel.add(stackB);
-
-		macroB = new TrimmedButton("Macro", trim);
-		macroB.addActionListener(this);
-		macroB.addKeyListener(ij);
-		panel.add(macroB);
-
-		helpB = new TrimmedButton("Help", trim);
-		helpB.addActionListener(this);
-		helpB.addKeyListener(ij);
-		panel.add(helpB);
-		
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		c.insets = new Insets(5, 5, 10, 5);
-		gridbag.setConstraints(panel, c);
-		add(panel);
-
-		addKeyListener(ij);  // ImageJ handles keyboard shortcuts
-		pack();
-		GUI.center(this);
-		setVisible(true);
-
-		thread.start();
-		if (!checkImage()) return;
-		synchronized(this) {
-			notify();
-		}
-	}
-
-	public void run() {
+    public void run() {
 		while (!done) {
 			synchronized(this) {
 				try {wait();}
@@ -480,17 +110,17 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
     	if (IJ.debugMode) IJ.log("ColorThresholder.adjustmentValueChanged ");
 		if (!checkImage()) return;
 		if (e.getSource() == minSlider)
-			adjustMinHue((int) minSlider.getValue());
+			adjustMinHue(minSlider.getValue());
 		else if (e.getSource() == maxSlider)
-			adjustMaxHue((int) maxSlider.getValue());
+			adjustMaxHue(maxSlider.getValue());
 		else if (e.getSource() == minSlider2)
-			adjustMinSat((int) minSlider2.getValue());
+			adjustMinSat(minSlider2.getValue());
 		else if (e.getSource() == maxSlider2)
-			adjustMaxSat((int) maxSlider2.getValue());
+			adjustMaxSat(maxSlider2.getValue());
 		else if (e.getSource() == minSlider3)
-			adjustMinBri((int) minSlider3.getValue());
+			adjustMinBri(minSlider3.getValue());
 		else if (e.getSource() == maxSlider3)
-			adjustMaxBri((int) maxSlider3.getValue());
+			adjustMaxBri(maxSlider3.getValue());
 		//originalB.setEnabled(true);
 		updateLabels();
 		updatePlot();
@@ -1021,12 +651,12 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 	}
 
 	void updateLabels() {
-		label1.setText(""+((int)minHue));
-		label2.setText(""+((int)maxHue));
-		label3.setText(""+((int)minSat));
-		label4.setText(""+((int)maxSat));
-		label5.setText(""+((int)minBri));
-		label6.setText(""+((int)maxBri));
+		label1.setText(""+ minHue);
+		label2.setText(""+ maxHue);
+		label3.setText(""+ minSat);
+		label4.setText(""+ maxSat);
+		label5.setText(""+ minBri);
+		label6.setText(""+ maxBri);
 	}
 
 	void updateNames() {
@@ -1050,19 +680,19 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 	}
 
 	void updateScrollBars() {
-		minSlider.setValue((int)minHue);
-		maxSlider.setValue((int)maxHue);
-		minSlider2.setValue((int)minSat);
-		maxSlider2.setValue((int)maxSat);
-		minSlider3.setValue((int)minBri);
-		maxSlider3.setValue((int)maxBri);
+		minSlider.setValue(minHue);
+		maxSlider.setValue(maxHue);
+		minSlider2.setValue(minSat);
+		maxSlider2.setValue(maxSat);
+		minSlider3.setValue(minBri);
+		maxSlider3.setValue(maxBri);
 	}
 
 	void adjustMinHue(int value) {
 		minHue = value;
 		if (maxHue<minHue) {
 			maxHue = minHue;
-			maxSlider.setValue((int)maxHue);
+			maxSlider.setValue(maxHue);
 		}
 	}
 
@@ -1070,7 +700,7 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 		maxHue = value;
 		if (minHue>maxHue) {
 			minHue = maxHue;
-			minSlider.setValue((int)minHue);
+			minSlider.setValue(minHue);
 		}
 	}
 
@@ -1078,7 +708,7 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 		minSat = value;
 		if (maxSat<minSat) {
 			maxSat = minSat;
-			maxSlider2.setValue((int)maxSat);
+			maxSlider2.setValue(maxSat);
 		}
 	}
 
@@ -1086,7 +716,7 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 		maxSat = value;
 		if (minSat>maxSat) {
 			minSat = maxSat;
-			minSlider2.setValue((int)minSat);
+			minSlider2.setValue(minSat);
 		}
 	}
 
@@ -1094,7 +724,7 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 		minBri = value;
 		if (maxBri<minBri) {
 			maxBri = minBri;
-			maxSlider3.setValue((int)maxBri);
+			maxSlider3.setValue(maxBri);
 		}
 	}
 
@@ -1102,7 +732,7 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 		maxBri = value;
 		if (minBri>maxBri) {
 			minBri = maxBri;
-			minSlider3.setValue((int)minBri);
+			minSlider3.setValue(minBri);
 		}
 	}
 
@@ -1274,17 +904,7 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
     	}
 	}
 
-	public void close() {
-		super.close();
-		instance = null;
-		done = true;
-		Prefs.set("cthresholder.dark", darkBackground.getState());
-		synchronized(this) {
-			notify();
-		}
-	}
-
-	public void getLab(ImageProcessor ip, byte[] L, byte[] a, byte[] b) {
+    public void getLab(ImageProcessor ip, byte[] L, byte[] a, byte[] b) {
 		// Returns Lab in 3 byte arrays.
 		//http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html#Specifications
 		//http://www.easyrgb.com/math.php?MATH=M7#text7
@@ -1393,23 +1013,8 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 			}
 		}
 	}
-	
-	/** Converts the current image from RGB to CIE L*a*b* and stores the results 
-	* in the same RGB image R=L*, G=a*, B=b*. Values are therfore offset and rescaled.
-	* see:
-	* http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html#Specifications
-	* http://www.easyrgb.com/math.php?MATH=M7#text7
-	* @author Gabriel Landini,  G.Landini@bham.ac.uk
-	*/
-	public static void RGBtoLab() {
-		ImagePlus imp = IJ.getImage();
-		if (imp.getBitDepth()==24) {
-			RGBtoLab(imp.getProcessor());
-			imp.updateAndDraw();
-		}
-	}
-	
-	static void RGBtoLab(ImageProcessor ip) {
+
+    static void RGBtoLab(ImageProcessor ip) {
 		int xe = ip.getWidth();
 		int ye = ip.getHeight();
 		int c, x, y, i=0;
@@ -1468,69 +1073,20 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 			}
 		}
 	}
-	
-	/** Converts the current image from RGB to YUV and stores 
-	* the results in the same RGB image R=Y, G=U, B=V.
-	* @author Gabriel Landini,  G.Landini@bham.ac.uk
-	*/
-	public static void RGBtoYUV() {
-		ImagePlus imp = IJ.getImage();
-		if (imp.getBitDepth()==24) {
-			RGBtoLab(imp.getProcessor());
-			imp.updateAndDraw();
-		}
-	}
-
-	static void RGBtoYUV(ImageProcessor ip) {
-		int xe = ip.getWidth();
-		int ye = ip.getHeight();
-		int c, x, y, i=0, Y, U, V, r, g, b;
-		double yf;
-
-		ImagePlus imp = WindowManager.getCurrentImage();
-
-		for(y=0;y<ye;y++){
-			for (x=0;x<xe;x++){
-				c=ip.getPixel(x,y);
-
-					r = ((c&0xff0000)>>16);//R
-					g = ((c&0x00ff00)>>8);//G
-					b = ( c&0x0000ff); //B 
-
-					// Kai's plugin
-					yf = (0.299 * r  + 0.587 * g + 0.114 * b);
-					Y = ((int)Math.floor(yf + 0.5)) ;
-					U = (128+(int)Math.floor((0.493 *(b - yf))+ 0.5)); 
-					V = (128+(int)Math.floor((0.877 *(r - yf))+ 0.5)); 
-
-					ip.putPixel(x,y, (((Y<0?0:Y>255?255:Y) & 0xff) << 16)+
-									 (((U<0?0:U>255?255:U) & 0xff) << 8) +
-								 	  ((V<0?0:V>255?255:V) & 0xff));
-				
-				ip.putPixel(x,y, ((Y & 0xff) <<16) + ((U & 0xff) << 8) + ( V & 0xff));
-			}
-		}
-	}
 
 
-	
-	class BandPlot extends Canvas implements Measurements, MouseListener {
+    class BandPlot extends Canvas implements Measurements, MouseListener {
 	
 		final int WIDTH = 256, HEIGHT=64;
-		double minHue = 0, minSat=0, minBri=0;
-		double maxHue = 255, maxSat= 255, maxBri=255;
-		int[] histogram;
+		double minHue = 0;
+        double maxHue = 255;
+        int[] histogram;
 		Color[] hColors;
 		int hmax;
 		Image os;
 		Graphics osg;
-	
-		public BandPlot() {
-			addMouseListener(this);
-			setSize(WIDTH+1, HEIGHT+1);
-		}
-	
-		/** Overrides Component getPreferredSize(). Added to work
+
+        /** Overrides Component getPreferredSize(). Added to work
 		around a bug in Java 1.4 on Mac OS X.*/
 		public Dimension getPreferredSize() {
 			return new Dimension(WIDTH+1, HEIGHT+1);
@@ -1642,7 +1198,7 @@ public class ColorThresholder extends PlugInFrame implements PlugIn, Measurement
 					osg.fillRect(0, 0, WIDTH, HEIGHT);
 					for (int i = 0; i < WIDTH; i++) {
 						if (hColors!=null) osg.setColor(hColors[i]);
-						hHist=HEIGHT - ((int)(HEIGHT * histogram[i])/hmax)-6;
+						hHist=HEIGHT - (HEIGHT * histogram[i] /hmax)-6;
 						osg.drawLine(i, HEIGHT, i, hHist);
 						osg.setColor(Color.black);
 						osg.drawLine(i, hHist, i, hHist);

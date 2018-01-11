@@ -1,13 +1,10 @@
 package ij.gui;
 
 import java.awt.*;
-import java.awt.image.*;
-import java.util.Properties;
 import java.awt.event.*;
 
 import lichen.view.MainGUI;
 import ij.*;
-import ij.process.*;
 import ij.io.*;
 import ij.measure.*;
 import ij.plugin.frame.*;
@@ -24,7 +21,6 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	protected ImageJ ij;
 	protected ImageCanvas ic;
 	private double initialMagnification = 1;
-	private int newWidth, newHeight;
 	protected boolean closed;
 	private boolean newCanvas;
 	private boolean unzoomWhenMinimizing = true;
@@ -51,10 +47,6 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 	/** This variable is set false if the user clicks in this
 		window, presses the escape key, or closes the window. */
 	public boolean running2;
-
-	public ImageWindow(String title) {
-		super(title);
-	}
 
 	public ImageWindow(ImagePlus imp) {
 		this(imp, null);
@@ -394,18 +386,6 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		return imp;
 	}
 
-	public void setImage(ImagePlus imp2) {
-		ImageCanvas ic = getCanvas();
-		if (ic==null || imp2==null)
-			return;
-		imp = imp2;
-		imp.setWindow(this);
-		ic.updateImage(imp);
-		ic.setImageUpdated();
-		ic.repaint();
-		repaint();
-	}
-
 	public void updateImage(ImagePlus imp) {
 		if (imp!=this.imp)
 			throw new IllegalArgumentException("imp!=this.imp");
@@ -432,10 +412,6 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		return ic;
 	}
 
-
-	static ImagePlus getClipboard() {
-		return ImagePlus.getClipboard();
-	}
 
 	public Rectangle getMaximumBounds() {
 		double width = imp.getWidth();
@@ -608,18 +584,8 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 			ic.repaint();
 	}
 
-	/** Copies the current ROI to the clipboard. The entire
-	    image is copied if there is no ROI. */
-	public void copy(boolean cut) {
-		imp.copy(cut);
-	}
 
-
-	public void paste() {
-		imp.paste();
-	}
-
-	/** This method is called by ImageCanvas.mouseMoved(MouseEvent). 
+	/** This method is called by ImageCanvas.mouseMoved(MouseEvent).
     	@see ij.gui.ImageCanvas#mouseMoved
 	 */
 	public void mouseMoved(int x, int y) {
@@ -641,12 +607,7 @@ public class ImageWindow extends Frame implements FocusListener, WindowListener,
 		nextLocation = loc;
 	}
 
-	/** Causes the next image to be displayed at the specified location. */
-	public static void setNextLocation(int x, int y) {
-		nextLocation = new Point(x, y);
-	}
-
-	/** Moves and resizes this window. Changes the 
+	/** Moves and resizes this window. Changes the
     	 magnification so the image fills the window. */
 	public void setLocationAndSize(int x, int y, int width, int height) {
 		setBounds(x, y, width, height);

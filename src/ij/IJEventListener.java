@@ -6,12 +6,12 @@ package ij;
 	     another tool.
 	*/
 	public interface IJEventListener {
-		public static final int FOREGROUND_COLOR_CHANGED = 0;
-		public static final int BACKGROUND_COLOR_CHANGED = 1;
-		public static final int COLOR_PICKER_CLOSED= 2;
-		public static final int LOG_WINDOW_CLOSED= 3;
-		public static final int TOOL_CHANGED= 4;
+		int FOREGROUND_COLOR_CHANGED = 0;
+		int BACKGROUND_COLOR_CHANGED = 1;
+		int COLOR_PICKER_CLOSED= 2;
+		int LOG_WINDOW_CLOSED= 3;
+		int TOOL_CHANGED= 4;
 
-	public void eventOccurred(int eventID);
+	void eventOccurred(int eventID);
 
 }

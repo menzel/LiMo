@@ -13,8 +13,7 @@ public class Arrow extends Line {
 	public static final String DOUBLE_HEADED_KEY = "arrow.double";
 	public static final String OUTLINE_KEY = "arrow.outline";
 	public static final int FILLED=0, NOTCHED=1, OPEN=2, HEADLESS=3;
-	public static final String[] styles = {"Filled", "Notched", "Open", "Headless"};
-	private static int defaultStyle = (int)Prefs.get(STYLE_KEY, FILLED);
+    private static int defaultStyle = (int)Prefs.get(STYLE_KEY, FILLED);
 	private static float defaultWidth = (float)Prefs.get(WIDTH_KEY, 2);
 	private static double defaultHeadSize = (int)Prefs.get(SIZE_KEY, 10);  // 0-30;
 	private static boolean defaultDoubleHeaded = Prefs.get(DOUBLE_HEADED_KEY, false);
@@ -158,15 +157,15 @@ public class Arrow extends Line {
 				base = Math.toRadians(90.0);
 				points[1*2]   = (float) (points[2*3]	- length*Math.cos(alpha));
 				points[1*2+1] = (float) (points[2*3+1] - length*Math.sin(alpha));
-				SL = length*Math.sin(base)/Math.sin(base+tip);;
-				break;
+				SL = length*Math.sin(base)/Math.sin(base+tip);
+                break;
 			case NOTCHED:
 				tip = Math.toRadians(20);
 				base = Math.toRadians(120);
 				points[1*2]   = (float) (points[2*3] - length*Math.cos(alpha));
 				points[1*2+1] = (float) (points[2*3+1] - length*Math.sin(alpha));
-				SL = length*Math.sin(base)/Math.sin(base+tip);;
-				break;
+				SL = length*Math.sin(base)/Math.sin(base+tip);
+                break;
 			case OPEN:
 				tip = Math.toRadians(25); //30
 				points[1*2] = points[2*3];
@@ -184,12 +183,12 @@ public class Arrow extends Line {
  	
 	private Shape getShape() {
 		Shape arrow = getPath();
-		BasicStroke stroke = new BasicStroke((float)getStrokeWidth(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
+		BasicStroke stroke = new BasicStroke(getStrokeWidth(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
 		Shape outlineShape = stroke.createStrokedShape(arrow);
 		Area a1 = new Area(arrow);
 		Area a2 = new Area(outlineShape);
-		try {a1.add(a2);} catch(Exception e) {};
-		return a1;
+		try {a1.add(a2);} catch(Exception e) {}
+        return a1;
 	}
 
 	private ShapeRoi getShapeRoi() {
@@ -263,16 +262,8 @@ public class Arrow extends Line {
 	public boolean isDrawingTool() {
 		return true;
 	}
-	
-	public static void setDefaultWidth(double width) {
-		defaultWidth = (float)width;
-	}
 
-	public static double getDefaultWidth() {
-		return defaultWidth;
-	}
-
-	public void setStyle(int style) {
+    public void setStyle(int style) {
 		this.style = style;
 	}
 
@@ -280,15 +271,7 @@ public class Arrow extends Line {
 		return style;
 	}
 
-	public static void setDefaultStyle(int style) {
-		defaultStyle = style;
-	}
-
-	public static int getDefaultStyle() {
-		return defaultStyle;
-	}
-
-	public void setHeadSize(double headSize) {
+    public void setHeadSize(double headSize) {
 		this.headSize = headSize;
 	}
 
@@ -296,15 +279,7 @@ public class Arrow extends Line {
 		return headSize;
 	}
 
-	public static void setDefaultHeadSize(double size) {
-		defaultHeadSize = size;
-	}
-
-	public static double getDefaultHeadSize() {
-		return defaultHeadSize;
-	}
-
-	public void setDoubleHeaded(boolean b) {
+    public void setDoubleHeaded(boolean b) {
 		doubleHeaded = b;
 	}
 
@@ -312,28 +287,12 @@ public class Arrow extends Line {
 		return doubleHeaded;
 	}
 
-	public static void setDefaultDoubleHeaded(boolean b) {
-		defaultDoubleHeaded = b;
-	}
-
-	public static boolean getDefaultDoubleHeaded() {
-		return defaultDoubleHeaded;
-	}
-
-	public void setOutline(boolean b) {
+    public void setOutline(boolean b) {
 		outline = b;
 	}
 
 	public boolean getOutline() {
 		return outline;
-	}
-
-	public static void setDefaultOutline(boolean b) {
-		defaultOutline = b;
-	}
-
-	public static boolean getDefaultOutline() {
-		return defaultOutline;
 	}
 
 }

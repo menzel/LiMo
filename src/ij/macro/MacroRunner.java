@@ -1,9 +1,7 @@
 package ij.macro;
 import ij.*;
-import ij.text.*;
-import ij.util.*;
 import ij.gui.ImageCanvas;
-import java.io.*;
+
 import java.awt.*;
 import ij.plugin.frame.Editor;
 																																																																																																																																																					   
@@ -45,38 +43,6 @@ public class MacroRunner implements Runnable {
 		thread = new Thread(this, "Macro$"); 
 		thread.setPriority(Math.max(thread.getPriority()-2, Thread.MIN_PRIORITY));
 		thread.start();
-	}
-
-	/** Create a new object that interprets a macro file using a separate thread. */
-	public MacroRunner(File file) {
-		int size = (int)file.length();
-		if (size<=0)
-			return;
-		try {
-			StringBuffer sb = new StringBuffer(5000);
-			BufferedReader r = new BufferedReader(new FileReader(file));
-			while (true) {
-				String s=r.readLine();
-				if (s==null)
-					break;
-				else
-					sb.append(s+"\n");
-			}
-			r.close();
-			macro = new String(sb);
-		}
-		catch (Exception e) {
-			IJ.error(e.getMessage());
-			return;
-		}
-		thread = new Thread(this, "Macro$"); 
-		thread.setPriority(Math.max(thread.getPriority()-2, Thread.MIN_PRIORITY));
-		thread.start();
-	}
-
-	/** Create a new object that runs a tokenized macro in a separate thread. */
-	public MacroRunner(Program pgm, int address, String name) {
-		this(pgm, address, name, (String)null);
 	}
 
 	/** Create a new object that runs a tokenized macro in a separate thread,

@@ -17,7 +17,7 @@ public class Straightener implements PlugIn {
 			IJ.error("Straightener", "Line selection required");
 			return;
 		}
-		int width = (int)Math.round(roi.getStrokeWidth());
+		int width = Math.round(roi.getStrokeWidth());
 		int originalWidth = width;
 		boolean isMacro = IJ.macroRunning() && Macro.getOptions()!=null;
 		int stackSize = imp.getStackSize();
@@ -138,8 +138,8 @@ public class Straightener implements PlugIn {
 			int j = 0;
 			int n2 = width;
 			do {
-				ip2.putPixelValue(i, j++, ip.getInterpolatedValue(x, y));;
-				//ip.drawDot((int)x, (int)y);
+				ip2.putPixelValue(i, j++, ip.getInterpolatedValue(x, y));
+                //ip.drawDot((int)x, (int)y);
 				x += dy;
 				y += dx;
 			} while (--n2>0);

@@ -26,8 +26,8 @@ public class TextPanel extends Panel implements AdjustmentListener,
 
 	static final int DOUBLE_CLICK_THRESHOLD = 650;
 	// height / width
-	int iGridWidth,iGridHeight;
-	int iX,iY;
+	int iGridWidth;
+    int iX,iY;
 	// data
 	String[] sColHead;
 	Vector vData;
@@ -36,8 +36,7 @@ public class TextPanel extends Panel implements AdjustmentListener,
 	int iRowHeight,iFirstRow;
 	// scrolling
 	Scrollbar sbHoriz,sbVert;
-	int iSbWidth,iSbHeight;
-	boolean bDrag;
+    boolean bDrag;
 	int iXDrag,iColDrag;
   
 	boolean headings = true;
@@ -46,8 +45,10 @@ public class TextPanel extends Panel implements AdjustmentListener,
 	KeyListener keyListener;
 	Cursor resizeCursor = new Cursor(Cursor.E_RESIZE_CURSOR);
   	Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
-	int selStart=-1, selEnd=-1,selOrigin=-1, selLine=-1;
-	TextCanvas tc;
+	int selStart=-1;
+    int selEnd=-1;
+    int selOrigin=-1;
+    TextCanvas tc;
 	PopupMenu pm;
 	boolean columnsManuallyAdjusted;
 	long mouseDownTime;
@@ -206,20 +207,8 @@ public class TextPanel extends Panel implements AdjustmentListener,
 			unsavedLines = true;
 		}
 	}
-	
-	/** Adds strings contained in an ArrayList to the end of this TextPanel. */
-	public void append(ArrayList list) {
-		if (list==null) return;
-		if (vData==null) setColumnHeadings("");
-		for (int i=0; i<list.size(); i++)
-			appendWithoutUpdate((String)list.get(i));
-		if (isShowing()) {
-			updateDisplay();
-			unsavedLines = true;
-		}
-	}
 
-	/** Adds a single line to the end of this TextPanel without updating the display. */
+    /** Adds a single line to the end of this TextPanel without updating the display. */
 	public void appendWithoutUpdate(String data) {
 		if (vData!=null) {
 			char[] chars = data.toCharArray();
@@ -236,13 +225,7 @@ public class TextPanel extends Panel implements AdjustmentListener,
 		tc.repaint();
 	}
 
-	String getCell(int column, int row) {
-		if (column<0||column>=iColCount||row<0||row>=iRowCount)
-			return null;
-		return new String(tc.getChars(column, row));
-	}
-
-	synchronized void adjustVScroll() {
+    synchronized void adjustVScroll() {
 		if(iRowHeight==0) return;
 		Dimension d = tc.getSize();
 		int value = iY/iRowHeight;
@@ -516,8 +499,7 @@ public class TextPanel extends Panel implements AdjustmentListener,
 			//System.out.println("select: "+selOrigin);
 		}
 		tc.repaint();
-		selLine=r;
-	}
+    }
 
 	void extendSelection(int x,int y) {
 		Dimension d = tc.getSize();
@@ -536,18 +518,9 @@ public class TextPanel extends Panel implements AdjustmentListener,
 			}
 		}
 		tc.repaint();
-		selLine=r;
-	}
-
-    /** Converts a y coordinate in pixels into a row index. */
-    public int rowIndex(int y) {
-        if (y > tc.getSize().height)
-        	return -1;
-        else
-        	return (y/iRowHeight)-1+iFirstRow;
     }
 
-	/**
+    /**
 	Copies the current selection to the system clipboard. 
 	Returns the number of characters copied.
 	*/
@@ -649,8 +622,8 @@ public class TextPanel extends Panel implements AdjustmentListener,
 				}
 			}
 		}
-		selStart=-1; selEnd=-1; selOrigin=-1; selLine=-1; 
-		adjustVScroll();
+		selStart=-1; selEnd=-1; selOrigin=-1;
+        adjustVScroll();
 		tc.repaint();
 	}
 	
@@ -659,8 +632,8 @@ public class TextPanel extends Panel implements AdjustmentListener,
 		if (vData==null) return;
 		vData.removeAllElements();
 		iRowCount = 0;
-		selStart=-1; selEnd=-1; selOrigin=-1; selLine=-1;
-		adjustVScroll();
+		selStart=-1; selEnd=-1; selOrigin=-1;
+        adjustVScroll();
 		tc.repaint();
 	}
 
@@ -674,46 +647,19 @@ public class TextPanel extends Panel implements AdjustmentListener,
 		selEnd = iRowCount-1;
 		selOrigin = 0;
 		tc.repaint();
-		selLine=-1;
-	}
+    }
 
 	/** Clears the selection, if any. */
 	public void resetSelection() {
 		selStart=-1;
 		selEnd=-1;
 		selOrigin=-1;
-		selLine=-1;
-		if (iRowCount>0)
+        if (iRowCount>0)
 			tc.repaint();
 	}
-	
-	/** Creates a selection and insures that it is visible. */
-	public void setSelection (int startLine, int endLine) {
-		if (startLine>endLine) endLine = startLine;
-		if (startLine<0) startLine = 0;
-		if (endLine<0) endLine = 0;
-		if (startLine>=iRowCount) startLine = iRowCount-1;
-		if (endLine>=iRowCount) endLine = iRowCount-1;
-		selOrigin = startLine;
-		selStart = startLine;
-		selEnd = endLine;
-		int vstart = sbVert.getValue();
-		int visible = sbVert.getVisibleAmount()-1;
-		if (startLine<vstart) {
-			sbVert.setValue(startLine);
-			iY=iRowHeight*startLine;
-		} else if (endLine>=vstart+visible) {
-			vstart = endLine - visible + 1;
-			if (vstart<0) vstart = 0;
-			sbVert.setValue(vstart);
-			iY=iRowHeight*vstart;
-		}
-		tc.repaint();
-	}
-	
-	
 
-	/** Writes all the text in this TextPanel to a file. */
+
+    /** Writes all the text in this TextPanel to a file. */
 	public void save(PrintWriter pw) {
 		resetSelection();
 		if (labels!=null && !labels.equals(""))
@@ -836,19 +782,7 @@ public class TextPanel extends Panel implements AdjustmentListener,
 		}
 	}
 
-	/** Returns the index of the first selected line, or -1 
-		if there is no slection. */
-	public int getSelectionStart() {
-		return selStart;
-	}
-
-	/** Returns the index of the last selected line, or -1 
-		if there is no slection. */
-	public int getSelectionEnd() {
-		return selEnd;
-	}
-	
-	/** Sets the ResultsTable associated with this TextPanel. */
+    /** Sets the ResultsTable associated with this TextPanel. */
 	public void setResultsTable(ResultsTable rt) {
 		this.rt = rt;
 	}

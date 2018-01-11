@@ -3,9 +3,8 @@
 import java.util.*;
 import java.awt.*;
 import java.awt.image.*;
-import ij.gui.*;
 
-/** ShortProcessors contain a 16-bit unsigned image
+ /** ShortProcessors contain a 16-bit unsigned image
 	and methods that operate on that image. */
 public class ShortProcessor extends ImageProcessor {
 
@@ -13,8 +12,7 @@ public class ShortProcessor extends ImageProcessor {
 	private short[] pixels;
 	private byte[] pixels8;
 	private short[] snapshotPixels;
-	private byte[] LUT;
-	private boolean fixedScale;
+     private boolean fixedScale;
 
 
 	/** Creates a new ShortProcessor using the specified pixel array and ColorModel.
@@ -60,13 +58,7 @@ public class ShortProcessor extends ImageProcessor {
 		this(width, height, pixels, cm);
 	}
 
-	/** Obsolete. 16 bit images are normally unsigned but signed images can be used by
-		subtracting 32768 and using a calibration function to restore the original values. */
-	public ShortProcessor(int width, int height,  boolean unsigned) {
-		this(width, height);
-	}
-	
-	public void findMinAndMax() {
+     public void findMinAndMax() {
 		if (fixedScale || pixels==null)
 			return;
 		int size = width*height;
@@ -144,17 +136,7 @@ public class ShortProcessor extends ImageProcessor {
 		return convertToByte(true).getBufferedImage();
 	}
 
-	/** Returns a copy of this image as a TYPE_USHORT_GRAY BufferedImage. */
-	public BufferedImage get16BitBufferedImage() {
-        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_USHORT_GRAY);
-        Raster raster = bi.getData();
-        DataBufferUShort db = (DataBufferUShort)raster.getDataBuffer();
-        System.arraycopy(getPixels(), 0, db.getData(), 0, db.getData().length);
-        bi.setData(raster);
-        return bi;
-	}
-
-	/** Returns a new, blank ShortProcessor with the specified width and height. */
+     /** Returns a new, blank ShortProcessor with the specified width and height. */
 	public ImageProcessor createProcessor(int width, int height) {
 		ImageProcessor ip2 = new ShortProcessor(width, height, new short[width*height], getColorModel());
 		ip2.setMinAndMax(getMin(), getMax());
@@ -163,9 +145,7 @@ public class ShortProcessor extends ImageProcessor {
 	}
 
 	public void snapshot() {
-		snapshotWidth=width;
-		snapshotHeight=height;
-		snapshotMin=(int)getMin();
+        snapshotMin=(int)getMin();
 		snapshotMax=(int)getMax();
 		if (snapshotPixels==null || (snapshotPixels!=null && snapshotPixels.length!=pixels.length))
 			snapshotPixels = new short[width * height];
@@ -211,9 +191,7 @@ public class ShortProcessor extends ImageProcessor {
 
 	public void setSnapshotPixels(Object pixels) {
 		snapshotPixels = (short[])pixels;
-		snapshotWidth=width;
-		snapshotHeight=height;
-	}
+    }
 
 	public Object getSnapshotPixels() {
 		return snapshotPixels;
@@ -387,7 +365,7 @@ public class ShortProcessor extends ImageProcessor {
 		pixel data. To avoid sign extension, the pixel values must be
 		accessed using a mask (e.g. int i = pixels[j]&0xffff). */
  	public Object getPixels() {
-		return (Object)pixels;
+		return pixels;
 	}
 
 	/** Returns a copy of the pixel data. Or returns a reference to the
@@ -414,19 +392,7 @@ public class ShortProcessor extends ImageProcessor {
 		raster = null;
 	}
 
-	void getRow2(int x, int y, int[] data, int length) {
-		int value;
-		for (int i=0; i<length; i++)
-			data[i] = pixels[y*width+x+i]&0xffff;
-	}
-	
-	void putColumn2(int x, int y, int[] data, int length) {
-		int value;
-		for (int i=0; i<length; i++)
-			pixels[(y+i)*width+x] = (short)data[i];
-	}
-	
-	/** Copies the image contained in 'ip' to (xloc, yloc) using one of
+     /** Copies the image contained in 'ip' to (xloc, yloc) using one of
 		the transfer modes defined in the Blitter interface. */
 	public void copyBits(ImageProcessor ip, int xloc, int yloc, int mode) {
 		ip = ip.convertToShort(false);
@@ -508,7 +474,7 @@ public class ShortProcessor extends ImageProcessor {
 						v2 = (int)Math.sqrt(v1);
 						break;
 					case ABS:
-						v2 = (int)Math.abs(v1);
+						v2 = Math.abs(v1);
 						break;
 					case MINIMUM:
 						if (v1<value)
@@ -539,9 +505,8 @@ public class ShortProcessor extends ImageProcessor {
 		resetMinAndMax();
 		process(INVERT, 0.0);
 	}
-	
-	public void add(int value) {process(ADD, value);}
-	public void add(double value) {process(ADD, value);}
+
+     public void add(double value) {process(ADD, value);}
 	public void multiply(double value) {process(MULT, value);}
 	public void and(int value) {process(AND, value);}
 	public void or(int value) {process(OR, value);}
@@ -1019,18 +984,8 @@ public class ShortProcessor extends ImageProcessor {
 		this.minThreshold = Math.round(minThreshold);
 		this.maxThreshold = Math.round(maxThreshold);
 	}
-	
-	/** Performs a convolution operation using the specified kernel. */
-	public void convolve(float[] kernel, int kernelWidth, int kernelHeight) {
-		ImageProcessor ip2 = convertToFloat();
-		ip2.setRoi(getRoi());
-		new ij.plugin.filter.Convolver().convolve(ip2, kernel, kernelWidth, kernelHeight);
-		ip2 = ip2.convertToShort(false);
-		short[] pixels2 = (short[])ip2.getPixels();
-		System.arraycopy(pixels2, 0, pixels, 0, pixels.length);
-	}
 
-    public void noise(double range) {
+     public void noise(double range) {
 		Random rnd=new Random();
 		int v, ran;
 		boolean inRange;
@@ -1107,12 +1062,5 @@ public class ShortProcessor extends ImageProcessor {
 		return 65535.0;
 	}
 
-	/** Not implemented. */
-	public void medianFilter() {}
-	/** Not implemented. */
-	public void erode() {}
-	/** Not implemented. */
-	public void dilate() {}
-
-}
+ }
 

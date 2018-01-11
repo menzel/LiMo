@@ -1,6 +1,5 @@
 package ij.process;
 import ij.IJ;
-import java.util.Arrays;
 
 /** Autothresholding methods from the Auto_Threshold plugin (http://pacific.mpi-cbg.de/wiki/index.php/Auto_Threshold)
     by G.Landini at bham dot ac dot uk. */
@@ -25,9 +24,9 @@ public class AutoThresholder {
 		Shanbhag, 
 		Triangle, 
 		Yen
-	};
+	}
 
-	public static String[] getMethods() {
+    public static String[] getMethods() {
 		if (mStrings==null) {
 			Method[] mVals = Method.values();
 			mStrings = new String[mVals.length];
@@ -122,7 +121,7 @@ public class AutoThresholder {
 			sum_pix += (double)ih * data[ih];
 			num_pix += data[ih];
 			/* NUM_PIX cannot be zero ! */
-			mu_1[ih - 1] = sum_pix / ( double ) num_pix;
+			mu_1[ih - 1] = sum_pix / num_pix;
 		}
 
 		/* Determine the threshold that minimizes the fuzzy entropy */
@@ -399,7 +398,7 @@ public class AutoThresholder {
 				sum_back += (double)ih * data[ih];
 				num_back += data[ih];
 			}
-			mean_back = ( num_back == 0 ? 0.0 : ( sum_back / ( double ) num_back ) );
+			mean_back = ( num_back == 0 ? 0.0 : ( sum_back / num_back) );
 			/* Object */
 			sum_obj = 0;
 			num_obj = 0;
@@ -407,7 +406,7 @@ public class AutoThresholder {
 				sum_obj += (double)ih * data[ih];
 				num_obj += data[ih];
 			}
-			mean_obj = ( num_obj == 0 ? 0.0 : ( sum_obj / ( double ) num_obj ) );
+			mean_obj = ( num_obj == 0 ? 0.0 : ( sum_obj / num_obj) );
 
 			/* Calculate the new threshold: Equation (7) in Ref. 2 */
 			//new_thresh = simple_round ( ( mean_back - mean_obj ) / ( Math.log ( mean_back ) - Math.log ( mean_obj ) ) );
@@ -663,7 +662,7 @@ public class AutoThresholder {
 			total+=data[i];
 
 		for (int i=0; i<256; i++)
-			histo[i]=(double)(data[i]/total); //normalised histogram
+			histo[i]= data[i]/total; //normalised histogram
 
 		/* Calculate the first, second, and third order moments */
 		for ( int i = 0; i < 256; i++ ) {
@@ -729,11 +728,11 @@ public class AutoThresholder {
 
 			// The float casting here is to avoid compiler warning about loss of precision and
 			// will prevent overflow in the case of large saturated images
-			denom = (double)( N1) * (N - N1); // Maximum value of denom is (N^2)/4 =  approx. 3E10
+			denom = N1 * (N - N1); // Maximum value of denom is (N^2)/4 =  approx. 3E10
 
 			if (denom != 0 ){
 				// Float here is to avoid loss of precision when dividing
-				num = ( (double)N1 / N ) * S - Sk; 	// Maximum value of num =  255*N = approx 8E7
+				num = ( N1 / N ) * S - Sk; 	// Maximum value of num =  255*N = approx 8E7
 				BCV = (num * num) / denom;
 			}
 			else

@@ -22,8 +22,8 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 	public static final int LINE = 4;
 	public static final int POLYLINE = 5;
 	public static final int FREELINE = 6;
-	public static final int POINT = 7, CROSSHAIR = 7;
-	public static final int WAND = 8;
+	public static final int POINT = 7;
+    public static final int WAND = 8;
 	public static final int TEXT = 9;
 	public static final int SPARE1 = 10;
 	public static final int MAGNIFIER = 11;
@@ -70,8 +70,7 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
     private boolean installingStartupTool;
 	private int pc;
 	private String icon;
-	private int startupTime;
-	private PopupMenu rectPopup, ovalPopup, pointPopup, linePopup, switchPopup;
+    private PopupMenu rectPopup, ovalPopup, pointPopup, linePopup, switchPopup;
 	private CheckboxMenuItem rectItem, roundRectItem;
 	private CheckboxMenuItem ovalItem, ellipseItem, brushItem;
 	private CheckboxMenuItem pointItem, multiPointItem;
@@ -177,20 +176,7 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 		return current;
 	}
 
-	/** Returns the ID of the tool whose name (the description displayed in the status bar)
-		starts with the specified string, or -1 if the tool is not found. */
-	public int getToolId(String name) {
-		int tool =  -1;
-		for (int i=0; i<=SPARE9; i++) {
-			if (names[i]!=null && names[i].startsWith(name)) {
-				tool = i;
-				break;
-			}			
-		}
-		return tool;
-	}
-
-	/** Returns a reference to the ImageJ toolbar. */
+    /** Returns a reference to the ImageJ toolbar. */
 	public static Toolbar getInstance() {
 		return instance;
 	}
@@ -701,10 +687,8 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 	boolean isValidTool(int tool) {
 		if (tool<0 || tool>=NUM_TOOLS)
 			return false;
-		if ((tool==SPARE1||(tool>=SPARE2&&tool<=SPARE9)) && names[tool]==null)
-			return false;
-		return true;
-	}
+        return (tool != SPARE1 && (tool < SPARE2 || tool > SPARE9)) || names[tool] != null;
+    }
 
 	/**
 	* @deprecated
@@ -811,11 +795,7 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 		return ovalType;
 	}
 
-	public static int getButtonSize() {
-		return SIZE;
-	}
-	
-	static void repaintTool(int tool) {
+    static void repaintTool(int tool) {
 		if (IJ.getInstance()!=null) {
 			Toolbar tb = getInstance();
 			Graphics g = tb.getGraphics();
@@ -1481,7 +1461,7 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 			instance.tools[id] = tool;
 			if (instance.menus[id]!=null)
 				instance.menus[id].removeAll();
-			instance.repaintTool(id);	
+			repaintTool(id);
 			if (!instance.installingStartupTool)
 				instance.setTool(id);
 			else
@@ -1581,17 +1561,8 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 			ok = false;
 		return ok;
 	}
-	
-	private boolean isMacroSet(int id) {
-		if (tools[id]==null)
-			return false;
-		if (!(tools[id] instanceof MacroToolRunner))
-			return false;
-		boolean rtn = ((MacroToolRunner)tools[id]).getMacroCount()>2;
-		return rtn;
-	}
-	
-	public static boolean installStartupMacrosTools() {
+
+    public static boolean installStartupMacrosTools() {
 		String customTool0 = Prefs.get(Toolbar.TOOL_KEY+"00", "");
 		return customTool0.equals("") || Character.isDigit(customTool0.charAt(0));
 	}

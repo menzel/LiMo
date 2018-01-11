@@ -19,7 +19,7 @@ public class TextEncoder {
 	}
 
 	/** Saves the image as a tab-delimited text file. */
-	public void write(DataOutputStream out) throws IOException {
+	public void write(DataOutputStream out) {
 		PrintWriter pw = new PrintWriter(out);
 		boolean calibrated = cal!=null && cal.calibrated();
 		if (calibrated)

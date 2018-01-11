@@ -4,51 +4,9 @@ import java.util.ArrayList;
 
 import lichen.controller.FloodFiller;
 import lichen.view.MainGUI;
-import de.thm.bi.recognition.data.Point;
 
 public class MyFloodFiller extends FloodFiller {
-	private ImageProcessor org;
-	
-	public MyFloodFiller(ImageProcessor ip) {
-		super(ip); 
-	}
 
-
-	@Override 
-	public boolean fill(int x, int y) {
-
-		ArrayList<Point>n = new ArrayList<Point>();
-
-		n.add(new Point(x, y));
-		Point p;
-		int color = ip.getPixel(x, y);
-		ip.setColor(0);
-
-		if(color == 0)
-			return false;
-		
-
-		while(!n.isEmpty()){
-
-			p= n.remove(n.size()-1);
-
-			if(ip.getPixel(p.x, p.y) == color){
-
-				ip.drawPixel(p.x, p.y); 
-
-				n.add(new Point(p.x, p.y+1));
-				n.add(new Point(p.x, p.y-1));
-
-				n.add(new Point(p.x+1, p.y));
-				n.add(new Point(p.x-1, p.y));
-			} 
-		}
-
-
-		fillAgain(x, y); 
-
-		return true; 
-	}
 
 	private boolean fillAgain(int x, int y) {
 
@@ -82,8 +40,5 @@ public class MyFloodFiller extends FloodFiller {
 
 		return true; 
 	}
-	
-	public void setOrg(ImageProcessor org){
-		this.org = org;
-	}
+
 }

@@ -1,6 +1,5 @@
 package ij.plugin.tool;
 import ij.macro.MacroInstaller;
-import ij.macro.Program;
 
 public class MacroToolRunner extends PlugInTool {
 	MacroInstaller installer;
@@ -19,14 +18,7 @@ public class MacroToolRunner extends PlugInTool {
 			installer.runMenuTool(name, command);
 	}
 
-	public Program getMacroProgram() {
-		if (installer!=null)
-			return installer.getProgram();
-		else
-			return null;
-	}
-	
-	public int getMacroCount() {
+    public int getMacroCount() {
 		if (installer!=null)
 			return installer.getMacroCount();
 		else

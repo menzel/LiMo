@@ -45,13 +45,8 @@ public class FileOpener {
 		}
 		if (IJ.debugMode) IJ.log("FileInfo: "+fi);
 	}
-	
-	/** Opens the image and displays it. */
-	public void open() {
-		open(true);
-	}
-	
-	/** Opens the image. Displays it if 'show' is
+
+    /** Opens the image. Displays it if 'show' is
 	true. Returns an ImagePlus object if successful. */
 	public ImagePlus open(boolean show) {
 		ImagePlus imp=null;
@@ -247,7 +242,7 @@ public class FileOpener {
 		ImageProcessor ip;
 		String path = fi.directory + fi.fileName;
 		
-		if (fi.fileFormat==fi.GIF_OR_JPG) {
+		if (fi.fileFormat== FileInfo.GIF_OR_JPG) {
 			// restore gif or jpg
 			img = Toolkit.getDefaultToolkit().createImage(path);
 			imp.setImage(img);
@@ -257,7 +252,7 @@ public class FileOpener {
 		}
 		
 				
-		if (fi.fileFormat==fi.DICOM) {
+		if (fi.fileFormat== FileInfo.DICOM) {
 			// restore DICOM
 			ImagePlus imp2 = (ImagePlus)IJ.runPlugIn("ij.plugin.DICOM", path);
 			if (imp2!=null)
@@ -267,7 +262,7 @@ public class FileOpener {
 	    	return;
 		}
 
-		if (fi.fileFormat==fi.BMP) {
+		if (fi.fileFormat== FileInfo.BMP) {
 			// restore BMP
 			ImagePlus imp2 = (ImagePlus)IJ.runPlugIn("ij.plugin.BMP_Reader", path);
 			if (imp2!=null)
@@ -275,7 +270,7 @@ public class FileOpener {
 	    	return;
 		}
 
-		if (fi.fileFormat==fi.PGM) {
+		if (fi.fileFormat== FileInfo.PGM) {
 			// restore PGM
 			ImagePlus imp2 = (ImagePlus)IJ.runPlugIn("ij.plugin.PGM_Reader", path);
 			if (imp2!=null)
@@ -283,7 +278,7 @@ public class FileOpener {
 	    	return;
 		}
 
-		if (fi.fileFormat==fi.FITS) {
+		if (fi.fileFormat== FileInfo.FITS) {
 			// restore FITS
 			ImagePlus imp2 = (ImagePlus)IJ.runPlugIn("ij.plugin.FITS_Reader", path);
 			if (imp2!=null)
@@ -291,7 +286,7 @@ public class FileOpener {
 			return;
 		}
 
-		if (fi.fileFormat==fi.ZIP_ARCHIVE) {
+		if (fi.fileFormat== FileInfo.ZIP_ARCHIVE) {
 			// restore ".zip" file
 			ImagePlus imp2 = (new Opener()).openZip(path);
 			if (imp2!=null)
@@ -300,7 +295,7 @@ public class FileOpener {
 		}
 
 		// restore PNG or another image opened using ImageIO
-		if (fi.fileFormat==fi.IMAGEIO) {
+		if (fi.fileFormat== FileInfo.IMAGEIO) {
 			ImagePlus imp2 = (new Opener()).openUsingImageIO(path);
 			if (imp2!=null) imp.setProcessor(null, imp2.getProcessor());
 	    	return;
@@ -453,7 +448,7 @@ public class FileOpener {
 	}
 
 	/** Returns an InputStream for the image described by this FileInfo. */
-	public InputStream createInputStream(FileInfo fi) throws IOException, MalformedURLException {
+	public InputStream createInputStream(FileInfo fi) throws IOException {
 		InputStream is = null;
 		boolean gzip = fi.fileName!=null && (fi.fileName.endsWith(".gz")||fi.fileName.endsWith(".GZ"));
 		if (fi.inputStream!=null)
@@ -602,7 +597,7 @@ public class FileOpener {
 	
 	private boolean getBoolean(Properties props, String key) {
 		String s = props.getProperty(key);
-		return s!=null&&s.equals("true")?true:false;
+		return s != null && s.equals("true");
 	}
 	
 	public static void setShowConflictMessage(boolean b) {

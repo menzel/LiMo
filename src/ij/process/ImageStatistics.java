@@ -36,13 +36,10 @@ public class ImageStatistics implements Measurements {
 	/** Long histogram; use getHIstogram() to retrieve. */
 	protected long[] longHistogram;
 	public double areaFraction;
-	/** Used internally by AnalyzeParticles */
-	public int xstart, ystart;
-	
-	public double histMin;
+
+    public double histMin;
 	public double histMax;
-	public int histYMax;
-	public int maxCount;
+    public int maxCount;
 	public int nBins = 256;
 	public double binSize = 1.0;
 	

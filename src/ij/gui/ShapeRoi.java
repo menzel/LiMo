@@ -2,14 +2,10 @@ package ij.gui;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.geom.*;
-import java.awt.event.KeyEvent;
 import java.util.*;
 
-import ij.*;
 import ij.process.*;
 import ij.measure.*;
-import ij.plugin.frame.Recorder;
-import ij.util.Tools;
 
 /**A subclass of <code>ij.gui.Roi</code> (2D Regions Of Interest) implemented in terms of java.awt.Shape.
  * A ShapeRoi is constructed from a <code>ij.gui.Roi</code> object, or as a result of logical operators
@@ -54,11 +50,8 @@ public class ShapeRoi extends Roi {
 	 * obtain a flattened version of this ROI's shape.
 	 */
 	private double flatness = ShapeRoi.FLATNESS;
-	
-	/**The instance value of MAXPOLY.*/
-	private int maxPoly = ShapeRoi.MAXPOLY;
-    
-	/**If <strong></code>true</code></strong> then methods that manipulate this ROI's shape will work on
+
+    /**If <strong></code>true</code></strong> then methods that manipulate this ROI's shape will work on
 	 * a flattened version of the shape. */
 	private boolean flatten;
 	
@@ -119,8 +112,7 @@ public class ShapeRoi extends Roi {
 		this.maxerror = maxerror;
 		this.forceAngle = forceAngle;
 		this.forceTrace = forceTrace;
-		this.maxPoly= maxPoly;
-		this.flatten = flatten;
+        this.flatten = flatten;
 		shape = roiToShape((Roi)r.clone());
 	}
 
@@ -144,8 +136,7 @@ public class ShapeRoi extends Roi {
 		shape = new GeneralPath(at.createTransformedShape(shape));
 		flatness = ShapeRoi.FLATNESS;
 		maxerror = ShapeRoi.MAXERROR;
-		maxPoly = ShapeRoi.MAXPOLY;
-		flatten = false;
+        flatten = false;
 		type = COMPOSITE;
 	}
 	
@@ -389,14 +380,7 @@ public class ShapeRoi extends Roi {
 		return -1;
 	}
 
-	/** Saves an Roi so it can be retrieved later using getRois(). */
-	void saveRoi(Roi roi) {
-		if (savedRois==null)
-			savedRois = new Vector();
-		savedRois.addElement(roi);
-	}
-
-	/**Converts a Shape into Roi object(s).
+    /**Converts a Shape into Roi object(s).
 	 * <br>This method parses the shape into (possibly more than one) Roi objects 
 	 * and returns them in an array.
 	 * <br>A simple, &quot;regular&quot; path results in a single Roi following these simple rules:
@@ -463,34 +447,17 @@ public class ShapeRoi extends Roi {
 			parsePath(pIter, null, null, rois, null);
 		}
 		Roi[] array = new Roi[rois.size()];
-		rois.copyInto((Roi[])array);
+		rois.copyInto(array);
 		return array;
 	}
 	
 	Roi[] getSavedRois () {
 		Roi[] array = new Roi[savedRois.size()];
-		savedRois.copyInto((Roi[])array);
+		savedRois.copyInto(array);
 		return array;
 	}
 
-	/**Attempts to convert this ShapeRoi into a non-composite Roi.
-	 * @return an ij.gui.Roi object or null
-	 */
-	public Roi shapeToRoi() {
-		if (shape==null || !(shape instanceof GeneralPath))
-			return null;
-		PathIterator pIter = shape.getPathIterator(new AffineTransform());
-		Vector rois = new Vector();
-		double[] params = {SHAPE_TO_ROI};
-		if (!parsePath(pIter, params, null, rois, null))
-			return null;
-		if (rois.size()==1)
-			return (Roi)rois.elementAt(0);
-		else
-			return null;
-	}
-	
-	/**Implements the rules of conversion from <code>java.awt.geom.GeneralPath</code> to <code>ij.gui.Roi</code>.
+    /**Implements the rules of conversion from <code>java.awt.geom.GeneralPath</code> to <code>ij.gui.Roi</code>.
 	 * @param segments The number of segments that compose the path
 	 * @param linesOnly Indicates wether the GeneralPath object is composed only of SEG_LINETO segments
 	 * @param curvesOnly Indicates wether the GeneralPath object is composed only of SEG_CUBICTO and SEG_QUADTO segments
@@ -767,13 +734,7 @@ public class ShapeRoi extends Roi {
 		}
 	}
 
-	Vector parseSegments(PathIterator pI) {
-		Vector v = new Vector();
-		if (parsePath(pI, null, v, null, null)) return v;
-		return null;
-	}
-
-	/** Retrieves the end points and control points of the path as a float array. The array 
+    /** Retrieves the end points and control points of the path as a float array. The array
 		contains a sequence of variable length segments that use from from one to seven elements.
 		The first element of a segment is the type as defined in the PathIterator interface. SEG_MOVETO 
 		and SEG_LINETO segments also include two coordinates, SEG_QUADTO segments include four 
@@ -1178,45 +1139,8 @@ public class ShapeRoi extends Roi {
 		for (int i=1; i<array.length; i++) val = Math.max(val,array[i]);
 		return val;
 	}
-	
-	/**
-	public static void addCircle(String sx, String sy, String swidth) {
-		int x = Integer.parseInt(sx);
-		int y = Integer.parseInt(sy);
-		int width = Integer.parseInt(swidth);
-		ImagePlus img = IJ.getImage();
-		if (img==null) return;
-		Roi roi = img.getRoi();
-		if (roi!=null) {
-			if (!(roi instanceof ShapeRoi))
-			roi = new ShapeRoi(roi);
-			((ShapeRoi)roi).or(getCircularRoi(x, y, width));
-		} else
-			roi = getCircularRoi(x, y, width);
-		img.setRoi(roi);
-	}
 
-	public static void subtractCircle(String sx, String sy, String swidth) {
-		int x = Integer.parseInt(sx);
-		int y = Integer.parseInt(sy);
-		int width = Integer.parseInt(swidth);
-		ImagePlus img = IJ.getImage();
-		if (img==null) return;
-		Roi roi = img.getRoi();
-		if (roi!=null) {
-			if (!(roi instanceof ShapeRoi))
-			roi = new ShapeRoi(roi);
-			((ShapeRoi)roi).not(getCircularRoi(x, y, width));
-			img.setRoi(roi);
-		}
-	}
-	*/
-
-	static ShapeRoi getCircularRoi(int x, int y, int width) {
-		return new ShapeRoi(new OvalRoi(x - width / 2, y - width / 2, width, width));
-	}
-
-	/** Always returns -1 since ShapeRois do not have handles. */
+    /** Always returns -1 since ShapeRois do not have handles. */
 	public int isHandle(int sx, int sy) {
 		   return -1;
 	}

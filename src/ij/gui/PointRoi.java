@@ -1,13 +1,9 @@
 package ij.gui;
 
 import java.awt.*;
-import java.awt.image.*;
 
 import ij.*;
 import ij.process.*;
-import ij.measure.*;
-
-import java.awt.event.KeyEvent;
 
 import ij.plugin.frame.Recorder;
 import ij.util.Java2; 
@@ -34,11 +30,6 @@ public class PointRoi extends PolygonRoi {
 	/** Creates a new PointRoi from a FloatPolygon. */
 	public PointRoi(FloatPolygon poly) {
 		this(poly.xpoints, poly.ypoints, poly.npoints);
-	}
-
-	/** Creates a new PointRoi from a Polygon. */
-	public PointRoi(Polygon poly) {
-		this(itof(poly.xpoints), itof(poly.ypoints), poly.npoints);
 	}
 
 	/** Creates a new PointRoi using the specified offscreen int coordinates. */
@@ -151,12 +142,8 @@ public class PointRoi extends PolygonRoi {
 		IJ.showStatus("count="+poly.npoints);
 		return p;
 	}
-	
-	public PointRoi addPoint(int x, int y) {
-		return addPoint((double)x, (double)y);
-	}
-	
-	/** Subtract the points that intersect the specified ROI and return 
+
+	/** Subtract the points that intersect the specified ROI and return
 		the result. Returns null if there are no resulting points. */
 	public PointRoi subtractPoints(Roi roi) {
 		Polygon points = getPolygon();

@@ -21,8 +21,7 @@ public class MeasurementsWriter implements PlugIn {
 		} else if (IJ.isResultsWindow()) {
 			TextPanel tp = IJ.getTextPanel();
 			if (tp!=null) {
-				if (!tp.saveAs(path))
-					return false;
+                return tp.saveAs(path);
 			}
 		} else {
 			ResultsTable rt = ResultsTable.getResultsTable();

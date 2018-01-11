@@ -4,14 +4,7 @@ import ij.measure.Calibration;
 /** RGB image statistics, including histogram. */
 public class ColorStatistics extends ImageStatistics {
 
-	/** Construct an ImageStatistics object from a ColorProcessor
-		using the standard measurement options (area, mean,
-		mode, min and max). */
-	public ColorStatistics(ImageProcessor ip) {
-		this(ip, AREA+MEAN+MODE+MIN_MAX, null);
-	}
-
-	/** Constructs a ColorStatistics object from a ColorProcessor using
+    /** Constructs a ColorStatistics object from a ColorProcessor using
 		the specified measurement options.
 	*/
 	public ColorStatistics(ImageProcessor ip, int mOptions, Calibration cal) {

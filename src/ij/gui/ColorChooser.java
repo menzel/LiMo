@@ -1,6 +1,4 @@
 package ij.gui;
-import ij.*;
-import ij.process.*;
 import ij.util.*;
 import ij.plugin.Colors;
 import java.awt.*;
@@ -14,8 +12,7 @@ public class ColorChooser implements TextListener, AdjustmentListener {
 	ColorPanel panel;
 	Color initialColor;
 	int red, green, blue;
-	boolean useHSB;
-	String title;
+     String title;
 	Frame frame;
 
 	/** Constructs a ColorChooser using the specified title and initial color. */
@@ -30,8 +27,7 @@ public class ColorChooser implements TextListener, AdjustmentListener {
 		red = initialColor.getRed();
 		green = initialColor.getGreen();
 		blue = initialColor.getBlue();
-		this.useHSB = useHSB;
-		this.frame = frame;
+        this.frame = frame;
 	}
 
 	/** Displays a color selection dialog and returns the color selected by the user. */

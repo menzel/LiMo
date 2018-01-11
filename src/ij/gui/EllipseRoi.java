@@ -1,6 +1,6 @@
 package ij.gui;
 import java.awt.*;
-import java.awt.image.*;
+
 import ij.*;
 import ij.plugin.frame.Recorder;
 import ij.process.FloatPolygon;

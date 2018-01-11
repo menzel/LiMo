@@ -1,5 +1,4 @@
 package ij.io;
-import ij.IJ;
 import java.io.*;
 import java.util.Vector;
 
@@ -35,13 +34,6 @@ public final class RandomAccessStream extends InputStream {
     /** Constructs a RandomAccessStream from an RandomAccessFile. */
 	public RandomAccessStream(RandomAccessFile ras) {
 		this.ras = ras;
-    }
-
-    public int getFilePointer() throws IOException {
-    	if (ras!=null)
-    		return (int)ras.getFilePointer();
-    	else
-        	return (int)pointer;
     }
 
     public long getLongFilePointer() throws IOException {

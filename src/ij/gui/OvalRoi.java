@@ -1,7 +1,7 @@
 package ij.gui;
 
 import java.awt.*;
-import java.awt.image.*;
+
 import ij.*;
 import ij.process.*;
 import ij.measure.Calibration;
@@ -267,7 +267,7 @@ public class OvalRoi extends Roi {
 		if (p.npoints>0) {
 			int saveWidth = ip.getLineWidth();
 			if (getStrokeWidth()>1f)
-				ip.setLineWidth((int)Math.round(getStrokeWidth()));
+				ip.setLineWidth(Math.round(getStrokeWidth()));
 			ip.drawPolygon(p);
 			ip.setLineWidth(saveWidth);
 		}

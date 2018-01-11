@@ -15,14 +15,7 @@ public class ImageRoi extends Roi {
 	private double angle = 0.0;
 	private boolean zeroTransparent;
 
-	/** Creates a new ImageRoi from a BufferedImage.*/
-	public ImageRoi(int x, int y, BufferedImage bi) {
-		super(x, y, bi.getWidth(), bi.getHeight());
-		img = bi;
-		setStrokeColor(Color.black);
-	}
-
-	/** Creates a new ImageRoi from a ImageProcessor.*/
+    /** Creates a new ImageRoi from a ImageProcessor.*/
 	public ImageRoi(int x, int y, ImageProcessor ip) {
 		super(x, y, ip.getWidth(), ip.getHeight());
 		img = ip.createImage();
@@ -54,13 +47,8 @@ public class ImageRoi extends Roi {
 		if (isActiveOverlayRoi() && !overlay)
 			super.draw(g);
  	}
- 	 	
-	/** Sets the composite mode. */
-	public void setComposite(Composite composite) {
-		this.composite = composite;
-	}
-	
-	/** Sets the composite mode using the specified opacity (alpha), in the 
+
+    /** Sets the composite mode using the specified opacity (alpha), in the
 	     range 0.0-1.0, where 0.0 is fully transparent and 1.0 is fully opaque. */
 	public void setOpacity(double opacity) {
 		if (opacity<0.0) opacity = 0.0;
@@ -83,23 +71,7 @@ public class ImageRoi extends Roi {
 		return opacity;
 	}
 
-	public void rotate(double angle) {
-		this.angle += angle;
-	}
-
-	public void setAngle(double angle) {
-		this.angle = angle;
-	}
-
-	public void setZeroTransparent(boolean zeroTransparent) {
-		if (this.zeroTransparent!=zeroTransparent) {
-			ImageProcessor ip = makeZeroTransparent(new ColorProcessor(img), zeroTransparent);
-			img = ip.createImage();
-		}
-		this.zeroTransparent = zeroTransparent;
-	}
-	
-	private ImageProcessor makeZeroTransparent(ImageProcessor ip, boolean transparent) {
+    private ImageProcessor makeZeroTransparent(ImageProcessor ip, boolean transparent) {
 		if (transparent) {
 			ip.setColorModel(new DirectColorModel(32,0x00ff0000,0x0000ff00,0x000000ff,0xff000000));
 			for (int x=0; x<width; x++) {

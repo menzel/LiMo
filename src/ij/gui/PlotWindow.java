@@ -21,18 +21,8 @@ public class PlotWindow extends ImageWindow implements ActionListener, Clipboard
 
 	/** Display points using a circle 5 pixels in diameter. */
 	public static final int CIRCLE = 0;
-	/** Display points using an X-shaped mark. */
-	public static final int X = 1;
-	/** Display points using an box-shaped mark. */
-	public static final int BOX = 3;
-	/** Display points using an tiangular mark. */
-	public static final int TRIANGLE = 4;
-	/** Display points using an cross-shaped mark. */
-	public static final int CROSS = 5;
-	/** Connect points with solid lines. */
-	public static final int LINE = 2;
 
-	private static final int WIDTH = 450;
+    private static final int WIDTH = 450;
 	private static final int HEIGHT = 200;
 	
 	private static final String MIN = "pp.min";
@@ -48,11 +38,8 @@ public class PlotWindow extends ImageWindow implements ActionListener, Clipboard
 
 	private Button list, save, copy, live;
 	private Label coordinates;
-	private static String defaultDirectory = null;
-	private static int options;
-	private int defaultDigits = -1;
-	private int markSize = 5;
-	private static Plot staticPlot;
+    private static int options;
+    private static Plot staticPlot;
 	private Plot plot;
 	private String blankLabel = "                      ";
 	
@@ -129,13 +116,8 @@ public class PlotWindow extends ImageWindow implements ActionListener, Clipboard
 		staticPlot = new Plot(title, xLabel, yLabel, xValues, yValues);
 		return new ImagePlus(title, staticPlot.getBlankProcessor());
 	}
-	
-	/** Sets the x-axis and y-axis range. */
-	public void setLimits(double xMin, double xMax, double yMin, double yMax) {
-		plot.setLimits(xMin, xMax, yMin, yMax);
-	}
 
-	/** Adds a set of points to the plot or adds a curve if shape is set to LINE.
+    /** Adds a set of points to the plot or adds a curve if shape is set to LINE.
 	* @param x			the x-coodinates
 	* @param y			the y-coodinates
 	* @param shape		CIRCLE, X, BOX, TRIANGLE, CROSS or LINE
@@ -144,39 +126,7 @@ public class PlotWindow extends ImageWindow implements ActionListener, Clipboard
 		plot.addPoints(x, y, shape);
 	}
 
-	/** Adds a set of points to the plot using double arrays.
-		Must be called before the plot is displayed. */
-	public void addPoints(double[] x, double[] y, int shape) {
-		addPoints(Tools.toFloat(x), Tools.toFloat(y), shape);
-	}
-	
-	/** Adds error bars to the plot. */
-	public void addErrorBars(float[] errorBars) {
-		plot.addErrorBars(errorBars);
-	}
-
-	/** Draws a label. */
-	public void addLabel(double x, double y, String label) {
-		plot.addLabel(x, y, label);
-	}
-	
-	/** Changes the drawing color. The frame and labels are
-		always drawn in black. */
-	public void setColor(Color c) {
-		plot.setColor(c);
-	}
-
-	/** Changes the line width. */
-	public void setLineWidth(int lineWidth) {
-		plot.setLineWidth(lineWidth);
-	}
-
-	/** Changes the font. */
-	public void changeFont(Font font) {
-		plot.changeFont(font);
-	}
-
-	/** Displays the plot. */
+    /** Displays the plot. */
 	public void draw() {
 		Panel buttons = new Panel();
 		int hgap = IJ.isMacOSX()?1:5;
@@ -212,25 +162,7 @@ public class PlotWindow extends ImageWindow implements ActionListener, Clipboard
 			showList();
 	}
 
-	int getDigits(double n1, double n2) {
-		if (Math.round(n1)==n1 && Math.round(n2)==n2)
-			return 0;
-		else {
-			n1 = Math.abs(n1);
-			n2 = Math.abs(n2);
-			double n = n1<n2&&n1>0.0?n1:n2;
-			double diff = Math.abs(n2-n1);
-			if (diff>0.0 && diff<n) n = diff;			
-			int digits = 1;
-			if (n<10.0) digits = 2;
-			if (n<0.01) digits = 3;
-			if (n<0.001) digits = 4;
-			if (n<0.0001) digits = 5;
-			return digits;
-		}
-	}
-
-	/** Updates the graph X and Y values when the mouse is moved.
+    /** Updates the graph X and Y values when the mouse is moved.
 		Overrides mouseMoved() in ImageWindow. 
 		@see ij.gui.ImageWindow#mouseMoved
 	*/
@@ -426,30 +358,8 @@ public class PlotWindow extends ImageWindow implements ActionListener, Clipboard
 	public float[] getYValues() {
 		return plot.yValues;
 	}
-	
-	/** Returns the X and Y plot values as a ResultsTable. */
-	public ResultsTable getResultsTable() {
-		int sets = plot.storedData.size()/2;
-		int max = 0;
-		for(int i = 0; i<plot.storedData.size(); i+=2) {
-			float[] column = (float[])plot.storedData.get(i);
-			int s = column.length;
-			if (column.length>max) max=column.length;
-		}
-		ResultsTable rt = new ResultsTable();
-		for (int row=0; row<max; row++) {
-			rt.incrementCounter();
-			for (int i=0; i<sets; i++) {
-				float[] x = (float[])plot.storedData.get(i*2);
-				float[] y = (float[])plot.storedData.get(i*2+1);
-				if (row<x.length) rt.addValue("x"+i, x[row]);
-				if (row<y.length) rt.addValue("y"+i, y[row]);
-			}
-		}
-		return rt;
-	}
-	
-	/** Draws a new plot in this window. */
+
+    /** Draws a new plot in this window. */
 	public void drawPlot(Plot plot) {
 		this.plot = plot;
 		imp.setProcessor(null, plot.getProcessor());	
@@ -567,7 +477,7 @@ public class PlotWindow extends ImageWindow implements ActionListener, Clipboard
 		ic.addMouseListener(this);
 		ic.addMouseMotionListener(this);
 		ic.addKeyListener(this);
-		srcImp.addImageListener(this);
+		ImagePlus.addImageListener(this);
 		Font font = live.getFont();
 		live.setFont(new Font(font.getName(), Font.BOLD, font.getSize()));
 		live.setForeground(Color.red);
@@ -582,7 +492,7 @@ public class PlotWindow extends ImageWindow implements ActionListener, Clipboard
 			ic.removeMouseMotionListener(this);
 			ic.removeKeyListener(this);
 		}
-		srcImp.removeImageListener(this);
+		ImagePlus.removeImageListener(this);
 		Font font = live.getFont();
 		live.setFont(new Font(font.getName(), Font.PLAIN, font.getSize()));
 		live.setForeground(Color.black);

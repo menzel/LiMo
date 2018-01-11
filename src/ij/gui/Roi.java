@@ -1,7 +1,6 @@
 package ij.gui;
 
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 
@@ -10,12 +9,14 @@ import ij.process.*;
 import ij.measure.*;
 import ij.plugin.frame.Recorder;
 import ij.macro.Interpreter;
-import ij.io.RoiDecoder;
 
 /** A rectangular region of interest and superclass for the other ROI classes. */
 public class Roi extends Object implements Cloneable, java.io.Serializable {
 
-	public static final int CONSTRUCTING=0, MOVING=1, RESIZING=2, NORMAL=3, MOVING_HANDLE=4; // States
+	public static final int CONSTRUCTING=0;
+    public static final int MOVING=1;
+    public static final int NORMAL=3;
+    public static final int MOVING_HANDLE=4; // States
 	public static final int RECTANGLE=0, OVAL=1, POLYGON=2, FREEROI=3, TRACED_ROI=4, LINE=5, 
 		POLYLINE=6, FREELINE=7, ANGLE=8, COMPOSITE=9, POINT=10; // Types
 	public static final int HANDLE_SIZE = 5; 
@@ -55,8 +56,7 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 	protected ImageProcessor cachedMask;
 	protected Color handleColor = Color.white;
 	protected Color  strokeColor;
-	protected Color instanceColor; //obsolete; replaced by  strokeColor
-	protected Color fillColor;
+    protected Color fillColor;
 	protected BasicStroke stroke;
 	protected boolean nonScalable;
 	protected boolean overlay;
@@ -67,9 +67,8 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 	private int channel, slice, frame;
 	private Overlay prototypeOverlay;
 	private boolean subPixel;
-	private boolean activeOverlayRoi;
 
-	/** Creates a rectangular ROI. */
+    /** Creates a rectangular ROI. */
 	public Roi(int x, int y, int width, int height) {
 		this(x, y, width, height, 0);
 	}
@@ -213,15 +212,8 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 		}
 		return 2.0*width*pw+2.0*height*ph;
 	}
-	
-	/** Returns Feret's diameter, the greatest distance between 
-		any two points along the ROI boundary. */
-	public double getFeretsDiameter() {
-		double[] a = getFeretValues();
-		return a!=null?a[0]:0.0;
-	}
 
-	/** Caculates "Feret" (maximum caliper width), "FeretAngle"
+    /** Caculates "Feret" (maximum caliper width), "FeretAngle"
 		and "MinFeret" (minimum caliper width), "FeretX" and "FeretY". */	
 	public double[] getFeretValues() {
 		double min=Double.MAX_VALUE, diameter=0.0, angle=0.0, feretX=0.0, feretY=0.0;
@@ -300,29 +292,8 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 	public Polygon getConvexHull() {
 		return getPolygon();
 	}
-	
-	double getFeretBreadth(Shape shape, double angle, double x1, double y1, double x2, double y2) {
-		double cx = x1 + (x2-x1)/2;
-		double cy = y1 + (y2-y1)/2;
-		AffineTransform at = new AffineTransform();
-		at.rotate(angle*Math.PI/180.0, cx, cy);
-		Shape s = at.createTransformedShape(shape);
-		Rectangle2D r = s.getBounds2D();
-		return Math.min(r.getWidth(), r.getHeight());
-		/*
-		ShapeRoi roi2 = new ShapeRoi(s);
-		Roi[] rois = roi2.getRois();
-		if (rois!=null && rois.length>0) {
-			Polygon p = rois[0].getPolygon();
-			ImageProcessor ip = imp.getProcessor();
-			for (int i=0; i<p.npoints-1; i++)
-				ip.drawLine(p.xpoints[i], p.ypoints[i], p.xpoints[i+1], p.ypoints[i+1]);
-			imp.updateAndDraw();
-		}
-		*/
-	}
 
-	/** Return this selection's bounding rectangle. */
+    /** Return this selection's bounding rectangle. */
 	public Rectangle getBounds() {
 		return new Rectangle(x, y, width, height);
 	}
@@ -381,24 +352,8 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 			return new FloatPolygon(toFloat(p.xpoints), toFloat(p.ypoints), p.npoints);
 		}
 	}
-	
-	/** Returns, as a FloatPolygon, an interpolated version 
-	 * of this selection that has points spaced 1.0 pixel apart.
-	 */
-	public FloatPolygon getInterpolatedPolygon() {
-		return getInterpolatedPolygon(getFloatPolygon(), 1.0, false);
-	}
 
-	/** Returns, as a FloatPolygon, an interpolated version of
-	 * this selection with points spaced 'interval' pixels apart. 
-	 * If 'smooth' is true, traced and freehand selections are
-	 * first smoothed using a 3 point running average.
-	 */
-	public FloatPolygon getInterpolatedPolygon(double interval, boolean smooth) {
-		return getInterpolatedPolygon(getFloatPolygon(), interval, smooth);
-	}
-
-	protected FloatPolygon getInterpolatedPolygon(FloatPolygon p, double interval, boolean smooth) {
+    protected FloatPolygon getInterpolatedPolygon(FloatPolygon p, double interval, boolean smooth) {
 		double length = p.getLength(isLine());
 		int npoints2 = (int)((length*1.2)/interval);
 		float[] xpoints2 = new float[npoints2];
@@ -863,13 +818,7 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 		}
 	}
 
-	int getHandleSize() {
-		double mag = ic!=null?ic.getMagnification():1.0;
-		double size = HANDLE_SIZE/mag;
-		return (int)(size*mag);
-	}
-	
-	public void draw(Graphics g) {
+    public void draw(Graphics g) {
 		Color color =  strokeColor!=null? strokeColor:ROIColor;
 		if (fillColor!=null) color = fillColor;
 		if (Interpreter.isBatchMode() && ic!=null && ic.getDisplayList()!=null && strokeColor==null && fillColor==null)
@@ -984,7 +933,7 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 		endPaste();
 		int saveWidth = ip.getLineWidth();
 		if (getStrokeWidth()>1f)
-			ip.setLineWidth((int)Math.round(getStrokeWidth()));
+			ip.setLineWidth(Math.round(getStrokeWidth()));
 		if (cornerDiameter>0)
 			(new ShapeRoi(new RoundRectangle2D.Float(x, y, width, height, cornerDiameter, cornerDiameter))).drawPixels(ip);
 		else {
@@ -1212,8 +1161,7 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 			clipboard = null;
 			Undo.setup(Undo.FILTER, imp);
 		}
-		activeOverlayRoi = false;
-	}
+    }
 	
 	public void abortPaste() {
 		clipboard = null;
@@ -1284,16 +1232,8 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 	public Color getFillColor() {
 		return fillColor;
 	}
-	
-	public static void setDefaultFillColor(Color color) {
-		defaultFillColor = color;
-	}
-	
-	public static Color getDefaultFillColor() {
-		return defaultFillColor;
-	}
-	
-	/** Copy the attributes (outline color, fill color, outline width) 
+
+    /** Copy the attributes (outline color, fill color, outline width)
 		of  'roi2' to the this selection. */
 	public void copyAttributes(Roi roi2) {
 		this. strokeColor = roi2. strokeColor;
@@ -1301,15 +1241,7 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 		this.stroke = roi2.stroke;
 	}
 
-	/**
-	* @deprecated
-	* replaced by setStrokeColor()
-	*/
-	public void setInstanceColor(Color c) {
-		 strokeColor = c;
-	}
-
-	/**
+    /**
 	* @deprecated
 	* replaced by setStrokeWidth(int)
 	*/
@@ -1419,18 +1351,8 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 	public int getCornerDiameter() {
 		return cornerDiameter;
 	}
-	
-	/** Obsolete; replaced by setCornerDiameter(). */
-	public void setRoundRectArcSize(int cornerDiameter) {
-		setCornerDiameter(cornerDiameter);
-	}
 
-	/** Obsolete; replaced by getCornerDiameter(). */
-	public int getRoundRectArcSize() {
-		return cornerDiameter;
-	}
-
-	/** Sets the stack position (image number) of this ROI. In an overlay, this
+    /** Sets the stack position (image number) of this ROI. In an overlay, this
 	* ROI is only displayed when the stack is at the specified position.
 	* Set to zero to have the ROI displayed on all images in the stack.
 	* @see ij.gui.Overlay
@@ -1582,26 +1504,14 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 		this.ignoreClipRect = ignoreClipRect;
 	}
 
-	public final boolean isActiveOverlayRoi() {
-		if (imp==null)
-			return false;
-		Overlay overlay = imp.getOverlay();
-		if (overlay!=null && overlay.contains(this))
-			return true;
-		ImageCanvas ic = imp.getCanvas();
-		overlay = ic!=null?ic.getShowAllList():null; // ROI Manager overlay
-		return overlay!=null && overlay.contains(this);
-	}
-
     /** Checks whether two rectangles are equal. */
     public boolean equals(Object obj) {
 		if (obj instanceof Roi) {
 			Roi roi2 = (Roi)obj;
 			if (type!=roi2.getType()) return false;
 			if (!getBounds().equals(roi2.getBounds())) return false;
-			if (getLength()!=roi2.getLength()) return false;
-			return true;
-		} else
+            return !(getLength() != roi2.getLength());
+        } else
 			return false;
     }
 
@@ -1649,11 +1559,7 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 		return ("Roi["+getTypeAsString()+", x="+x+", y="+y+", width="+width+", height="+height+"]");
 	}
 
-	/** Deprecated */
-	public void temporarilyHide() {
-	}
-	
-	public void mouseDragged(MouseEvent e) {
+    public void mouseDragged(MouseEvent e) {
 		handleMouseDrag(e.getX(), e.getY(), e.getModifiers());
 	}
 	

@@ -2,7 +2,6 @@ package ij.io;
 import ij.util.Tools;
 import java.io.*;
 import java.util.*;
-import java.net.*;
 
 /**
 Decodes single and multi-image TIFF files. The LZW decompression
@@ -42,15 +41,12 @@ public class TiffDecoder {
 	public static final int NIH_IMAGE_HDR = 43314;
 	public static final int META_DATA_BYTE_COUNTS = 50838; // private tag registered with Adobe
 	public static final int META_DATA = 50839; // private tag registered with Adobe
-	
-	//constants
-	static final int UNSIGNED = 1;
+
 	static final int SIGNED = 2;
 	static final int FLOATING_POINT = 3;
 
 	//field types
 	static final int SHORT = 3;
-	static final int LONG = 4;
 
 	// metadata types
 	static final int MAGIC_NUMBER = 0x494a494a;  // "IJIJ"
@@ -506,7 +502,7 @@ public class TiffDecoder {
 						fi.compression = FileInfo.LZW_WITH_DIFFERENCING;
 					break;
 				case COLOR_MAP: 
-					if (count==768 && fi.fileType==fi.GRAY8)
+					if (count==768 && fi.fileType== FileInfo.GRAY8)
 						getColorMap(lvalue, fi);
 					break;
 				case TILE_WIDTH:
@@ -566,7 +562,7 @@ public class TiffDecoder {
 						return null;
 			}
 		}
-		fi.fileFormat = fi.TIFF;
+		fi.fileFormat = FileInfo.TIFF;
 		fi.fileName = name;
 		fi.directory = directory;
 		if (url!=null)
@@ -769,7 +765,7 @@ public class TiffDecoder {
 			return null;
 		} else {
 			FileInfo[] fi = new FileInfo[info.size()];
-			info.copyInto((Object[])fi);
+			info.copyInto(fi);
 			if (debugMode) fi[0].debugInfo = dInfo;
 			if (url!=null) {
 				in.seek(0);

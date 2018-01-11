@@ -81,13 +81,8 @@ public class SyncWindows extends PlugInFrame implements
 	private static Point location;
 	
 	//--------------------------------------------------
-	/** Create window sync frame. Frame is shown via call to show() or
-		by invoking run method.	 */
-	public SyncWindows() {
-		this("Synchronize Windows");
-	}
 
-	public SyncWindows(String s) {
+    public SyncWindows(String s) {
 		super(s);
 		ijInstance = IJ.getInstance();
 		if (instance!=null) {
@@ -715,14 +710,14 @@ public class SyncWindows extends PlugInFrame implements
 
 			wList.addItemListener(this);
 			wList.addActionListener(this);
-			return (Component)wList;
+			return wList;
 		}
 		else {
 			Label label = new Label("No windows to select.");
 			wList = null;
 			vListMap = null;
 			vwins = null;
-			return (Component)label;
+			return label;
 		}
 	}
 
@@ -946,44 +941,9 @@ public class SyncWindows extends PlugInFrame implements
 		ImagePlus imp;
 		imp = WindowManager.getImage(((Integer)vwins.elementAt(n)).intValue());
 		return imp;
-	}	 
-	
-	/** Get the title of image n from Windows-Vector vwins. If the image ends with
-	 *	.tif, the extension is removed. */
-	public String getImageTitleFromVector(int n) {
-		if (vwins == null || n<0 || vwins.size() < n+1) return "";
-
-		ImagePlus imp;
-		imp = WindowManager.getImage(((Integer)vwins.elementAt(n)).intValue());
-		String title = imp.getTitle();
-		if (title.length()>=4 && (title.substring(title.length()-4)).equalsIgnoreCase(".tif")) {
-			title = title.substring(0, title.length()-4);
-		} else if (title.length()>=5 && (title.substring(title.length()-5)).equalsIgnoreCase(".tiff")) {
-			title = title.substring(0, title.length()-5);
-		}		 
-		return title;
 	}
 
-/** Get index of "image" in vector of synchronized windows, if image is in vector.
- * Else return -1. 
- */	   
-	public int getIndexOfImage(ImagePlus image) {
-		int index = -1;
-		ImagePlus imp;
-		if (vwins == null || vwins.size() == 0) 
-			return index;
-			
-		for (int n=0; n<vwins.size(); n++){
-			imp = WindowManager.getImage(((Integer)vwins.elementAt(n)).intValue());
-			if (imp == image) {
-				index = n;
-				break;
-			}
-		}
-		return index;
-	}
-
-	// --------------------------------------------------
+    // --------------------------------------------------
 	/** Get Screen Coordinates for ImageCanvas ic matching
 	 *	the OffScreen Coordinates of the current ImageCanvas.
 	 *	(srcRect and magnification stored after each received event.)
@@ -1043,7 +1003,6 @@ public class SyncWindows extends PlugInFrame implements
  *	*/
 interface DisplayChangeListener extends java.util.EventListener {
 
-	public void displayChanged(DisplayChangeEvent e);
 }
 
 
@@ -1056,15 +1015,8 @@ interface DisplayChangeListener extends java.util.EventListener {
 /** To be raised when a property of the image display has been changed */
 class DisplayChangeEvent extends EventObject {
 
-/** Type of change in display:
- *	Coordinate X, Y, Z, the Zoom, time, color channel.
- *	So far there is no need for properties other than Z.
- */
-	public static final int X = 1;
-	public static final int Y = 2;
-	public static final int Z = 3;
-	public static final int ZOOM = 4;
-	public static final int T = 5;
+    public static final int Z = 3;
+    public static final int T = 5;
 	public static final int CHANNEL = 6;
 
 	private int type;
@@ -1080,16 +1032,8 @@ class DisplayChangeEvent extends EventObject {
 		return type;
 	}
 
-	public void setType(int type) {
-		this.type = type;
-	}
-
-	public int getValue() {
+    public int getValue() {
 		return value;
-	}
-
-	public void setValue(int value) {
-		this.value = value;
 	}
 
 }
@@ -1147,38 +1091,6 @@ class DisplayChangeEvent extends EventObject {
 
 class IJEventMulticaster extends AWTEventMulticaster implements DisplayChangeListener {
 
-	IJEventMulticaster(EventListener a, EventListener b) {
-		super(a,b);
-	}
-
-	/**
-	 * Handles the DisplayChange event by invoking the
-	 * displayChanged methods on listener-a and listener-b.
-	 * @param e the DisplayChange event
-	 */
-
-	public void displayChanged(DisplayChangeEvent e) {
-		((DisplayChangeListener)a).displayChanged(e);
-		((DisplayChangeListener)b).displayChanged(e);
-	}
-	/**
-	 * Adds DisplayChange-listener-a with DisplayChange-listener-b and
-	 * returns the resulting multicast listener.
-	 * @param a DisplayChange-listener-a
-	 * @param b DisplayChange-listener-b
-	 */
-	public static DisplayChangeListener add(DisplayChangeListener a, DisplayChangeListener b) {
-		return (DisplayChangeListener)addInternal(a, b);
-	}
-	/**
-	 * Removes the old DisplayChange-listener from DisplayChange-listener-l and
-	 * returns the resulting multicast listener.
-	 * @param l DisplayChange-listener-l
-	 * @param oldl the DisplayChange-listener being removed
-	 */
-	public static DisplayChangeListener remove(DisplayChangeListener l, DisplayChangeListener oldl) {
-		return (DisplayChangeListener)removeInternal(l, oldl);
-	}
 }
 
 

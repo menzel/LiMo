@@ -3,7 +3,6 @@ import ij.gui.*;
 import ij.process.*;
 import ij.text.*;
 import ij.io.*;
-import ij.plugin.*;
 import ij.plugin.filter.*;
 import ij.util.Tools;
 import ij.plugin.frame.Recorder;
@@ -18,7 +17,6 @@ import java.util.*;
 import java.awt.*;	
 import java.applet.Applet;
 import java.io.*;
-import java.lang.reflect.*;
 import java.net.*;
 
 
@@ -40,8 +38,16 @@ public class IJ {
 	private static ProgressBar progressBar;
 	private static TextPanel textPanel;
 	private static String osname, osarch;
-	private static boolean isMac, isWin, isJava2, isJava14, isJava15, isJava16, isJava17, isLinux, isVista, is64Bit;
-	private static boolean controlDown, altDown, spaceDown, shiftDown;
+	private static boolean isMac;
+    private static boolean isWin;
+    private static boolean isJava2;
+    private static boolean isJava14;
+    private static boolean isJava15;
+    private static boolean isJava16;
+    private static boolean isJava17;
+    private static boolean isLinux;
+    private static boolean isVista;
+    private static boolean controlDown, altDown, spaceDown, shiftDown;
 	private static boolean macroRunning;
 	private static Thread previousThread;
 	private static TextPanel logPanel;
@@ -204,18 +210,8 @@ public class IJ {
  			redirectErrorMessages = false;
 		suppressPluginNotFoundError = false;
 		return thePlugIn;
-	} 
-
-	static void wrongType(int capabilities, String cmd) {
-		String s = "\""+cmd+"\" requires an image of type:\n \n";
-		if ((capabilities&PlugInFilter.DOES_8G)!=0) s +=  "    8-bit grayscale\n";
-		if ((capabilities&PlugInFilter.DOES_8C)!=0) s +=  "    8-bit color\n";
-		if ((capabilities&PlugInFilter.DOES_16)!=0) s +=  "    16-bit grayscale\n";
-		if ((capabilities&PlugInFilter.DOES_32)!=0) s +=  "    32-bit (float) grayscale\n";
-		if ((capabilities&PlugInFilter.DOES_RGB)!=0) s += "    RGB color\n";
-		error(s);
 	}
-	
+
     /** Starts executing a menu command in a separete thread and returns immediately. */
 	public static void doCommand(String command) {
 		if (ij!=null)
@@ -337,7 +333,7 @@ public class IJ {
 		ImagePlus imp = WindowManager.getCurrentImage();
 		ImageCanvas ic = imp!=null?imp.getCanvas():null;
 		if (ic!=null)
-			ic.setShowCursorStatus(s.length()==0?true:false);
+			ic.setShowCursorStatus(s.length() == 0);
 	}
 
 	/**
@@ -541,13 +537,7 @@ public class IJ {
 		}
 	}
 
-	/** Displays a message in a dialog box titled "Message".
-		Writes the Java console if ImageJ is not present. */
-	public static void showMessage(String msg) {
-		showMessage("Message", msg);
-	}
-
-	/** Displays a message in a dialog box with the specified title.
+    /** Displays a message in a dialog box with the specified title.
 		Displays HTML formatted text if 'msg' starts with "<html>".
 		There are examples at
 		"http://imagej.nih.gov/ij/macros/HtmlDialogDemo.txt".
@@ -605,24 +595,7 @@ public class IJ {
 
 	public static final int CANCELED = Integer.MIN_VALUE;
 
-	/** Allows the user to enter a number in a dialog box. Returns the	
-	    value IJ.CANCELED (-2,147,483,648) if the user cancels the dialog box. 
-	    Returns 'defaultValue' if the user enters an invalid number. */
-	public static double getNumber(String prompt, double defaultValue) {
-		GenericDialog gd = new GenericDialog("");
-		int decimalPlaces = (int)defaultValue==defaultValue?0:2;
-		gd.addNumericField(prompt, defaultValue, decimalPlaces);
-		gd.showDialog();
-		if (gd.wasCanceled())
-			return CANCELED;
-		double v = gd.getNextNumber();
-		if (gd.invalidNumber())
-			return defaultValue;
-		else
-			return v;
-	}
-
-	/** Allows the user to enter a string in a dialog box. Returns
+    /** Allows the user to enter a string in a dialog box. Returns
 	    "" if the user cancels the dialog box. */
 	public static String getString(String prompt, String defaultString) {
 		GenericDialog gd = new GenericDialog("");
@@ -696,17 +669,8 @@ public class IJ {
 			str2 = ", "+d2s(rate/1000000.0,1)+" million pixels/second";
 		showStatus(str+seconds+" seconds"+str2);
 	}
-	
-	/** Experimental */
-	public static  String time(ImagePlus imp, long startNanoTime) {
-		double planes = imp.getStackSize();
-		double seconds = (System.nanoTime()-startNanoTime)/1000000000.0;
-		double mpixels = imp.getWidth()*imp.getHeight()*planes/1000000.0;
-		String time = seconds<1.0?d2s(seconds*1000.0,0)+" ms":d2s(seconds,1)+" seconds";
-		return time+", "+d2s(mpixels/seconds,1)+" million pixels/second";
-	}
-		
-	/** Converts a number to a formatted string using
+
+    /** Converts a number to a formatted string using
 		2 digits to the right of the decimal point. */
 	public static String d2s(double n) {
 		return d2s(n, 2);
@@ -885,13 +849,8 @@ public class IJ {
 	public static boolean isWindows() {
 		return isWin;
 	}
-	
-	/** Always returns true. */
-	public static boolean isJava2() {
-		return isJava2;
-	}
-	
-	/** Returns true if ImageJ is running on a Java 1.4 or greater JVM. */
+
+    /** Returns true if ImageJ is running on a Java 1.4 or greater JVM. */
 	public static boolean isJava14() {
 		return isJava14;
 	}
@@ -906,12 +865,7 @@ public class IJ {
 		return isJava16;
 	}
 
-	/** Returns true if ImageJ is running on a Java 1.7 or greater JVM. */
-	public static boolean isJava17() {
-		return isJava17;
-	}
-
-	/** Returns true if ImageJ is running on Linux. */
+    /** Returns true if ImageJ is running on Linux. */
 	public static boolean isLinux() {
 		return isLinux;
 	}
@@ -1010,13 +964,8 @@ public class IJ {
 			img.setRoi(new OvalRoi(x, y, width, height));
 		}
 	}
-	
-	/** Creates a straight line selection. */
-	public static void makeLine(int x1, int y1, int x2, int y2) {
-		getImage().setRoi(new Line(x1, y1, x2, y2));
-	}
-	
-	/** Creates a straight line selection using floating point coordinates. */
+
+    /** Creates a straight line selection using floating point coordinates. */
 	public static void makeLine(double x1, double y1, double x2, double y2) {
 		getImage().setRoi(new Line(x1, y1, x2, y2));
 	}
@@ -1037,17 +986,7 @@ public class IJ {
 			img.setRoi(new PointRoi(x, y));
 	}
 
-	/** Sets the display range (minimum and maximum displayed pixel values) of the current image. */
-	public static void setMinAndMax(double min, double max) {
-		setMinAndMax(getImage(), min, max, 7);
-	}
-
-	/** Sets the display range (minimum and maximum displayed pixel values) of the specified image. */
-	public static void setMinAndMax(ImagePlus img, double min, double max) {
-		setMinAndMax(img, min, max, 7);
-	}
-
-	/** Sets the minimum and maximum displayed pixel values on the specified RGB
+    /** Sets the minimum and maximum displayed pixel values on the specified RGB
 	channels, where 4=red, 2=green and 1=blue. */
 	public static void setMinAndMax(double min, double max, int channels) {
 		setMinAndMax(getImage(), min, max, channels);
@@ -1077,26 +1016,13 @@ public class IJ {
 		img.updateAndDraw();
 	}
 
-	/** Sets the lower and upper threshold levels and displays the image 
-		using red to highlight thresholded pixels. May not work correctly on
-		16 and 32 bit images unless the display range has been reset using IJ.resetMinAndMax().
-	*/
-	public static void setThreshold(double lowerThreshold, double upperThresold) {
-		setThreshold(lowerThreshold, upperThresold, null);
-	}
-	
-	/** Sets the lower and upper threshold levels and displays the image using
+    /** Sets the lower and upper threshold levels and displays the image using
 		the specified <code>displayMode</code> ("Red", "Black & White", "Over/Under" or "No Update"). */
 	public static void setThreshold(double lowerThreshold, double upperThreshold, String displayMode) {
 		setThreshold(getImage(), lowerThreshold, upperThreshold, displayMode);
 	}
 
-	/** Sets the lower and upper threshold levels of the specified image. */
-	public static void setThreshold(ImagePlus img, double lowerThreshold, double upperThreshold) {
-		setThreshold(img, lowerThreshold, upperThreshold, "Red");
-	}
-
-	/** Sets the lower and upper threshold levels of the specified image and updates the display using
+    /** Sets the lower and upper threshold levels of the specified image and updates the display using
 		the specified <code>displayMode</code> ("Red", "Black & White", "Over/Under" or "No Update"). */
 	public static void setThreshold(ImagePlus img, double lowerThreshold, double upperThreshold, String displayMode) {
 		int mode = ImageProcessor.RED_LUT;
@@ -1304,13 +1230,7 @@ public class IJ {
 		return Toolbar.getToolName();
 	}
 
-	/** Equivalent to clicking on the current image at (x,y) with the
-		wand tool. Returns the number of points in the resulting ROI. */
-	public static int doWand(int x, int y) {
-		return doWand(getImage(), x, y, 0, null);
-	}
-
-	/** Traces the boundary of the area with pixel values within
+    /** Traces the boundary of the area with pixel values within
 	* 'tolerance' of the value of the pixel at the starting location.
 	* 'tolerance' is in uncalibrated units.
 	* 'mode' can be "4-connected", "8-connected" or "Legacy".
@@ -1399,36 +1319,13 @@ public class IJ {
 		}
 		return img;
 	}
-	
-	/** Returns the active image or stack slice as an ImageProcessor, or displays
-		an error message and aborts the plugin or macro if no images are open. */
-	public static ImageProcessor getProcessor() {
-		ImagePlus imp = IJ.getImage();
-		return imp.getProcessor();
-	}
 
-	/** Switches to the specified stack slice, where 1<='slice'<=stack-size. */
-	public static void setSlice(int slice) {
-		getImage().setSlice(slice);
-	}
-
-	/** Returns the ImageJ version number as a string. */
+    /** Returns the ImageJ version number as a string. */
 	public static String getVersion() {
 		return ImageJ.VERSION;
 	}
-	
-	/** Returns the ImageJ version and build number as a String, for 
-		example "1.46n05", or 1.46n99 if there is no build number. */
-	public static String getFullVersion() {
-		String build = ImageJ.BUILD;
-		if (build.length()==0)
-			build = "99";
-		else if (build.length()==1)
-			build = "0" + build;
-		return ImageJ.VERSION+build;
-	}
 
-	/** Returns the path to the home ("user.home"), startup, ImageJ, plugins, macros, 
+    /** Returns the path to the home ("user.home"), startup, ImageJ, plugins, macros,
 		luts, temp, current or image directory if <code>title</code> is "home", "startup", 
 		"imagej", "plugins", "macros", "luts", "temp", "current" or "image", otherwise, 
 		displays a dialog and returns the path to the directory selected by the user. 
@@ -1529,12 +1426,7 @@ public class IJ {
 		return (new Opener()).openImage(path, n);
 	}
 
-	/** Opens an image using a file open dialog and returns it as an ImagePlus object. */
-	public static ImagePlus openImage() {
-		return openImage(null);
-	}
-
-	/** Opens a URL and returns the contents as a string.
+    /** Opens a URL and returns the contents as a string.
 		Returns "<Error: message>" if there an error, including
 		host or file not found. */
 	public static String openUrlAsString(String url) {
@@ -1805,12 +1697,7 @@ public class IJ {
 		return redirectErrorMessages || redirectErrorMessages2;
 	}
 
-	/** Temporarily suppress "plugin not found" errors. */
-	public static void suppressPluginNotFoundError() {
-		suppressPluginNotFoundError = true;
-	}
-
-	/** Returns the class loader ImageJ uses to run plugins or the
+    /** Returns the class loader ImageJ uses to run plugins or the
 		system class loader if Menus.getPlugInsPath() returns null. */
 	public static ClassLoader getClassLoader() {
 		if (classLoader==null) {
@@ -1879,27 +1766,12 @@ public class IJ {
 			log(s);
 	}
 
-	/** Installs a custom exception handler that 
-		overrides the handleException() method. */
-	public static void setExceptionHandler(ExceptionHandler handler) {
-		exceptionHandler = handler;
-	}
-
-	public interface ExceptionHandler {
-		public void handle(Throwable e);
-	}
+    public interface ExceptionHandler {
+    }
 
 	static ExceptionHandler exceptionHandler;
 
-	public static void addEventListener(IJEventListener listener) {
-		eventListeners.addElement(listener);
-	}
-	
-	public static void removeEventListener(IJEventListener listener) {
-		eventListeners.removeElement(listener);
-	}
-	
-	public static void notifyEventListeners(int eventID) {
+    public static void notifyEventListeners(int eventID) {
 		synchronized (eventListeners) {
 			for (int i=0; i<eventListeners.size(); i++) {
 				IJEventListener listener = (IJEventListener)eventListeners.elementAt(i);

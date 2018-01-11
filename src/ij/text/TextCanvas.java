@@ -1,7 +1,6 @@
 package ij.text;
 import ij.util.Java2;
 import java.awt.*;
-import java.awt.event.*;
 
 class TextCanvas extends Canvas {
 
@@ -150,8 +149,8 @@ class TextCanvas extends Canvas {
 	    	start++;
 	    	if (start>=length)
 	    		return null;
-	    };
-	    if (start<0 || start>=chars.length) {
+	    }
+        if (start<0 || start>=chars.length) {
 			System.out.println("start="+start+", chars.length="+chars.length);	    	
 	    	return null;
 	    }

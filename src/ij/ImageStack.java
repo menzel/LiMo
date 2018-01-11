@@ -105,25 +105,8 @@ public class ImageStack {
 		}
 		addSlice(sliceLabel, ip.getPixels());
 	}
-	
-	/** Adds the image in 'ip' to the stack following slice 'n'. Adds
-		the slice to the beginning of the stack if 'n' is zero. */
-	public void addSlice(String sliceLabel, ImageProcessor ip, int n) {
-		if (n<0 || n>nSlices)
-			throw new IllegalArgumentException(outOfRange+n);
-		addSlice(sliceLabel, ip);
-		Object tempSlice = stack[nSlices-1];
-		String tempLabel = label[nSlices-1];
-		int first = n>0?n:1;
-		for (int i=nSlices-1; i>=first; i--) {
-			stack[i] = stack[i-1];
-			label[i] = label[i-1];
-		}
-		stack[n] = tempSlice;
-		label[n] = tempLabel;
-	}
-	
-	/** Deletes the specified slice, were 1<=n<=nslices. */
+
+    /** Deletes the specified slice, were 1<=n<=nslices. */
 	public void deleteSlice(int n) {
 		if (n<1 || n>nSlices)
 			throw new IllegalArgumentException(outOfRange+n);
@@ -155,15 +138,8 @@ public class ImageStack {
 	public void setRoi(Rectangle roi) {
 		this.roi = roi;
 	}
-	
-	public Rectangle getRoi() {
-		if (roi==null)
-			return new Rectangle(0, 0, width, height);
-		else
-			return(roi);
-	}
-	
-	/** Updates this stack so its attributes, such as min, max,
+
+    /** Updates this stack so its attributes, such as min, max,
 		calibration table and color model, are the same as 'ip'. */
 	public void update(ImageProcessor ip) {
 		if (ip!=null) {
@@ -288,18 +264,12 @@ public class ImageStack {
 	
 	/** Returns true if this is a 3-slice RGB stack. */
 	public boolean isRGB() {
-    	if (nSlices==3 && (stack[0] instanceof byte[]) && getSliceLabel(1)!=null && getSliceLabel(1).equals("Red"))	
-			return true;
-		else
-			return false;
+        return nSlices == 3 && (stack[0] instanceof byte[]) && getSliceLabel(1) != null && getSliceLabel(1).equals("Red");
 	}
 	
 	/** Returns true if this is a 3-slice HSB stack. */
 	public boolean isHSB() {
-    	if (nSlices==3 && getSliceLabel(1)!=null && getSliceLabel(1).equals("Hue"))	
-			return true;
-		else
-			return false;
+        return nSlices == 3 && getSliceLabel(1) != null && getSliceLabel(1).equals("Hue");
 	}
 
 	/** Returns true if this is a virtual (disk resident) stack. 
@@ -420,32 +390,7 @@ public class ImageStack {
 		return voxels;
 	}
 
-	/** Experimental */
-	public float[] getVoxels(int x0, int y0, int z0, int w, int h, int d, float[] voxels, int channel) {
-		if (getBitDepth()!=24)
-			return getVoxels(x0, y0, z0, w, h, d, voxels);
-		boolean inBounds = x0>=0 && x0+w<=width && y0>=0 && y0+h<=height && z0>=0 && z0+d<=nSlices;
-		if (voxels==null || voxels.length!=w*h*d)
-			voxels = new float[w*h*d];
-		int i = 0;
-		for (int z=z0; z<z0+d; z++) {
-			int[] ints = (int[])stack[z];
-			for (int y=y0; y<y0+h; y++) {
-				for (int x=x0; x<x0+w; x++) {
-					int value = inBounds?ints[y*width+x]&0xffffffff:(int)getVoxel(x, y, z);
-					switch (channel) {
-						case 0: value=(value&0xff0000)>>16; break;
-						case 1: value=(value&0xff00)>>8; break;
-						case 2: value=value&0xff;; break;
-					}
-					voxels[i++] = (float)value;
-				}
-			}
-		}
-		return voxels;
-	}
-
-	/** Experimental */
+    /** Experimental */
 	public void setVoxels(int x0, int y0, int z0, int w, int h, int d, float[] voxels) {
 		boolean inBounds = x0>=0 && x0+w<=width && y0>=0 && y0+h<=height && z0>=0 && z0+d<=nSlices;
 		if (voxels==null || voxels.length!=w*h*d)
@@ -500,60 +445,9 @@ public class ImageStack {
 			}
 		}
 	}
-	
-	/** Experimental */
-	public void setVoxels(int x0, int y0, int z0, int w, int h, int d, float[] voxels, int channel) {
-		if (getBitDepth()!=24) {
-			setVoxels(x0, y0, z0, w, h, d, voxels);
-			return;
-		}
-		boolean inBounds = x0>=0 && x0+w<=width && y0>=0 && y0+h<=height && z0>=0 && z0+d<=nSlices;
-		if (voxels==null || voxels.length!=w*h*d)
-			;
-		int i = 0;
-		for (int z=z0; z<z0+d; z++) {
-			int[] ints = (int[])stack[z];
-			for (int y=y0; y<y0+h; y++) {
-				for (int x=x0; x<x0+w; x++) {
-					int value = inBounds?ints[y*width+x]&0xffffffff:(int)getVoxel(x, y, z);
-					int color = (int)voxels[i++];
-					switch (channel) {
-						case 0: value=(value&0xff00ffff) | ((color&0xff)<<16); break;
-						case 1: value=(value&0xffff00ff) | ((color&0xff)<<8); break;
-						case 2: value=(value&0xffffff00) | (color&0xff); break;
-					}
-					if (inBounds)
-						ints[y*width+x] = value;
-					else
-						setVoxel(x, y, z, value);
-				}
-			}
-		}
-	}
 
-	/** Experimental */
-	public void drawSphere(double radius, int xc, int yc, int zc) {
-		int diameter = (int)Math.round(radius*2);
-	    double r = radius;
-		int xmin=(int)(xc-r+0.5), ymin=(int)(yc-r+0.5), zmin=(int)(zc-r+0.5);
-		int xmax=xmin+diameter, ymax=ymin+diameter, zmax=zmin+diameter;
-		double r2 = r*r;
-		r -= 0.5;
-		double xoffset=xmin+r, yoffset=ymin+r, zoffset=zmin+r;
-		double xx, yy, zz;
-		for (int x=xmin; x<xmax; x++) {
-			for (int y=ymin; y<ymax; y++) {
-				for (int z=zmin; z<zmax; z++) {
-					xx = x-xoffset; yy = y-yoffset;  zz = z-zoffset;
-					if (xx*xx+yy*yy+zz*zz<=r2)
-						setVoxel(x, y, z, 255);
-				}
-			}
-		}
-	}
 
-	
-	/** Returns the bit depth (8=byte, 16=short, 24=RGB, 32=float). */
+    /** Returns the bit depth (8=byte, 16=short, 24=RGB, 32=float). */
 	public int getBitDepth() {
 		switch (type) {
 			case BYTE: return 8;
@@ -562,21 +456,6 @@ public class ImageStack {
 			case RGB: return 24;
 		}
 		return 0;
-	}
-
-	/**
-	 * @return the stack
-	 */
-	public Object[] getStack() {
-		return stack;
-	}
-	/**
-	 * returns one element from the stack
-	 * @param n - number of element to be returned
-	 * @return object from the stack
-	 */
-	public Object getStackN(int n){
-		return stack[n];
 	}
 
 }

@@ -14,7 +14,6 @@ public class ProfilePlot {
 	static final int MIN_WIDTH = 350;
 	static final double ASPECT_RATIO = 0.5;
 	private double min, max;
-	private boolean minAndMaxCalculated;
     private static double fixedMin = Prefs.getDouble("pp.min",0.0);
     private static double fixedMax = Prefs.getDouble("pp.max",0.0);
     
@@ -55,7 +54,7 @@ public class ProfilePlot {
 		if (roiType==Roi.LINE)
 			profile = getStraightLineProfile(roi, cal, ip);
 		else if (roiType==Roi.POLYLINE || roiType==Roi.FREELINE) {
-			int lineWidth = (int)Math.round(roi.getStrokeWidth());
+			int lineWidth = Math.round(roi.getStrokeWidth());
 			if (lineWidth<=1)
 				profile = getIrregularProfile(roi, ip, cal);
 			else
@@ -141,22 +140,8 @@ public class ProfilePlot {
 	public double[] getProfile() {
 		return profile;
 	}
-	
-	/** Returns the calculated minimum value. */
-	public double getMin() {
-		if (!minAndMaxCalculated)
-			findMinAndMax();
-		return min;
-	}
-	
-	/** Returns the calculated maximum value. */
-	public double getMax() {
-		if (!minAndMaxCalculated)
-			findMinAndMax();
-		return max;
-	}
-	
-	/** Sets the y-axis min and max. Specify (0,0) to autoscale. */
+
+    /** Sets the y-axis min and max. Specify (0,0) to autoscale. */
 	public static void setMinAndMax(double min, double max) {
 		fixedMin = min;
 		fixedMax = max;

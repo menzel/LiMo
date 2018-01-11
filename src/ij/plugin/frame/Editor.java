@@ -7,10 +7,8 @@ import java.awt.datatransfer.*;
 
 import ij.*;
 import ij.gui.*;
-import ij.util.Tools;
 import ij.text.*;
 import ij.macro.*;
-import ij.plugin.NewPlugin;
 import ij.io.SaveDialog;
 
 /** This is a simple TextArea based editor for editing and compiling plugins. */
@@ -39,7 +37,8 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 
 	public static String JS_NOT_FOUND = 
 		"JavaScript.jar was not found in the plugins\nfolder. It can be downloaded from:\n \n"+IJ.URL+"/download/tools/JavaScript.jar";
-	public static final int MAX_SIZE=28000, XINC=10, YINC=18;
+	public static final int XINC=10;
+	public static final int YINC=18;
 	public static final int MONOSPACED=1, MENU_BAR=2;
 	public static final int MACROS_MENU_ITEMS = 8;
 	static final String FONT_SIZE = "editor.font.size";
@@ -54,19 +53,13 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 	private static int lineNumber = 1;
 	private static int xoffset, yoffset;
 	private static int nWindows;
-	private Menu fileMenu, editMenu;
+	private Menu fileMenu;
 	private Properties p = new Properties();
-	private int[] macroStarts;
-	private String[] macroNames;
 	private MenuBar mb;
 	private Menu macrosMenu;
-	private int nMacros;
-	private Program pgm;
 	private int eventCount;
-	private String shortcutsInUse;
-	private int inUseCount;
 	private MacroInstaller installer;
-	private static String defaultDir = Prefs.get(DEFAULT_DIR, null);;
+	private static String defaultDir = Prefs.get(DEFAULT_DIR, null);
 	private boolean dontShowWindow;
     private int[] sizes = {9, 10, 11, 12, 13, 14, 16, 18, 20, 24, 36, 48, 60, 72};
     private int fontSize = (int)Prefs.get(FONT_SIZE, 6); // defaults to 16-point
@@ -149,7 +142,6 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 		m.add(new MenuItem("Copy to Image Info"));
 		m.addActionListener(this);
 		mb.add(m);
-		editMenu = m;
 		if ((options&MENU_BAR)!=0)
 			setMenuBar(mb);
 		
@@ -287,17 +279,6 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 
 	public TextArea getTextArea() {
 		return ta;
-	}
-
-	public void display(String title, String text) {
-		ta.selectAll();
-		ta.replaceRange(text, ta.getSelectionStart(), ta.getSelectionEnd());
-		ta.setCaretPosition(0);
-		setWindowTitle(title);
-		changes = false;
-		if (IJ.getInstance()!=null)
-			show();
-		WindowManager.setWindow(this);
 	}
 
 	void save() {
@@ -665,7 +646,7 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 			step = true;
 			Interpreter interp = Interpreter.getInstance();
 			if (interp!=null && interp.getEditor()==this) {
-				interp.abort();
+				Interpreter.abort();
 				IJ.wait(100);
 			}
 			int start = ta.getSelectionStart();
@@ -820,8 +801,7 @@ public class Editor extends PlugInFrame implements ActionListener, ItemListener,
 		char c = index==0?' ':text.charAt(index-1);
 		if (Character.isLetterOrDigit(c) || c=='_') return false;
 		c = index+word.length()>=text.length()?' ':text.charAt(index+word.length());
-		if (Character.isLetterOrDigit(c) || c=='_') return false;
-		return true;
+		return !Character.isLetterOrDigit(c) && c != '_';
 	}
 	
 	void gotoLine() {

@@ -26,24 +26,11 @@ public class TextRoi extends Roi {
 	private int justification;
 	private boolean antialiased = antialiasedText;
 	private static boolean recordSetFont = true;
-	private double previousMag;
-	private boolean firstChar = true;
+    private boolean firstChar = true;
 	private boolean firstMouseUp = true;
 	private int cline = 0;
 
-	/** Creates a TextRoi.*/
-	public TextRoi(int x, int y, String text) {
-		super(x, y, 1, 1);
-		init(text, null);
-	}
-	
-	/** Creates a TextRoi using sub-pixel coordinates.*/
-	public TextRoi(double x, double y, String text) {
-		super(x, y, 1.0, 1.0);
-		init(text, null);
-	}
-
-	/** Creates a TextRoi with the specified location and Font.
+    /** Creates a TextRoi with the specified location and Font.
 	 * @see ij.gui.Roi#setStrokeColor
 	 * @see ij.gui.Roi#setNonScalable
 	 * @see ij.ImagePlus#setOverlay(ij.gui.Overlay)
@@ -297,13 +284,8 @@ public class TextRoi extends Roi {
 	public void setAntialiased(boolean antialiased) {
 		this.antialiased = antialiased;
 	}
-	
-	/** Returns the state of the 'antialiased' instance variable. */
-	public boolean getAntialiased() {
-		return antialiased;
-	}
 
-	/** Sets the 'justification' instance variable (must be LEFT, CENTER or RIGHT) */
+    /** Sets the 'justification' instance variable (must be LEFT, CENTER or RIGHT) */
 	public static void setGlobalJustification(int justification) {
 		if (justification<0 || justification>RIGHT)
 			justification = LEFT;
@@ -335,13 +317,7 @@ public class TextRoi extends Roi {
 		return justification;
 	}
 
-	/** Sets the global font face, size and style that will be used by
-		TextROIs interactively created using the text tool. */
-	public static void setFont(String fontName, int fontSize, int fontStyle) {
-		setFont(fontName, fontSize, fontStyle, true);
-	}
-	
-	/** Sets the font face, size, style and antialiasing mode that will 
+    /** Sets the font face, size, style and antialiasing mode that will
 		be used by TextROIs interactively created using the text tool. */
 	public static void setFont(String fontName, int fontSize, int fontStyle, boolean antialiased) {
 		recordSetFont = true;

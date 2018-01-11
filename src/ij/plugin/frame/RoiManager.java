@@ -12,7 +12,6 @@ import ij.gui.*;
 import ij.io.*;
 import ij.plugin.filter.*;
 import ij.plugin.Colors;
-import ij.plugin.OverlayLabels;
 import ij.util.*;
 import ij.macro.*;
 import ij.measure.*;
@@ -31,11 +30,9 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 	private static String moreButtonLabel = "More "+'\u00bb';
 	private Panel panel;
 	private static Frame instance;
-	private static int colorIndex = 4;
-	private java.awt.List list;
+    private java.awt.List list;
 	private Hashtable rois = new Hashtable();
-	private boolean canceled;
-	private boolean macro;
+    private boolean macro;
 	private boolean ignoreInterrupts;
 	private PopupMenu pm;
 	private Button moreButton, colorButton;
@@ -51,19 +48,8 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 	private Color defaultColor;
 	private boolean firstTime = true;
 	private int[] selectedIndexes;
-	
-	public RoiManager() {
-		super("ROI Manager");
-		if (instance!=null) {
-			WindowManager.toFront(instance);
-			return;
-		}
-		instance = this;
-		list = new List(rows, allowMultipleSelections);
-		showWindow();
-	}
-	
-	public RoiManager(boolean hideWindow) {
+
+    public RoiManager(boolean hideWindow) {
 		super("ROI Manager");
 		list = new List(rows, allowMultipleSelections);
 	}
@@ -296,13 +282,8 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 		else
 			addRoi(false);
 	}
-	
-	/** Adds the specified ROI. */
-	public void addRoi(Roi roi) {
-		addRoi(roi, false, null, -1);
-	}
-	
-	boolean addRoi(boolean promptForName) {
+
+    boolean addRoi(boolean promptForName) {
 		return addRoi(null, promptForName, null, -1);
 	}
 
@@ -378,21 +359,8 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 		if (hex.length()==8) hex = hex.substring(2);
 		return hex;
 	}
-	
-	/** Adds the specified ROI to the list. The third argument ('n') will 
-		be used to form the first part of the ROI label if it is >= 0. */
-	public void add(ImagePlus imp, Roi roi, int n) {
-		if (roi==null) return;
-		String label = roi.getName();
-		if (label==null)
-			label = getLabel(imp, roi, n);
-		if (label==null) return;
-		list.add(label);
-		roi.setName(label);
-		rois.put(label, (Roi)roi.clone());
-	}
 
-	boolean isStandardName(String name) {
+    boolean isStandardName(String name) {
 		if (name==null) return false;
 		boolean isStandard = false;
 		int len = name.length();
@@ -475,11 +443,11 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 			String msg = "Delete all items on the list?";
 			if (replacing)
 				msg = "Replace items on the list?";
-			canceled = false;
-			if (!IJ.isMacro() && !macro) {
+            if (!IJ.isMacro() && !macro) {
 				YesNoCancelDialog d = new YesNoCancelDialog(this, "ROI Manager", msg);
 				if (d.cancelPressed())
-					{canceled = true; return false;}
+					{
+                        return false;}
 				if (!d.yesPressed()) return false;
 			}
 			index = getAllIndexes();
@@ -1169,12 +1137,8 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 		else
 			IJ.doCommand("Flatten"); // run Image>Flatten in separate thread
 	}
-			
-	public boolean getDrawLabels() {
-		return labelsCheckbox.getState();
-	}
 
-	void combine() {
+    void combine() {
 		ImagePlus imp = getImage();
 		if (imp==null) return;
 		int[] indexes = getSelectedIndexes();
@@ -1425,16 +1389,7 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 		}
 	}
 
-	Panel makeButtonPanel(GenericDialog gd) {
-		Panel panel = new Panel();
-		//buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
-		colorButton = new Button("\"Show All\" Color...");
-		colorButton.addActionListener(this);
-		panel.add(colorButton);
-		return panel;
-	}
-	
-	void setShowAllColor() {
+    void setShowAllColor() {
 			ColorChooser cc = new ColorChooser("\"Show All\" Color", ImageCanvas.getShowAllColor(),	 false);
 			ImageCanvas.setShowAllColor(cc.getColor());
 	}
@@ -1582,47 +1537,8 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 		}
 		return array;
 	}
-	
-	/** Returns the selected ROIs as an array, or
-		all the ROIs if none are selected. */
-	public Roi[] getSelectedRoisAsArray() {
-		int[] indexes = getSelectedIndexes();
-		if (indexes.length==0)
-			indexes = getAllIndexes();
-		int n = indexes.length;
-		Roi[] array = new Roi[n];
-		for (int i=0; i<n; i++) {
-			String label = list.getItem(indexes[i]);
-			array[i] = (Roi)rois.get(label);
-		}
-		return array;
-	}
-			
-	/** Returns the name of the ROI with the specified index,
-		or null if the index is out of range. */
-	public String getName(int index) {
-		if (index>=0 && index<list.getItemCount())
-			return	list.getItem(index);
-		else
-			return null;
-	}
 
-	/** Returns the name of the ROI with the specified index.
-		Can be called from a macro using
-		<pre>call("ij.plugin.frame.RoiManager.getName", index)</pre>
-		Returns "null" if the Roi Manager is not open or index is
-		out of range.
-	*/
-	public static String getName(String index) {
-		int i = (int)Tools.parseDouble(index, -1);
-		RoiManager instance = getInstance2();
-		if (instance!=null && i>=0 && i<instance.list.getItemCount())
-			return	instance.list.getItem(i);
-		else
-			return "null";
-	}
-
-	/** Executes the ROI Manager "Add", "Add & Draw", "Update", "Delete", "Measure", "Draw",
+    /** Executes the ROI Manager "Add", "Add & Draw", "Update", "Delete", "Measure", "Draw",
 		"Show All", Show None", "Fill", "Deselect", "Select All", "Combine", "AND", "XOR", "Split",
 		"Sort" or "Multi Measure" command.	Returns false if <code>cmd</code>
 		is not one of these strings. */
@@ -1756,15 +1672,15 @@ public class RoiManager extends PlugInFrame implements ActionListener, ItemListe
 			macro = false;
 			return true;
 		} else if (cmd.equals("associate")) {
-			Prefs.showAllSliceOnly = name.equals("true")?true:false;
+			Prefs.showAllSliceOnly = name.equals("true");
 			macro = false;
 			return true;
 		} else if (cmd.equals("centered")) {
-			restoreCentered = name.equals("true")?true:false;
+			restoreCentered = name.equals("true");
 			macro = false;
 			return true;
 		} else if (cmd.equals("usenames")) {
-			Prefs.useNamesAsLabels = name.equals("true")?true:false;
+			Prefs.useNamesAsLabels = name.equals("true");
 			macro = false;
 			if (labelsCheckbox.getState()) {
 				ImagePlus imp = WindowManager.getCurrentImage();

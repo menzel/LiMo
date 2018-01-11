@@ -12,8 +12,6 @@ import ij.measure.Calibration;
 /** This class is an image that line graphs can be drawn on. */
 public class Plot {
 
-	/** Text justification. */
-	public static final int LEFT=0, CENTER=1, RIGHT=2;
     /** Display points using a circle 5 pixels in diameter. */
 	public static final int CIRCLE = 0;
 	/** Display points using an X-shaped mark. */
@@ -47,9 +45,7 @@ public class Plot {
 	public static final int Y_GRID = 0x20;
 	/** flag for forcing frame to coincide with the grid/ticks in x direction (results in unused space) */
 	public static final int X_FORCE2GRID = 0x40;
-	/** flag for forcing frame to coincide with the grid/ticks in y direction (results in unused space) */
-	public static final int Y_FORCE2GRID = 0x80;
-	/** the default flags */
+    /** the default flags */
 	public static final int DEFAULT_FLAGS =	 X_NUMBERS + Y_NUMBERS + /*X_TICKS + Y_TICKS +*/ X_GRID + Y_GRID; 
 	/** the margin width left of the plot frame (enough for 5-digit numbers such as unscaled 16-bit data*/
 	public static final int LEFT_MARGIN = 60;
@@ -60,9 +56,7 @@ public class Plot {
 	/** the margin width below the plot frame */
 	public static final int BOTTOM_MARGIN = 40;
 
-	private static final int WIDTH = 450;
-	private static final int HEIGHT = 200;
-	private static final int MAX_INTERVALS = 12;	//maximum number of intervals between ticks or grid lines
+    private static final int MAX_INTERVALS = 12;	//maximum number of intervals between ticks or grid lines
 	private static final int MIN_X_GRIDWIDTH = 60;	//minimum distance between grid lines or ticks along x
 	private static final int MIN_Y_GRIDWIDTH = 40;	//minimum distance between grid lines or ticks along y
 	private static final int TICK_LENGTH = 3;		//length of ticks
@@ -77,8 +71,7 @@ public class Plot {
 	double xMin, xMax, yMin, yMax;
 	
 	private double xScale, yScale;
-	private static String defaultDirectory = null;
-	private String xLabel;
+    private String xLabel;
 	private String yLabel;
 	private int flags;
 	private Font font = new Font("Helvetica", Font.PLAIN, 12);
@@ -114,17 +107,7 @@ public class Plot {
 		this(title, xLabel, yLabel, xValues!=null?Tools.toFloat(xValues):null, yValues!=null?Tools.toFloat(yValues):null, DEFAULT_FLAGS);
 	}
 
-	/** This is a constructor that works with JavaScript. */
-	public Plot(String dummy, String title, String xLabel, String yLabel, float[] xValues, float[] yValues) {
-		this(title, xLabel, yLabel, xValues, yValues, DEFAULT_FLAGS);
-	}
-
-	/** This is a version of the constructor with no intial arrays. */
-	public Plot(String title, String xLabel, String yLabel) {
-		this(title, xLabel, yLabel, (float[])null, (float[])null, DEFAULT_FLAGS);
-	}
-
-	/** This version of the constructor has a 'flags' argument for
+    /** This version of the constructor has a 'flags' argument for
 		controlling the appearance of ticks, grid, etc. The default is
 		Plot.X_NUMBERS+Plot.Y_NUMBERS+Plot.X_GRID+Plot.Y_GRID.
 	*/
@@ -155,13 +138,8 @@ public class Plot {
 		nPoints = xValues.length;
 		drawPending = true;
 	}
-	
-	/** This version of the constructor accepts double arrays and has a 'flags' argument. */
-	public Plot(String title, String xLabel, String yLabel, double[] xValues, double[] yValues, int flags) {
-		this(title, xLabel, yLabel, xValues!=null?Tools.toFloat(xValues):null, yValues!=null?Tools.toFloat(yValues):null, flags);
-	}
 
-	/** Sets the x-axis and y-axis range. */
+    /** Sets the x-axis and y-axis range. */
 	public void setLimits(double xMin, double xMax, double yMin, double yMax) {
 		this.xMin = xMin;
 		this.xMax = xMax;
@@ -177,17 +155,7 @@ public class Plot {
 		}
 	}
 
-	/** Sets the canvas size (i.e., size of the resulting ImageProcessor).
-	 * By default, the size is adjusted for the plot frame size specified
-	 * in Edit>Options>Profile Plot Options. */
-	public void setSize(int width, int height) {
-		if (!initialized && width>LEFT_MARGIN+RIGHT_MARGIN+20 && height>TOP_MARGIN+BOTTOM_MARGIN+20) {
-			plotWidth = width-LEFT_MARGIN-RIGHT_MARGIN;
-			plotHeight = height-TOP_MARGIN-BOTTOM_MARGIN;
-		}
-	}
-
-	/** Sets the plot frame size in pixels. */
+    /** Sets the plot frame size in pixels. */
 	public void setFrameSize(int width, int height) {
 			plotWidth = width;
 			plotHeight = height;
@@ -229,13 +197,8 @@ public class Plot {
 	public void addPoints(double[] x, double[] y, int shape) {
 		addPoints(Tools.toFloat(x), Tools.toFloat(y), shape);
 	}
-	
-	/** This a version of addPoints that works with JavaScript. */
-	public void addPoints(String dummy, float[] x, float[] y, int shape) {
-		addPoints(x, y, shape);
-	}
 
-	void drawShape(int shape, int x, int y, int size) {
+    void drawShape(int shape, int x, int y, int size) {
 		int xbase = x-size/2;
 		int ybase = y-size/2;
 		switch(shape) {
@@ -279,13 +242,8 @@ public class Plot {
 	public void addErrorBars(double[] errorBars) {
 		addErrorBars(Tools.toFloat(errorBars));
 	}
-	
-	/** This is a version of addErrorBars that works with JavaScript. */
-	public void addErrorBars(String dummy, float[] errorBars) {
-		addErrorBars(errorBars);
-	}
 
-	/** Draws text at the specified location, where (0,0)
+    /** Draws text at the specified location, where (0,0)
 	 * is the upper left corner of the the plot frame and (1,1) is
 	 * the lower right corner. */
 	public void addLabel(double x, double y, String label) {

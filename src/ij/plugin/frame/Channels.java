@@ -1,6 +1,5 @@
 package ij.plugin.frame;
 import ij.*;
-import ij.plugin.*;
 import ij.gui.*;
 
 import java.awt.*;
@@ -19,7 +18,6 @@ public class Channels extends PlugInFrame implements PlugIn, ItemListener, Actio
 	private Checkbox[] checkbox;
 	private Button moreButton;
 	private static Frame instance;
-	private int id;
 	private static Point location;
 	private PopupMenu pm;
 

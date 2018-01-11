@@ -3,7 +3,6 @@ package ij.process;
 import java.util.*;
 import java.awt.*;
 import java.awt.image.*;
-import ij.gui.*;
 
 /** This is an 32-bit floating-point image and methods that operate on that image. */
 public class FloatProcessor extends ImageProcessor {
@@ -15,12 +14,7 @@ public class FloatProcessor extends ImageProcessor {
 	private float fillColor =  Float.MAX_VALUE;
 	private boolean fixedScale = false;
 
-	/** Creates a new FloatProcessor using the specified pixel array. */
-	public FloatProcessor(int width, int height, float[] pixels) {
-		this(width, height, pixels, null);
-	}
-
-	/** Creates a new FloatProcessor using the specified pixel array and ColorModel. */
+    /** Creates a new FloatProcessor using the specified pixel array and ColorModel. */
 	public FloatProcessor(int width, int height, float[] pixels, ColorModel cm) {
 		if (pixels!=null && width*height!=pixels.length)
 			throw new IllegalArgumentException(WRONG_LENGTH);
@@ -50,35 +44,8 @@ public class FloatProcessor extends ImageProcessor {
 		for (int i=0; i<pixels.length; i++)
 			this.pixels[i] = (float)pixels[i];
 	}
-	
-	/** Creates a FloatProcessor from a 2D float array using the default LUT. */
-	public FloatProcessor(float[][] array) {
-		width = array.length;
-		height = array[0].length;
-		pixels = new float[width*height];
-		int i=0;
-		for (int y=0; y<height; y++) {
-			for (int x=0; x<width; x++) {
-				pixels[i++] = array[x][y];
-			}
-		}
-		resetRoi();
-	}
 
-	/** Creates a FloatProcessor from a 2D int array. */
-	public FloatProcessor(int[][] array) {
-		width = array.length;
-		height = array[0].length;
-		pixels = new float[width*height];
-		int i=0;
-		for (int y=0; y<height; y++) {
-			for (int x=0; x<width; x++) {
-				pixels[i++] = (float)array[x][y];
-			}
-		}
-	}
-
-	/**
+    /**
 	Calculates the minimum and maximum pixel value for the entire image. 
 	Returns without doing anything if fixedScale has been set true as a result
 	of calling setMinAndMax(). In this case, getMin() and getMax() return the
@@ -214,9 +181,7 @@ public class FloatProcessor extends ImageProcessor {
 	}
 
 	public void snapshot() {
-		snapshotWidth=width;
-		snapshotHeight=height;
-		snapshotMin=(float)getMin();
+        snapshotMin=(float)getMin();
 		snapshotMax=(float)getMax();
 		if (snapshotPixels==null || (snapshotPixels!=null && snapshotPixels.length!=pixels.length))
 			snapshotPixels = new float[width * height];
@@ -262,9 +227,7 @@ public class FloatProcessor extends ImageProcessor {
 
 	public void setSnapshotPixels(Object pixels) {
 		snapshotPixels = (float[])pixels;
-		snapshotWidth=width;
-		snapshotHeight=height;
-	}
+    }
 
 	public Object getSnapshotPixels() {
 		return snapshotPixels;
@@ -312,21 +275,7 @@ public class FloatProcessor extends ImageProcessor {
 	}
 
 
-	/** Returns the value of the pixel at (x,y) in a
-		one element int array. iArray is an optiona
-		preallocated array. */
-	public int[] getPixel(int x, int y, int[] iArray) {
-		if (iArray==null) iArray = new int[1];
-		iArray[0] = (int)getPixelValue(x, y);
-		return iArray;
-	}
-
-	/** Sets a pixel in the image using a one element int array. */
-	public final void putPixel(int x, int y, int[] iArray) {
-		putPixelValue(x, y, iArray[0]);
-	}
-
-	/** Uses the current interpolation method (BILINEAR or BICUBIC) 
+    /** Uses the current interpolation method (BILINEAR or BICUBIC)
 		to calculate the pixel value at real coordinates (x,y). */
 	public double getInterpolatedPixel(double x, double y) {
 		if (interpolationMethod==BICUBIC)
@@ -382,7 +331,7 @@ public class FloatProcessor extends ImageProcessor {
 	/** Returns a reference to the float array containing
 		this image's pixel data. */
 	public Object getPixels() {
-		return (Object)pixels;
+		return pixels;
 	}
 
 	/** Returns a copy of the pixel data. Or returns a reference to the
@@ -466,7 +415,7 @@ public class FloatProcessor extends ImageProcessor {
 							v2 = (float)Math.sqrt(v1);
 						break;
 					case ABS:
-							v2 = (float)Math.abs(v1);
+							v2 = Math.abs(v1);
 						break;
 					case MINIMUM:
 						if (v1<value)
@@ -489,8 +438,8 @@ public class FloatProcessor extends ImageProcessor {
 	}
 
 	public void invert() {process(INVERT, 0.0);}
-	public void add(int value) {process(ADD, value);}
-	public void add(double value) {process(ADD, value);}
+
+    public void add(double value) {process(ADD, value);}
 	public void multiply(double value) {process(MULT, value);}
 	public void and(int value) {}
 	public void or(int value) {}
@@ -983,26 +932,15 @@ public class FloatProcessor extends ImageProcessor {
 		this.maxThreshold = maxThreshold;
 	}
 
-	/** Performs a convolution operation using the specified kernel. */
-	public void convolve(float[] kernel, int kernelWidth, int kernelHeight) {
-		snapshot();
-		new ij.plugin.filter.Convolver().convolve(this, kernel, kernelWidth, kernelHeight);
-	}
-
-	/** Not implemented. */
+    /** Not implemented. */
 	public void threshold(int level) {}
 	/** Not implemented. */
 	public void autoThreshold() {}
-	/** Not implemented. */
-	public void medianFilter() {}
-	/** Not implemented. */
-	public int[] getHistogram() {return null;}
-	/** Not implemented. */
-	public void erode() {}
-	/** Not implemented. */
-	public void dilate() {}
 
-	/** Returns this FloatProcessor.
+    /** Not implemented. */
+	public int[] getHistogram() {return null;}
+
+    /** Returns this FloatProcessor.
 	*  @param channelNumber	  Ignored (needed for compatibility with ColorProcessor.toFloat)
 	*  @param fp			  Ignored (needed for compatibility with the other ImageProcessor types).
 	*  @return This FloatProcessor
@@ -1021,13 +959,8 @@ public class FloatProcessor extends ImageProcessor {
 		setPixels(fp.getPixels());
 		setMinAndMax(fp.getMin(), fp.getMax());
 	}
-	
-	/** Returns the smallest possible positive nonzero pixel value. */
-	public double minValue() {
-		return Float.MIN_VALUE;
-	}
 
-	/** Returns the largest possible positive finite pixel value. */
+    /** Returns the largest possible positive finite pixel value. */
 	public double maxValue() {
 		return Float.MAX_VALUE;
 	}

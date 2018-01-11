@@ -5,24 +5,18 @@ import java.awt.image.*;
 /** This class does bit blitting of RGB images. */
 public class ColorBlitter implements Blitter {
 
-	private ColorProcessor ip;
-	private int width, height;
+    private int width, height;
 	private int[] pixels;
 	private int transparent = 0xffffff;
 	
 	/** Constructs a ColorBlitter from a ColorProcessor. */
 	public ColorBlitter(ColorProcessor ip) {
-		this.ip = ip;
-		width = ip.getWidth();
+        width = ip.getWidth();
 		height = ip.getHeight();
 		pixels = (int[])ip.getPixels();
 	}
 
-	public void setTransparentColor(Color c) {
-		transparent = c.getRGB()&0xffffff;
-	}
-
-	/** Copies the RGB image in 'ip' to (x,y) using the specified mode. */
+    /** Copies the RGB image in 'ip' to (x,y) using the specified mode. */
 	public void copyBits(ImageProcessor ip, int xloc, int yloc, int mode) {
 		int srcIndex, dstIndex;
 		int xSrcBase, ySrcBase;

@@ -1,18 +1,13 @@
 package ij.io;
-import java.awt.*;
 import java.io.*;
 import java.util.zip.*;
 
 import ij.*;
 import ij.process.*;
 import ij.measure.Calibration;
-import ij.plugin.frame.Recorder;
 import ij.plugin.JpegWriter;
-import ij.plugin.Orthogonal_Views;
 import ij.gui.*;
 import ij.measure.Measurements;
-
-import javax.imageio.*;
 
 /** Saves images in tiff, gif, jpeg, raw, zip and text format. */
 public class FileSaver {
@@ -22,7 +17,6 @@ public class FileSaver {
 	
     static {setJpegQuality(ij.Prefs.getInt(ij.Prefs.JPEG, DEFAULT_JPEG_QUALITY));}
 
-	private static String defaultDirectory = null;
 	private ImagePlus imp;
 	private FileInfo fi;
 	private String name;
@@ -68,7 +62,7 @@ public class FileSaver {
 		else
 			return saveAsTiff(path);
 	}
-	
+
 	/** Save the image in TIFF format using the specified path. */
 	public boolean saveAsTiff(String path) {
 		fi.nImages = 1;
@@ -95,7 +89,7 @@ public class FileSaver {
 		updateImp(fi, FileInfo.TIFF);
 		return true;
 	}
-	
+
 	byte[][] getOverlay(ImagePlus imp) {
 		if (imp.getHideOverlay())
 			return null;
@@ -108,8 +102,6 @@ public class FileSaver {
 		}
 		int n = overlay.size();
 		if (n==0) return null;
-		if (Orthogonal_Views.isOrthoViewsImage(imp))
-			return null;
 		byte[][] array = new byte[n][];
 		for (int i=0; i<overlay.size(); i++) {
 			Roi roi = overlay.get(i);
@@ -292,15 +284,8 @@ public class FileSaver {
 		return true;
 	}
 
-	/** Always returns true. */
-	public static boolean okForJpeg(ImagePlus imp) {
-		return true;
-	}
-
 	/** Save the image in JPEG format using a save file
 		dialog. Returns false if the user selects cancel.
-		@see setJpegQuality
-		@see getJpegQuality
 	*/
 	public boolean saveAsJpeg() {
 		if (path==null)
@@ -310,8 +295,6 @@ public class FileSaver {
 	}
 
 	/** Save the image in JPEG format using the specified path.
-		@see setJpegQuality
-		@see getJpegQuality
 	*/
 	public boolean saveAsJpeg(String path) {
 		String err = JpegWriter.save(imp, path, jpegQuality);
@@ -445,7 +428,7 @@ public class FileSaver {
 			for (int i=0; i<n; i++)
 			pixels[i] = (short)(pixels[i]+32768);
 		}
-		updateImp(fi, fi.RAW);
+		updateImp(fi, FileInfo.RAW);
 		return true;
 	}
 
@@ -489,7 +472,7 @@ public class FileSaver {
 					pixels[i] = (short)(pixels[i]+32768);
 			}
 		}
-		updateImp(fi, fi.RAW);
+		updateImp(fi, FileInfo.RAW);
 		return true;
 	}
 

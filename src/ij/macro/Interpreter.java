@@ -9,7 +9,6 @@ import ij.measure.ResultsTable;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.KeyEvent;
-import java.io.PrintWriter;
 
 /** This is the recursive descent parser/interpreter for the ImageJ macro language. */
 public class Interpreter implements MacroConstants {
@@ -25,8 +24,7 @@ public class Interpreter implements MacroConstants {
 	String tokenString;
 	boolean looseSyntax = true;
 	int lineNumber;
-	boolean statusUpdated;
-	boolean showingProgress;
+    boolean showingProgress;
 	boolean keysSet;
 	boolean checkingType;
 	int prefixValue;
@@ -49,8 +47,7 @@ public class Interpreter implements MacroConstants {
 	boolean calledMacro; // macros envoked by eval() or runMacro()
 	boolean batchMacro; // macros envoked by Process/Batch commands
 	double[] rgbWeights;
-	boolean inPrint;
-	static String additionalFunctions;
+    static String additionalFunctions;
 	Editor editor;
 	int debugMode = NONE;
 	boolean showDebugFunctions;
@@ -131,18 +128,8 @@ public class Interpreter implements MacroConstants {
 		finishUp();
 		Recorder.recordInMacros = false;
 	}
-	
-	/** Runs Process/Batch/ macros. */
-	public void runBatchMacro(String macro, ImagePlus imp) {
-		calledMacro = true;
-		batchMacro = true;
-		setBatchMode(true);
-		addBatchModeImage(imp);
-		run(macro);
-		IJ.showStatus("");
-	}
 
-	/** Saves global variables. */
+    /** Saves global variables. */
 	public void saveGlobals(Program pgm) {
 		saveGlobals2(pgm);
 	}
@@ -256,10 +243,8 @@ public class Interpreter implements MacroConstants {
 			case STRING_CONSTANT:
 			case '(': 
 				putTokenBack();
-				inPrint = true;
-				String s = getString();
-				inPrint = false;
-				if (s!=null && s.length()>0 && !s.equals("NaN") && !s.equals("[aborted]"))
+                String s = getString();
+                if (s!=null && s.length()>0 && !s.equals("NaN") && !s.equals("[aborted]"))
 					IJ.log(s);
 				return;
 			case ARRAY_FUNCTION: func.getArrayFunction(pgm.table[tokenAddress].type); break;
@@ -914,7 +899,7 @@ public class Interpreter implements MacroConstants {
 		double value = getLogicalExpression();
 		checkBoolean(value);
 		getRightParen();
-		return value==0.0?false:true;
+		return !(value == 0.0);
 	}
 
 	final double getLogicalExpression() {
@@ -1190,8 +1175,8 @@ public class Interpreter implements MacroConstants {
 				putTokenBack();
 				break;
 			}
-		};
-		return str;
+		}
+        return str;
 	}
 
 	final String getStringTerm() {
@@ -1242,12 +1227,7 @@ public class Interpreter implements MacroConstants {
 		}
 	}
 
-	final boolean isStringFunction() {
-		Symbol symbol = pgm.table[tokenAddress];
-		return symbol.type==D2S;
-	}
-
-	final double getExpression() {
+    final double getExpression() {
 		double value = getTerm();
 		int next;
 		while (true) {
@@ -1427,8 +1407,8 @@ public class Interpreter implements MacroConstants {
 				putTokenBack();
 				break;
 			}
-		};
-		return value;
+		}
+        return value;
 	}
 
 	/** Searches the local and global sections of the stack for.
@@ -1651,13 +1631,7 @@ public class Interpreter implements MacroConstants {
 		}
 	}
 
-	/** Absolete, replaced by abortMacro(). */
-	public static void abort(Interpreter interp) {
-		if (interp!=null)
-			interp.abortMacro();
-	}
-	
-	/** Aborts this macro. */
+    /** Aborts this macro. */
 	public void abortMacro() {
 		if (!calledMacro || batchMacro) {
 			batchMode = false;
@@ -1762,14 +1736,8 @@ public class Interpreter implements MacroConstants {
 		} else
 			return null;
 	}
-	
-	/** Returns true if there is an internal batch mode RoiManager. */
-	public static boolean isBatchModeRoiManager() {
-		Interpreter interp = getInstance();
-		return interp!=null && isBatchMode() && interp.func.roiManager!=null;
-	}
-	
-	public void setEditor(Editor ed) {
+
+    public void setEditor(Editor ed) {
 		if (ed!=null&&editor==null)
 			ed.fixLineEndings();
 		editor = ed;

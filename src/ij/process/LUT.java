@@ -43,27 +43,8 @@ import java.awt.Color;
 		for (int i=0; i<256; i++) bytes[512+i] = (byte)getBlue(i);
 		return bytes;
 	}
-	
-	public LUT createInvertedLut() {
-		int mapSize = getMapSize();
-		byte[] reds = new byte[mapSize];
-		byte[] greens = new byte[mapSize];
-		byte[] blues = new byte[mapSize];	
-		byte[] reds2 = new byte[mapSize];
-		byte[] greens2 = new byte[mapSize];
-		byte[] blues2 = new byte[mapSize];	
-		getReds(reds); 
-		getGreens(greens); 
-		getBlues(blues);
-		for (int i=0; i<mapSize; i++) {
-			reds2[i] = (byte)(reds[mapSize-i-1]&255);
-			greens2[i] = (byte)(greens[mapSize-i-1]&255);
-			blues2[i] = (byte)(blues[mapSize-i-1]&255);
-		}
-		return new LUT(8, mapSize, reds2, greens2, blues2);
-	}
-	
-	/** Creates a color LUT from a Color. */
+
+        /** Creates a color LUT from a Color. */
 	public static LUT createLutFromColor(Color color) {
 		byte[] rLut = new byte[256];
 		byte[] gLut = new byte[256];

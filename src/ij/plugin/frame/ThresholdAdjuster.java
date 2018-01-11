@@ -4,13 +4,9 @@ import java.awt.event.*;
 import java.awt.image.*;
 
 import ij.*;
-import ij.plugin.*;
 import ij.process.*;
 import ij.gui.*;
 import ij.measure.*;
-import ij.plugin.frame.Recorder;
-import ij.plugin.filter.*;
-import ij.plugin.ChannelSplitter;
 
 /** Adjusts the lower and upper threshold levels of the active image. This
 	class is multi-threaded to provide a more responsive user interface. */
@@ -25,10 +21,7 @@ public class ThresholdAdjuster extends PlugInFrame implements PlugIn, Measuremen
 	static final double defaultMinThreshold = 85; 
 	static final double defaultMaxThreshold = 170;
 	static final int DEFAULT = 0;
-	static boolean fill1 = true;
-	static boolean fill2 = true;
-	static boolean useBW = true;
-	static boolean backgroundToNaN = true;
+    static boolean backgroundToNaN = true;
 	static ThresholdAdjuster instance; 
 	static int mode = RED;	
 	static String[] methodNames = AutoThresholder.getMethods();
@@ -61,175 +54,7 @@ public class ThresholdAdjuster extends PlugInFrame implements PlugIn, Measuremen
 	boolean useExistingTheshold;
 
 
-	public ThresholdAdjuster() {
-		super("Threshold");
-		ImagePlus cimp = WindowManager.getCurrentImage();
-		if (cimp!=null && cimp.getBitDepth()==24) {
-			IJ.run(cimp, "Color Threshold...", "");
-			return;
-		}
-		if (instance!=null) {
-			instance.firstActivation = true;
-			WindowManager.toFront(instance);
-			return;
-		}
-		
-		WindowManager.addWindow(this);
-		instance = this;
-		mode = (int)Prefs.get(MODE_KEY, RED);
-		if (mode<RED || mode>OVER_UNDER) mode = RED;
-		setLutColor(mode);
-		IJ.register(PasteController.class);
-
-		ij = IJ.getInstance();
-		Font font = new Font("SansSerif", Font.PLAIN, 10);
-		GridBagLayout gridbag = new GridBagLayout();
-		GridBagConstraints c = new GridBagConstraints();
-		setLayout(gridbag);
-		
-		// plot
-		int y = 0;
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		c.fill = GridBagConstraints.BOTH;
-		c.anchor = GridBagConstraints.CENTER;
-		c.insets = new Insets(10, 10, 0, 10);
-		add(plot, c);
-		plot.addKeyListener(ij);
-		
-		// minThreshold slider
-		minSlider = new Scrollbar(Scrollbar.HORIZONTAL, sliderRange/3, 1, 0, sliderRange);
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 1;
-		c.weightx = IJ.isMacintosh()?90:100;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(5, 10, 0, 0);
-		add(minSlider, c);
-		minSlider.addAdjustmentListener(this);
-		minSlider.addKeyListener(ij);
-		minSlider.setUnitIncrement(1);
-		minSlider.setFocusable(false);
-		
-		// minThreshold slider label
-		c.gridx = 1;
-		c.gridwidth = 1;
-		c.weightx = IJ.isMacintosh()?10:0;
-		c.insets = new Insets(5, 0, 0, 10);
-		label1 = new Label("       ", Label.RIGHT);
-    	label1.setFont(font);
-		add(label1, c);
-		
-		// maxThreshold slider
-		maxSlider = new Scrollbar(Scrollbar.HORIZONTAL, sliderRange*2/3, 1, 0, sliderRange);
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 1;
-		c.weightx = 100;
-		c.insets = new Insets(2, 10, 0, 0);
-		add(maxSlider, c);
-		maxSlider.addAdjustmentListener(this);
-		maxSlider.addKeyListener(ij);
-		maxSlider.setUnitIncrement(1);
-		maxSlider.setFocusable(false);
-		
-		// maxThreshold slider label
-		c.gridx = 1;
-		c.gridwidth = 1;
-		c.weightx = 0;
-		c.insets = new Insets(2, 0, 0, 10);
-		label2 = new Label("       ", Label.RIGHT);
-    	label2.setFont(font);
-		add(label2, c);
-				
-		// choices
-		panel = new Panel();
-		methodChoice = new Choice();
-		for (int i=0; i<methodNames.length; i++)
-			methodChoice.addItem(methodNames[i]);
-		methodChoice.select(method);
-		methodChoice.addItemListener(this);
-		//methodChoice.addKeyListener(ij);
-		panel.add(methodChoice);
-		modeChoice = new Choice();
-		for (int i=0; i<modes.length; i++)
-			modeChoice.addItem(modes[i]);
-		modeChoice.select(mode);
-		modeChoice.addItemListener(this);
-		//modeChoice.addKeyListener(ij);
-		panel.add(modeChoice);
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		c.insets = new Insets(8, 5, 0, 5);
-		c.anchor = GridBagConstraints.CENTER;
-		c.fill = GridBagConstraints.NONE;
-		add(panel, c);
-
-		// checkboxes
-		panel = new Panel();
-		boolean db = Prefs.get(DARK_BACKGROUND, Prefs.blackBackground?true:false);
-        darkBackground = new Checkbox("Dark background");
-        darkBackground.setState(db);
-        darkBackground.addItemListener(this);
-        panel.add(darkBackground);
-        stackHistogram = new Checkbox("Stack histogram");
-        stackHistogram.setState(false);
-        stackHistogram.addItemListener(this);
-        panel.add(stackHistogram);
-        c.gridx = 0;
-        c.gridy = y++;
-        c.gridwidth = 2;
-		c.insets = new Insets(5, 5, 0, 5);
-        add(panel, c);
-
-		// buttons
-		int trim = IJ.isMacOSX()?11:0;
-		panel = new Panel();
-		autoB = new TrimmedButton("Auto",trim);
-		autoB.addActionListener(this);
-		autoB.addKeyListener(ij);
-		panel.add(autoB);
-		applyB = new TrimmedButton("Apply",trim);
-		applyB.addActionListener(this);
-		applyB.addKeyListener(ij);
-		panel.add(applyB);
-		resetB = new TrimmedButton("Reset",trim);
-		resetB.addActionListener(this);
-		resetB.addKeyListener(ij);
-		panel.add(resetB);
-		setB = new TrimmedButton("Set",trim);
-		setB.addActionListener(this);
-		setB.addKeyListener(ij);
-		panel.add(setB);
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		c.insets = new Insets(0, 5, 10, 5);
-		add(panel, c);
-		
- 		addKeyListener(ij);  // ImageJ handles keyboard shortcuts
-		pack();
-		Point loc = Prefs.getLocation(LOC_KEY);
-		if (loc!=null)
-			setLocation(loc);
-		else
-			GUI.center(this);
-		if (IJ.isMacOSX()) setResizable(false);
-		show();
-
-		thread = new Thread(this, "ThresholdAdjuster");
-		//thread.setPriority(thread.getPriority()-1);
-		thread.start();
-		ImagePlus imp = WindowManager.getCurrentImage();
-		if (imp!=null) {
-			useExistingTheshold = isThresholded(imp);
-			setup(imp);
-		}
-	}
-	
-	public synchronized void adjustmentValueChanged(AdjustmentEvent e) {
+    public synchronized void adjustmentValueChanged(AdjustmentEvent e) {
 		if (e.getSource()==minSlider)
 			minValue = minSlider.getValue();
 		else
@@ -438,15 +263,8 @@ public class ThresholdAdjuster extends PlugInFrame implements PlugIn, Measuremen
 		minSlider.setValue((int)minThreshold);
 		maxSlider.setValue((int)maxThreshold);
 	}
-	
-	/** Restore image outside non-rectangular roi. */
-  	void doMasking(ImagePlus imp, ImageProcessor ip) {
-		ImageProcessor mask = imp.getMask();
-		if (mask!=null)
-			ip.reset(mask);
-	}
 
-	void adjustMinThreshold(ImagePlus imp, ImageProcessor ip, double value) {
+    void adjustMinThreshold(ImagePlus imp, ImageProcessor ip, double value) {
 		if (IJ.altKeyDown() || IJ.shiftKeyDown() ) {
 			double width = maxThreshold-minThreshold;
 			if (width<1.0) width = 1.0;
@@ -594,7 +412,13 @@ public class ThresholdAdjuster extends PlugInFrame implements PlugIn, Measuremen
 		Recorder.recordInMacros = false;
  	}
 	
-	static final int RESET=0, AUTO=1, HIST=2, APPLY=3, STATE_CHANGE=4, MIN_THRESHOLD=5, MAX_THRESHOLD=6, SET=7;
+	static final int RESET=0;
+    static final int AUTO=1;
+    static final int APPLY=3;
+    static final int STATE_CHANGE=4;
+    static final int MIN_THRESHOLD=5;
+    static final int MAX_THRESHOLD=6;
+    static final int SET=7;
 
 	// Separate thread that does the potentially time-consuming processing 
 	public void run() {
@@ -693,7 +517,7 @@ public class ThresholdAdjuster extends PlugInFrame implements PlugIn, Measuremen
     /** Notifies the ThresholdAdjuster that the image has changed. */
     public static void update() {
 		if (instance!=null) {
-			ThresholdAdjuster ta = ((ThresholdAdjuster)instance);
+			ThresholdAdjuster ta = instance;
 			ImagePlus imp = WindowManager.getCurrentImage();
 			if (imp!=null && ta.previousImageID==imp.getID()) {
 				ta.previousImageID = 0;
@@ -836,7 +660,7 @@ class ThresholdPlot extends Canvas implements Measurements, MouseListener {
 				osg.setColor(Color.gray);
 				for (int i = 0; i < WIDTH; i++) {
 					if (hColors!=null) osg.setColor(hColors[i]);
-					osg.drawLine(i, HEIGHT, i, HEIGHT - ((int)(HEIGHT * histogram[i])/hmax));
+					osg.drawLine(i, HEIGHT, i, HEIGHT - (HEIGHT * histogram[i] /hmax));
 				}
 				osg.dispose();
 			}

@@ -1,16 +1,9 @@
 package ij.measure;
 import ij.*;
-import ij.gui.*;
-import ij.macro.*;
-import ij.gui.Roi;
-import ij.gui.PolygonRoi;
-import ij.gui.Line;
-import ij.util.Tools;
-import ij.plugin.frame.RoiManager;
+
 import java.util.Random;
 import java.util.Arrays;
 import java.util.Vector;
-import java.util.Hashtable;
 
 /** Minimizer based on Nelder-Mead simplex method (also known as polytope method),
  *  including the 'outside contraction' as described in:
@@ -201,13 +194,13 @@ public class Minimizer {
             if (resultsVector.size() == 0 && result==null)
                 return status;
             if (result==null)
-                result = (double[])resultsVector.get(0);
+                result = resultsVector.get(0);
             for (double[] r : resultsVector)        // find best result so far
                 if (value(r) < value(result))
                     result = r;
             if (status != SUCCESS && status != REINITIALIZATION_FAILURE) return status;   // no more tries if error or aborted
             for (int ir=0; ir<resultsVector.size(); ir++)
-                if (!belowErrorLimit(value((double[])resultsVector.get(ir)), value(result), 1.0)) {
+                if (!belowErrorLimit(value(resultsVector.get(ir)), value(result), 1.0)) {
                     resultsVector.remove(ir);       // discard results that are significantly worse
                     ir --;
                 }
@@ -216,35 +209,6 @@ public class Minimizer {
         return maxRestarts>0 ?
                 MAX_RESTARTS_EXCEEDED :             // number of restarts exceeded without two equal results
                 status;                             // if only one run was required, we can't have 2 equal results
-    }
-
-    /** Perform minimization with the simplex method once, including re-initialization until
-     *  we have a stable solution.
-     *  Use the 'getParams' method to access the result.
-     *
-     *  @param initialParams   Array with starting values of the parameters (variables).
-     *                         When null, the starting values are assumed to be 0.
-     *                         The target function must be defined (not returning NaN) for
-     *                         the values specified as initialParams.
-     *  @param initialParamVariations   Parameters (variables) are initially varied by up to +/-
-     *                         this value. If not given (null), iniital variations are taken as
-     *                         10% of inial parameter value or 0.01 for parameters that are zero.
-     *                         When this array is given, all elements must be positive (nonzero).
-     *  If one or several initial parameters are zero, is advisable to set the initialParamVariations
-     *  array to useful values indicating the typical order of magnitude of the parameters.
-     *  For target functions with only one minimum, convergence is fastest with large values of
-     *  initialParamVariations, so that the expected value is within initialParam+/-initialParamVariations.
-     *  If local minima can occur, it is best to use a value close to the expected global minimum,
-     *  and rather small initialParamVariations, much lower than the distance to the nearest local
-     *  minimum.
-     *
-     *  @return                status code; SUCCESS if it is considered likely that a minimum of the
-     *                         target function has been found.
-     */
-    public int minimizeOnce(double[] initialParams, double[] initialParamVariations) {
-        status = SUCCESS;
-        minimizeOnce(initialParams, initialParamVariations, randomSeed);
-        return status;
     }
 
     /** Get the result, i.e., the set of parameter values (i.e., variable values)
@@ -260,19 +224,6 @@ public class Minimizer {
             Arrays.fill(result, Double.NaN);
         }
         return result;
-    }
-
-    /** Get the value of the minimum, i.e. the value associated with the resulting parameters
-     *  as obtained by getParams(). May return NaN in case the minimize call has returned
-     *  an INITIALIZATION_FAILURE status or that abort() has been called at the very
-     *  beginning of the minimization.
-     *  Do not call this method before minimization. */
-    public double getFunctionValue() {
-        if (result == null) {
-            result = new double[numParams+1];
-            Arrays.fill(result, Double.NaN);
-        }
-        return value(result);
     }
 
     /** Get number of iterations performed (includes all restarts). One iteration needs
@@ -336,19 +287,6 @@ public class Minimizer {
         return numCompletedMinimizations;
     }
 
-    /** Set a seed to initialize the random number generator, which is used for initialization
-     *  of the simplex. */
-    public void setRandomSeed(int n) {
-        randomSeed = n;
-    }
-
-    /** Sets the accuracy of convergence. Minimizing is done as long as the
-     *  relative error of the function value is more than this number (Default: 1e-10).
-     */
-    public void setMaxError(double maxRelError) {
-        this.maxRelError = maxRelError;
-    }
-
     /** Sets the accuracy of convergence. Minimizing is done as long as the
      *  relative error of the function value is more than maxRelError (Default: 1e-10)
      *  and the maximum absolute error is more than maxAbsError
@@ -359,26 +297,11 @@ public class Minimizer {
         this.maxAbsError = maxAbsError;
     }
 
-    /** Set the resolution of the parameters, for problems where the target function is not smooth
-     *  but suffers from numerical noise. If all parameters of all vertices are closer to the
-     *  best value than the respective resolution value, minimization is finished, irrespective
-     *  of the difference of the target function values at the vertices */
-    public void setParamResolutions(double[] paramResolutions) {
-        this.paramResolutions = paramResolutions;
-    }
-
     /** Call setMaximuThreads(1) to avoid multi-threaded execution (in case the user-provided
      *  target function does not allow moultithreading). Currently a maximum of 2 thread is used
      *  irrespective of any higher value. */
     public void setMaximumThreads (int numThreads) {
         useSingleThread = numThreads <= 1;
-    }
-
-    /** Aborts minimization. Calls to getParams() will return the best solution found so far.
-     *  This method may be called from the user-supplied target function, e.g. when it checks
-     *  for IJ.escapePressed(), allowing the user to abort a lengthy minimization. */
-    public void abort() {
-        status = ABORTED;
     }
 
     /** Add a given number of extra elements to array of parameters (independent vaiables)

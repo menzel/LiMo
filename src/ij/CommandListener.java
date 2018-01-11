@@ -11,6 +11,6 @@ package ij;
 		and ImageJ will run the command, return a different command name
 		and ImageJ will run that command, or return null to not run a command.
 	*/
-	public String commandExecuting(String command);
+    String commandExecuting(String command);
 
 }

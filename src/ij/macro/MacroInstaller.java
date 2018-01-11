@@ -6,8 +6,6 @@ import java.awt.event.*;
 import ij.*;
 import ij.gui.*;
 import ij.macro.*;
-import ij.text.*;
-import ij.util.Tools;
 import ij.io.*;
 import ij.plugin.frame.*;
 
@@ -17,18 +15,16 @@ import java.util.*;
 	class to install macro in menus and by the ImageJ class to install macros at startup. */
 public class MacroInstaller implements PlugIn, MacroConstants, ActionListener {
 
-	public static final int MAX_SIZE = 28000, MAX_MACROS=100, XINC=10, YINC=18;
-	public static final char commandPrefix = '^';
+    public static final int MAX_MACROS=100;
+    public static final char commandPrefix = '^';
 	static final String commandPrefixS = "^";
 	static final int MACROS_MENU_COMMANDS = 6; // number of commands in Plugins>Macros submenu
 	
 	private int[] macroStarts;
 	private String[] macroNames;
-	private MenuBar mb = new MenuBar();
-	private int nMacros;
+    private int nMacros;
 	private Program pgm;
-	private boolean firstEvent = true;
-	private String shortcutsInUse;
+    private String shortcutsInUse;
 	private int inUseCount;
 	private int nShortcuts;
 	private int toolCount;
@@ -146,7 +142,7 @@ public class MacroInstaller implements PlugIn, MacroConstants, ActionListener {
 			tb.repaint();
 		}
 		if (macrosMenu!=null)
-			this.instance = this;
+			instance = this;
 		if (shortcutsInUse!=null && text!=null)
 			IJ.showMessage("Install Macros", (inUseCount==1?"This keyboard shortcut is":"These keyboard shortcuts are")
 			+ " already in use:"+shortcutsInUse);
@@ -207,13 +203,7 @@ public class MacroInstaller implements PlugIn, MacroConstants, ActionListener {
 		}
 	}
 
-	public void installTool(String path) {
-		String text = open(path);
-		if (text!=null)
-			installSingleTool(text);
-	}
-
-	public void installLibrary(String path) {
+    public void installLibrary(String path) {
 			String text = open(path);
 			if (text!=null)
 				Interpreter.setAdditionalFunctions(text);
@@ -279,8 +269,8 @@ public class MacroInstaller implements PlugIn, MacroConstants, ActionListener {
 		String shortcut = name.substring(index1+1, index2);
 		int len = shortcut.length();
 		if (len>1)
-			shortcut = shortcut.toUpperCase(Locale.US);;
-		if (len>3 || (len>1&&shortcut.charAt(0)!='F'&&shortcut.charAt(0)!='N'))
+			shortcut = shortcut.toUpperCase(Locale.US);
+        if (len>3 || (len>1&&shortcut.charAt(0)!='F'&&shortcut.charAt(0)!='N'))
 			return;
 		int code = Menus.convertShortcutToCode(shortcut);
 		if (code==0)
@@ -449,15 +439,11 @@ public class MacroInstaller implements PlugIn, MacroConstants, ActionListener {
 	}
 
 	public void setFileName(String fileName) {
-		this.fileName = fileName;
+		MacroInstaller.fileName = fileName;
 		openingStartupMacrosInEditor = fileName.startsWith("StartupMacros");
 	}
 
-	public static String getFileName() {
-		return fileName;
-	}
-	
-	public void actionPerformed(ActionEvent evt) {
+    public void actionPerformed(ActionEvent evt) {
 		String cmd = evt.getActionCommand();
 		MenuItem item = (MenuItem)evt.getSource();
 		MenuContainer parent = item.getParent();

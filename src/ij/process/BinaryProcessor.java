@@ -1,5 +1,4 @@
 package ij.process;
-import java.awt.*;
 
 /** This class processes binary images. */
 public class BinaryProcessor extends ByteProcessor {
@@ -76,41 +75,7 @@ public class BinaryProcessor extends ByteProcessor {
 		parent.hideProgress();
 	}
 
-	/** Uses a lookup table to repeatably removes pixels from the
-		edges of objects in a binary image, reducing them to single
-		pixel wide skeletons. Based on an a thinning algorithm by
-		by Zhang and Suen (CACM, March 1984, 236-239). There is
-		an entry in the table for each of the 256 possible 3x3 neighborhood
-		configurations. An entry of '1' means delete pixel on first pass, '2' means
-		delete pixel on second pass, and '3' means delete on either pass. A graphical
-		representation of the 256 neighborhoods indexed by the table is available
-		at "http://imagej.nih.gov/ij/images/skeletonize-table.gif".
-	*/
-	public void  skeletonize() {
-		int pass = 0;
-		int pixelsRemoved;
-		resetRoi();
-		setColor(Color.white);
-		moveTo(0,0); lineTo(0,height-1);
-		moveTo(0,0); lineTo(width-1,0);
-		moveTo(width-1,0); lineTo(width-1,height-1);
-		moveTo(0,height-1); lineTo(width/*-1*/,height-1);
-		ij.ImageStack movie=null;
-		boolean debug = ij.IJ.debugMode;
-		if (debug) movie = new ij.ImageStack(width, height);
-		do {
-			snapshot();
-			if (debug) movie.addSlice(""+pass, duplicate());
-			pixelsRemoved = thin(pass++, table);
-			snapshot();
-			if (debug) movie.addSlice(""+pass, duplicate());
-			pixelsRemoved = thin(pass++, table);
-			//ij.IJ.write(pass+" "+pixelsRemoved);
-		} while (pixelsRemoved>0);
-		if (debug) new ij.ImagePlus("Skel Movie", movie).show();
-	}
-
-	int thin(int pass, int[] table) {
+    int thin(int pass, int[] table) {
 		int p1, p2, p3, p4, p5, p6, p7, p8, p9;
 		int inc = roiHeight/25;
 		if (inc<1) inc = 1;
@@ -167,9 +132,5 @@ public class BinaryProcessor extends ByteProcessor {
 		hideProgress();
 		return pixelsRemoved;
 	}
-	
-	public void outline() {
-		process(OUTLINE, 0);
-	}
-	
+
 }

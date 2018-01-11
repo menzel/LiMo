@@ -45,49 +45,6 @@ public class GaussianBlur implements DialogListener {
     private int nChannels = 1;        // The number of color channels
     private int pass;                        // Current pass
     private boolean noProgress;      // Do not show progress bar
-    
-    /** Method to return types supported
-     * @param arg unused
-     * @param imp The ImagePlus, used to get the spatial calibration
-     * @return Code describing supported formats etc.
-     * (see ij.plugin.filter.PlugInFilter & ExtendedPlugInFilter)
-     */
-    public int setup(String arg, ImagePlus imp) {
-        this.imp = imp;
-        if (imp!=null && imp.getRoi()!=null) {
-            Rectangle roiRect = imp.getRoi().getBoundingRect();
-                 }
-        return 1;
-    }
-    
-    /** Ask the user for the parameters
-     */
-    public int showDialog(ImagePlus imp, String command, PlugInFilterRunner pfr) {
-        String options = Macro.getOptions();
-        boolean oldMacro = false;
-        nChannels = imp.getProcessor().getNChannels();
-        if  (options!=null) {
-            if (options.indexOf("radius=") >= 0) {  // ensure compatibility with old macros
-                oldMacro = true;                    // specifying "radius=", not "sigma=
-                Macro.setOptions(options.replaceAll("radius=", "sigma="));
-            }
-        }
-        GenericDialog gd = new GenericDialog(command);
-        sigma = Math.abs(sigma);
-        gd.addNumericField("Sigma (Radius):", sigma, 2);
-        if (imp.getCalibration()!=null && !imp.getCalibration().getUnits().equals("pixels")) {
-            hasScale = true;
-            gd.addCheckbox("Scaled Units ("+imp.getCalibration().getUnits()+")", sigmaScaled);
-        } else
-            sigmaScaled = false;
-        gd.addPreviewCheckbox(pfr);
-        gd.addDialogListener(this);
-        gd.showDialog();                    // input by the user (or macro) happens here
-        if (gd.wasCanceled()) return 1;
-        if (oldMacro) sigma /= 2.5;         // for old macros, "radius" was 2.5 sigma
-        IJ.register(this.getClass());       // protect static class variables (parameters) from garbage collection
-        return IJ.setupDialog(imp, 1);  // ask whether to process all slices of stack (if a stack)
-    }
 
     /** Listener to modifications of the input fields of the dialog */
     public boolean dialogItemChanged(GenericDialog gd, AWTEvent e) {
@@ -108,19 +65,6 @@ public class GaussianBlur implements DialogListener {
     public void setNPasses(int nPasses) {
         this.nPasses = 2 * nChannels * nPasses;
         pass = 0;
-    }
-
-    /** This method is invoked for each slice during execution
-     * @param ip The image subject to filtering. It must have a valid snapshot if
-     * the height of the roi is less than the full image height.
-     */
-    public void run(ImageProcessor ip) {
-        double sigmaX = sigmaScaled ? sigma/imp.getCalibration().pixelWidth : sigma;
-        double sigmaY = sigmaScaled ? sigma/imp.getCalibration().pixelHeight : sigma;
-        double accuracy = (ip instanceof ByteProcessor || ip instanceof ColorProcessor) ?
-            0.002 : 0.0002;
-        Rectangle roi = ip.getRoi();
-        blurGaussian(ip, sigmaX, sigmaY, accuracy);
     }
 
     /** Gaussian Filtering of an ImageProcessor. This method is for compatibility with the
@@ -591,9 +535,5 @@ public class GaussianBlur implements DialogListener {
         percent = (double)(pass-1)/nPasses + percent/nPasses;
         IJ.showProgress(percent);
     }
-    
-    public void showProgress(boolean showProgressBar) {
-    	noProgress = !showProgressBar;
-    }
-    
+
 }

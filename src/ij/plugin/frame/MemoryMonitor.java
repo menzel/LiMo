@@ -1,10 +1,7 @@
 package ij.plugin.frame;
 import ij.*;
-import ij.gui.*;
-import ij.process.*;
+
 import java.awt.*;
-import java.awt.image.*;
-import java.awt.event.*;
 
 /** This plugin continuously plots ImageJ's memory utilization. 
 	Click on the plot to force the JVM to do garbage collection. */
@@ -22,53 +19,7 @@ public class MemoryMonitor extends PlugInFrame {
 	private double max = defaultMax;
 	private long maxMemory = IJ.maxMemory();
 
-	public MemoryMonitor() {
-		super("Memory");
-		if (instance!=null) {
-			WindowManager.toFront(instance);
-			return;
-		}
-		instance = this;
-		WindowManager.addWindow(this);
-		
-		setLayout(new BorderLayout());
-		Canvas ic = new Canvas();
-		ic.setSize(WIDTH, HEIGHT);
-		add(ic);
-		setResizable(false);
-		pack();
-		Point loc = Prefs.getLocation(LOC_KEY);
-		if (loc!=null)
-			setLocation(loc);
-		else
-			GUI.center(this);
-		image = createImage(WIDTH,HEIGHT);
-		g = (Graphics2D)image.getGraphics();
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.setColor(Color.white);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		g.setFont(new Font("SansSerif",Font.PLAIN,12));
-		Graphics icg = ic.getGraphics();
-		icg.drawImage(image, 0, 0, null);
-		show();
-		ImageJ ij = IJ.getInstance();
-		if (ij!=null) {
-			addKeyListener(ij);
-			ic.addKeyListener(ij);
-			ic.addMouseListener(ij);
-		}
-		mem = new double[WIDTH+1];
-		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-       	while (true) {
-			updatePlot();
-         	addText();
-			icg.drawImage(image, 0, 0, null);
-        	IJ.wait(50);
-       		frames++;
-		}
-	}
-	
-    void addText() {
+	void addText() {
     	double value2 = (double)value/1048576L;
     	String s = IJ.d2s(value2,value2>50?0:2)+"MB";
     	if (maxMemory>0L) {
@@ -107,12 +58,6 @@ public class MemoryMonitor extends PlugInFrame {
 			g.drawLine(x1, y1, x2, y2);
 			x1=x2; y1=y2;
 		}
-	}
-
-    public void close() {
-	 	super.close();
-		instance = null;
-		Prefs.saveLocation(LOC_KEY, getLocation());
 	}
 
 }

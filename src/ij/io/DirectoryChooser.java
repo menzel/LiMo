@@ -1,12 +1,10 @@
 package ij.io;
 import ij.*;
-import ij.gui.*;
 import ij.plugin.frame.Recorder;
 import ij.util.Java2;
 import java.awt.*;
 import java.io.*;
 import javax.swing.*;
-import javax.swing.filechooser.*;
 
 /** This class displays a dialog box that allows the user can select a directory. */ 
  public class DirectoryChooser {
@@ -118,12 +116,6 @@ import javax.swing.filechooser.*;
 			Recorder.recordPath(title, directory);
  		return directory;
  	}
- 	
-    /** Sets the default directory presented in the dialog. */
-    public static void setDefaultDirectory(String dir) {
-    	if (dir==null || (new File(dir)).isDirectory())
-			OpenDialog.setDefaultDirectory(dir);
-    }
 
 	//private void setSystemLookAndFeel() {
 	//	try {

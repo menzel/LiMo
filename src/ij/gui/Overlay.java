@@ -1,8 +1,6 @@
 package ij.gui;
 import java.awt.*;
 import java.util.Vector;
-import ij.*;
-import ij.process.ImageProcessor;
 
 /** An Overlay is a list of Rois that can be drawn non-destructively on an Image. */
 public class Overlay {
@@ -43,43 +41,17 @@ public class Overlay {
 	//	roi.setStrokeColor(color);
 	//	list.add(roi);
     //}
-    
-    /** Adds an Roi to this Overlay. */
-    public void addElement(Roi roi) {
-    	list.add(roi);
-    }
 
     /** Removes the Roi with the specified index from this Overlay. */
     public void remove(int index) {
     	list.remove(index);
-    }
-    
-    /** Removes the specified Roi from this Overlay. */
-    public void remove(Roi roi) {
-    	list.remove(roi);
-    }
-
-   /** Removes all the Rois in this Overlay. */
-    public void clear() {
-    	list.clear();
     }
 
     /** Returns the Roi with the specified index. */
     public Roi get(int index) {
     	return (Roi)list.get(index);
     }
-    
-    /** Returns the index of the Roi with the specified name, or -1 if not found. */
-    public int getIndex(String name) {
-    	if (name==null) return -1;
-    	Roi[] rois = toArray();
-		for (int i=rois.length-1; i>=0; i--) {
-			if (name.equals(rois[i].getName()))
-				return i;
-		}
-		return -1;
-    }
-    
+
     /** Returns 'true' if this Overlay contains the specified Roi. */
     public boolean contains(Roi roi) {
     	return list.contains(roi);
@@ -95,29 +67,6 @@ public class Overlay {
     	Roi[] array = new Roi[list.size()];
     	return (Roi[])list.toArray(array);
     }
-    
-    /** Sets the stroke color of all the Rois in this overlay. */
-    public void setStrokeColor(Color color) {
-		Roi[] rois = toArray();
-		for (int i=0; i<rois.length; i++)
-			rois[i].setStrokeColor(color);
-	}
-
-    /** Sets the fill color of all the Rois in this overlay. */
-    public void setFillColor(Color color) {
-		Roi[] rois = toArray();
-		for (int i=0; i<rois.length; i++)
-			rois[i].setFillColor(color);
-	}
-
-    /** Moves all the Rois in this overlay. */
-    public void translate(int dx, int dy) {
-		Roi[] rois = toArray();
-		for (int i=0; i<rois.length; i++) {
-			Rectangle r = rois[i].getBounds();
-			rois[i].setLocation(r.x+dx, r.y+dy);
-		}
-	}
 
     /** Returns the bounds of this overlay. */
     /*
@@ -147,22 +96,8 @@ public class Overlay {
 	//	for (int i=0; i<rois.length; i++)
 	//		rois[i].drawPixels(ip);
 	//}
-	
-	/** Returns a clone of this Overlay. */
-	public Overlay duplicate() {
-		Roi[] rois = toArray();
-		Overlay overlay2 = new Overlay();
-		for (int i=0; i<rois.length; i++)
-			overlay2.add((Roi)rois[i].clone());
-		overlay2.drawLabels(label);
-		overlay2.drawNames(drawNames);
-		overlay2.drawBackgrounds(drawBackgrounds);
-		overlay2.setLabelColor(labelColor);
-		overlay2.setLabelFont(labelFont);
-		return overlay2;
-	}
 
-	public String toString() {
+    public String toString() {
     	return list.toString();
     }
     
@@ -212,7 +147,5 @@ public class Overlay {
     }
 
     void setVector(Vector v) {list = v;}
-        
-    Vector getVector() {return list;}
-    
+
 }

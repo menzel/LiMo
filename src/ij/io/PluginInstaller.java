@@ -1,8 +1,7 @@
 package ij.io;
 import ij.*;
-import ij.gui.*;
+
 import java.io.*;
-import java.net.URL;
 import java.net.*;
 
 /** Intalls plugins (.jar and .class files) that have been dragged

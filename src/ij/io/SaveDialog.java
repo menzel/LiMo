@@ -3,7 +3,7 @@ import ij.gui.GenericDialog;
 import java.awt.*;
 import java.io.*;
 import javax.swing.*;
-import javax.swing.filechooser.*;
+
 import ij.*;
 import ij.plugin.frame.Recorder;
 import ij.util.Java2;

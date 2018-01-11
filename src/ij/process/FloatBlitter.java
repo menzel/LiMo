@@ -6,9 +6,8 @@ import java.awt.*;
 public class FloatBlitter implements Blitter {
 
 	public static float divideByZeroValue;
-	
-	private FloatProcessor ip;
-	private int width, height;
+
+    private int width, height;
 	private float[] pixels;
 	
 	static {
@@ -19,16 +18,12 @@ public class FloatBlitter implements Blitter {
 	
 	/** Constructs a FloatBlitter from a FloatProcessor. */
 	public FloatBlitter(FloatProcessor ip) {
-		this.ip = ip;
-		width = ip.getWidth();
+        width = ip.getWidth();
 		height = ip.getHeight();
 		pixels = (float[])ip.getPixels();
 	}
 
-	public void setTransparentColor(Color c) {
-	}
-
-	/** Copies the float image in 'ip' to (x,y) using the specified mode. */
+    /** Copies the float image in 'ip' to (x,y) using the specified mode. */
 	public void copyBits(ImageProcessor ip, int xloc, int yloc, int mode) {
 		Rectangle r1, r2;
 		int srcIndex, dstIndex;

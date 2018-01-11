@@ -3,7 +3,7 @@ package ij.process;
 import java.util.*;
 import java.awt.*;
 import java.awt.image.*;
-import ij.gui.*;
+
 import ij.Prefs;
 
 /**
@@ -31,8 +31,8 @@ public class ByteProcessor extends ImageProcessor {
 			pg.grabPixels();
 		} catch (InterruptedException e) {
 			System.err.println(e);
-		};
-   		cm = pg.getColorModel();
+		}
+        cm = pg.getColorModel();
 		if (cm instanceof IndexColorModel)
 			pixels = (byte[])(pg.getPixels());
 		else
@@ -55,12 +55,7 @@ public class ByteProcessor extends ImageProcessor {
 		this(width, height, new byte[width*height], null);
 	}
 
-	/**Creates a ByteProcessor from a byte array. */
-	public ByteProcessor(int width, int height, byte[] pixels) {
-		this(width, height, pixels, null);
-	}
-
-	/**Creates a ByteProcessor from a pixel array and IndexColorModel. */
+    /**Creates a ByteProcessor from a pixel array and IndexColorModel. */
 	public ByteProcessor(int width, int height, byte[] pixels, ColorModel cm) {
 		if (pixels!=null && width*height!=pixels.length)
 			throw new IllegalArgumentException(WRONG_LENGTH);
@@ -82,22 +77,7 @@ public class ByteProcessor extends ImageProcessor {
 		height = raster.getHeight();
 	}
 
-	/** Creates a ByteProcessor from an ImageProcessor. 16-bit and 32-bit
-	     pixel data are scaled from min-max to 0-255 if 'scale' is true. */
-	public ByteProcessor(ImageProcessor ip, boolean scale) {
-		ImageProcessor bp;
-		if (ip instanceof ByteProcessor)
-			bp = ip.duplicate();
-		else
-			bp = ip.convertToByte(scale);
-		this.width = bp.getWidth();
-		this.height = bp.getHeight();
-		resetRoi();
-		this.pixels = (byte[])bp.getPixels();
-		this.cm = bp.getCurrentColorModel();
-	}
-
-	public Image createImage() {
+    public Image createImage() {
 		if (cm==null) cm = getDefaultColorModel();
 		if (ij.IJ.isJava16()) return createBufferedImage();
 		if (source==null) {
@@ -170,9 +150,7 @@ public class ByteProcessor extends ImageProcessor {
 
 	/**Make a snapshot of the current image.*/
 	public void snapshot() {
-		snapshotWidth=width;
-		snapshotHeight=height;
-		if (snapshotPixels==null || (snapshotPixels!=null && snapshotPixels.length!=pixels.length))
+        if (snapshotPixels==null || (snapshotPixels!=null && snapshotPixels.length!=pixels.length))
 			snapshotPixels = new byte[width * height];
 		System.arraycopy(pixels, 0, snapshotPixels, 0, width*height);
 	}
@@ -215,9 +193,7 @@ public class ByteProcessor extends ImageProcessor {
 
 	public void setSnapshotPixels(Object pixels) {
 		snapshotPixels = (byte[])pixels;
-		snapshotWidth=width;
-		snapshotHeight=height;
-	}
+    }
 
 	public Object getSnapshotPixels() {
 		return snapshotPixels;
@@ -263,9 +239,7 @@ public class ByteProcessor extends ImageProcessor {
 	public final float getf(int index) {return pixels[index]&0xff;}
 	public final void setf(int index, float value) {pixels[index] = (byte)value;}
 
-	static double oldx, oldy;
-
-	/** Uses the current interpolation method (BILINEAR or BICUBIC) 
+    /** Uses the current interpolation method (BILINEAR or BICUBIC)
 		to calculate the pixel value at real coordinates (x,y). */
 	public double getInterpolatedPixel(double x, double y) {
 		if (interpolationMethod==BICUBIC)
@@ -365,7 +339,7 @@ public class ByteProcessor extends ImageProcessor {
 		pixel data. To avoid sign extension, the pixel values must be
 		accessed using a mask (e.g. int i = pixels[j]&0xff). */
 	public Object getPixels() {
-		return (Object)pixels;
+		return pixels;
 	}
 
 	/** Returns a copy of the pixel data. Or returns a reference to the
@@ -808,27 +782,7 @@ public class ByteProcessor extends ImageProcessor {
 			filter(MIN);
 	}
 
-	public void erode(int count, int background) {
-        binaryCount = count;
-        binaryBackground = background;
-        filter(ERODE);
-	}
-
-	public void dilate(int count, int background) {
-        binaryCount = count;
-        binaryBackground = background;
-        filter(DILATE);
-	}
-
-	public void outline() {
-		new BinaryProcessor(this).outline();
-	}
-	
-	public void skeletonize() {
-		new BinaryProcessor(this).skeletonize();
-	}
-	
-	private final int findMedian (int[] values) {
+    private final int findMedian (int[] values) {
 	//Finds the 5th largest of 9 values
 		for (int i = 1; i <= 4; i++) {
 			int max = 0;
@@ -1167,55 +1121,7 @@ public class ByteProcessor extends ImageProcessor {
 		}
 	}
 
-	public void applyLut() {
-		if (rLUT2==null)
-			return;
-		if (isInvertedLut())
-			for (int i=0; i<width*height; i++)
-				pixels[i] = (byte)(255 - rLUT2[pixels[i]&0xff]);
-		else
-			for (int i=0; i<width*height; i++)
-				pixels[i] = rLUT2[pixels[i] & 0xff];
-		setMinAndMax(0, 255);
-	}
-
-	/** Performs a convolution operation using the specified kernel. */
-	public void convolve(float[] kernel, int kernelWidth, int kernelHeight) {
-		ImageProcessor ip2 = convertToFloat();
-		ip2.setRoi(getRoi());
-		new ij.plugin.filter.Convolver().convolve(ip2, kernel, kernelWidth, kernelHeight);
-		ip2 = ip2.convertToByte(false);
-		byte[] pixels2 = (byte[])ip2.getPixels();
-		System.arraycopy(pixels2, 0, pixels, 0, pixels.length);
-	}
-	
-	public FloatProcessor[] toFloatProcessors() {
-		FloatProcessor[] fp = new FloatProcessor[1];
-		fp[0] = (FloatProcessor)convertToFloat();
-		return fp;
-	}
-	
-	public void setFromFloatProcessors(FloatProcessor[]  fp) {
-		ImageProcessor ip2 = fp[0].convertToByte(false);
-		setPixels(ip2.getPixels());
-	}
-
-	public float[][] toFloatArrays() {
-		float[][] a = new float[1][];
-		//ImageProcessor fp = crop();
-		ImageProcessor fp = convertToFloat();
-		a[0] = (float[])fp.getPixels();
-		return a;
-	}
-	
-	public void setFromFloatArrays(float[][] arrays) {
-		ImageProcessor ip2 = new FloatProcessor(roiWidth, roiHeight, arrays[0], null);
-		ip2 = ip2.convertToByte(false);
-		setPixels(ip2.getPixels());
-		//insert(ip2, roiX, roiY); 
-	}
-
-	/** Returns a FloatProcessor with the same image, no scaling or calibration
+    /** Returns a FloatProcessor with the same image, no scaling or calibration
 	*  (pixel values 0 to 255).
 	*  The roi, mask, lut (ColorModel), threshold, min&max are
 	*  also set for the FloatProcessor

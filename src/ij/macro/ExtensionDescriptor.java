@@ -1,6 +1,4 @@
 package ij.macro;
-import ij.IJ;
-import java.util.ArrayList;
 
 public class ExtensionDescriptor {
   public String name;
@@ -21,37 +19,8 @@ public class ExtensionDescriptor {
     
     return new ExtensionDescriptor(theName, argTypes, theHandler);
   }
-  
-  public static ExtensionDescriptor newDescriptor(String theName, MacroExtension theHandler) {
-    return newDescriptor(theName, theHandler, new int[0]);
-  }
-  
-  public static ExtensionDescriptor newDescriptor(String theName, MacroExtension theHandler, int type) {
-    return newDescriptor(theName, theHandler, new int[] {type});
-  }
-  
-  public static ExtensionDescriptor newDescriptor(String theName, MacroExtension theHandler, int t1, int t2) {
-    return newDescriptor(theName, theHandler, new int[] {t1, t2});
-  }
-  
-  public static ExtensionDescriptor newDescriptor(String theName, MacroExtension theHandler, int t1, int t2, int t3) {
-    return newDescriptor(theName, theHandler, new int[] {t1, t2, t3});
-  }
-  
-  public static ExtensionDescriptor newDescriptor(String theName, MacroExtension theHandler, int t1, int t2, int t3, int t4) {
-    return newDescriptor(theName, theHandler, new int[] {t1, t2, t3, t4});
-  }  
-    
-  public static ExtensionDescriptor newDescriptor(String theName, MacroExtension theHandler, Integer[] types) {
-    int[] argTypes = new int[types.length];
-    for (int i=0; i < types.length; ++i) {
-      argTypes[i] = types[i].intValue();
-    }
-    
-    return new ExtensionDescriptor(theName, argTypes, theHandler);
-  }
-  
-  public static boolean isOptionalArg(int argType) {
+
+    public static boolean isOptionalArg(int argType) {
     return (argType & MacroExtension.ARG_OPTIONAL) == MacroExtension.ARG_OPTIONAL;
   }
   
@@ -62,39 +31,8 @@ public class ExtensionDescriptor {
   public static int getRawType(int argType) {
     return argType & ~(MacroExtension.ARG_OUTPUT|MacroExtension.ARG_OPTIONAL);
   }
-  
-  public boolean checkArguments(Object[] args) {
-    for (int i=0; i < argTypes.length; ++i) {
-      boolean optional = isOptionalArg(argTypes[i]);
-      boolean output   = isOutputArg(argTypes[i]);
-      
-      int rawType = getRawType(argTypes[i]);
-      
-      if (args.length < i)
-        return optional ? true : false;
-      
-      switch(rawType) {
-      case MacroExtension.ARG_STRING:
-        if (output) {
-          if (! (args[i] instanceof String[])) return false;
-        } else {
-          if (! (args[i] instanceof String)) return false;
-        }
-      case MacroExtension.ARG_NUMBER:
-        if (output) {
-          if (! (args[i] instanceof Double[])) return false;
-        } else {
-          if (!(args[i] instanceof Double)) return false;
-        }
-      case MacroExtension.ARG_ARRAY:
-        if (!(args[i] instanceof Object[])) return false;
-      }
-    }
-    
-    return true;
-  }
-  
-  public static String getTypeName(int argType) {
+
+    public static String getTypeName(int argType) {
     switch(getRawType(argType)) {
     case MacroExtension.ARG_STRING:
       return "string";

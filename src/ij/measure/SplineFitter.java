@@ -10,11 +10,7 @@ package ij.measure;
 public class SplineFitter {
 	private double[] y2;
 
-	public SplineFitter(int[] x, int[] y, int n) {
-		initSpline(x, y, n);
-	}
-
-	public SplineFitter(float[] x, float[] y, int n) {
+    public SplineFitter(float[] x, float[] y, int n) {
 		initSpline(x, y, n);
 	}
 
@@ -62,32 +58,7 @@ public class SplineFitter {
 			y2[k] = y2[k]*y2[k+1]+u[k];
 	}
 
-	/** Evalutes spline function at given point */
-	public double evalSpline(int x[], int y[], int n, double xp) {
-		int klo,khi,k;
-		double h,b,a;
-		klo = 0;
-		khi = n-1;
-		while (khi-klo > 1) {
-			k = (khi+klo) >> 1;
-			if (x[k] > xp) khi = k;
-			else klo = k;
-		}
-		h = x[khi] - x[klo];
-		/* orig code */
-		/* if (h==0.0) FatalError("bad xvalues in splint\n"); */
-		if (h==0.0) return (0.0);  /* arbitr ret for now */
-		a = (x[khi]-xp)/h;
-		b = (xp-x[klo])/h;
-
-		// should have better err checking
-		if(y2==null) return (0.0);
-
-		return (a*y[klo] + b*y[khi] + ((a*a*a-a)*y2[klo] +(b*b*b-b)*y2[khi])
-				* (h*h) / 6.0);
-	}
-	
-	public double evalSpline(float x[], float y[], int n, double xp) {
+    public double evalSpline(float x[], float y[], int n, double xp) {
 		int klo,khi,k;
 		double h,b,a;
 		klo = 0;

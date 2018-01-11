@@ -1,10 +1,7 @@
 package ij;
-import ij.*;
 import ij.gui.*;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.*;
-
-import java.awt.*;
 
 /** This plugin implements the Invert, Smooth, Sharpen, Find Edges, 
 	and Add Noise commands. */
@@ -12,13 +9,11 @@ public class Filters implements PlugInFilter {
 	
 	private static double sd = Prefs.getDouble(Prefs.NOISE_SD, 25.0);
 	private String arg;
-	private ImagePlus imp;
 	private int slice;
 	private boolean canceled;
 
 	public int setup(String arg, ImagePlus imp) {
 		this.arg = arg;
-		this.imp = imp;
 		if (imp!=null) {
 			Roi roi = imp.getRoi();
 			if (roi!=null && !roi.isArea())

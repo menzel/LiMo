@@ -4,14 +4,7 @@ import ij.measure.Calibration;
 /** 16-bit image statistics, including histogram. */
 public class ShortStatistics extends ImageStatistics {
 
-	/** Construct an ImageStatistics object from a ShortProcessor
-		using the standard measurement options (area, mean,
-		mode, min and max). */
-	public ShortStatistics(ImageProcessor ip) {
-		this(ip, AREA+MEAN+MODE+MIN_MAX, null);
-	}
-
-	/** Constructs a ShortStatistics object from a ShortProcessor using
+    /** Constructs a ShortStatistics object from a ShortProcessor using
 		the specified measurement options. The 'cal' argument, which
 		can be null, is currently ignored. */
 	public ShortStatistics(ImageProcessor ip, int mOptions, Calibration cal) {

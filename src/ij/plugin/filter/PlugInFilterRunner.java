@@ -2,10 +2,8 @@ package ij.plugin.filter;
 import ij.*;
 import ij.process.*;
 import ij.gui.*;
-import ij.plugin.filter.PlugInFilter.*;
 import ij.plugin.filter.*;
-import ij.measure.Calibration;
-import ij.macro.Interpreter;
+
 import java.awt.*;
 import java.util.*;
 

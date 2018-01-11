@@ -4,8 +4,6 @@ import java.awt.event.*;
 import java.util.*;
 import ij.*;
 import ij.plugin.frame.Recorder;
-import ij.plugin.ScreenGrabber;
-import ij.plugin.filter.PlugInFilter;
 import ij.plugin.filter.PlugInFilterRunner;
 import ij.util.Tools;
 import ij.macro.*;
@@ -55,8 +53,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 	private GridBagLayout grid;
 	private GridBagConstraints c;
 	private boolean firstNumericField=true;
-	private boolean firstSlider=true;
-	private boolean invalidNumber;
+    private boolean invalidNumber;
 	private String errorMessage;
 	private boolean firstPaint = true;
 	private Hashtable labels;
@@ -85,7 +82,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
     	this requires that the first word of each label be unique. */
 	public GenericDialog(String title) {
 		this(title, WindowManager.getCurrentImage()!=null?
-			(Frame)WindowManager.getCurrentImage().getWindow():IJ.getInstance()!=null?IJ.getInstance():new Frame());
+                WindowManager.getCurrentImage().getWindow() :IJ.getInstance()!=null?IJ.getInstance():new Frame());
 	}
 
     /** Creates a new GenericDialog using the specified title and parent frame. */
@@ -252,13 +249,8 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 			saveLabel(tf, label);
 		y++;
     }
-    
-    /** Sets the echo character for the next string field. */
-    public void setEchoChar(char echoChar) {
-    	this.echoChar = echoChar;
-    }
-    
-	/** Adds a checkbox.
+
+    /** Adds a checkbox.
 	* @param label			the label
 	* @param defaultValue	the initial state
 	*/
@@ -480,35 +472,8 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		c.fill = GridBagConstraints.NONE;
 		y++;
     }
-    
-	/** Adds one or two (side by side) text areas.
-	* @param text1	initial contents of the first text area
-	* @param text2	initial contents of the second text area or null
-	* @param rows	the number of rows
-	* @param rows	the number of columns
-	*/
-    public void addTextAreas(String text1, String text2, int rows, int columns) {
-    	if (textArea1!=null) return;
-    	Panel panel = new Panel();
-		textArea1 = new TextArea(text1,rows,columns,TextArea.SCROLLBARS_NONE);
-		if (IJ.isLinux()) textArea1.setBackground(Color.white);
-		textArea1.addTextListener(this);
-		panel.add(textArea1);
-		if (text2!=null) {
-			textArea2 = new TextArea(text2,rows,columns,TextArea.SCROLLBARS_NONE);
-			if (IJ.isLinux()) textArea2.setBackground(Color.white);
-			panel.add(textArea2);
-		}
-		c.gridx = 0; c.gridy = y;
-		c.gridwidth = 2;
-		c.anchor = GridBagConstraints.WEST;
-		c.insets = getInsets(15, 20, 0, 0);
-		grid.setConstraints(panel, c);
-		add(panel);
-		y++;
-    }
-    
-	/**
+
+    /**
 	* Adds a slider (scroll bar) to the dialog box.
 	* Floating point values will be used if (maxValue-minValue)<=5.0
 	* and either minValue or maxValue are non-integer.
@@ -569,9 +534,8 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		defaultText.addElement(tf.getText());
 		tf.setEditable(true);
 		//if (firstNumericField && firstSlider) tf.selectAll();
-		firstSlider = false;
-		
-    	Panel panel = new Panel();
+
+        Panel panel = new Panel();
 		GridBagLayout pgrid = new GridBagLayout();
 		GridBagConstraints pc  = new GridBagConstraints();
 		panel.setLayout(pgrid);
@@ -607,11 +571,6 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		y++;
 		if (Recorder.record || macro)
 			saveLabel(tf, label);
-    }
-
-    /** Adds a Panel to the dialog. */
-    public void addPanel(Panel panel) {
-    	addPanel(panel , GridBagConstraints.WEST, new Insets(5, 0, 0, 0));
     }
 
     /** Adds a Panel to the dialog with custom contraint and insets. The
@@ -661,11 +620,6 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
     	helpLabel = label;
     }
 
-    /** Make this a "Yes No Cancel" dialog. */
-    public void enableYesNoCancel() {
-    	enableYesNoCancel(" Yes ", " No ");
-    }
-    
     /** Make this a "Yes No Cancel" dialog with custom labels. Here is an example:
     	<pre>
         GenericDialog gd = new GenericDialog("YesNoCancel Demo");
@@ -736,7 +690,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		String theText = tf.getText();
         String label=null;
 		if (macro) {
-			label = (String)labels.get((Object)tf);
+			label = (String)labels.get(tf);
 			theText = Macro.getValue(macroOptions, label, theText);
 			//IJ.write("getNextNumber: "+label+"  "+theText);
 		}	
@@ -782,13 +736,13 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 	}
 
 	private void recordOption(Component component, String value) {
-		String label = (String)labels.get((Object)component);
+		String label = (String)labels.get(component);
 		if (value.equals("")) value = "[]";
 		Recorder.recordOption(label, value);
 	}
 
 	private void recordCheckboxOption(Checkbox cb) {
-		String label = (String)labels.get((Object)cb);
+		String label = (String)labels.get(cb);
 		if (label!=null) {
 			if (cb.getState()) // checked
 				Recorder.recordOption(label);
@@ -824,14 +778,8 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
     	invalidNumber = false;
     	return wasInvalid;
     }
-    
-	/** Returns an error message if getNextNumber was unable to convert a 
-		string into a number, otherwise, returns null. */
-	public String getErrorMessage() {
-		return errorMessage;
-   	}
 
-  	/** Returns the contents of the next text field. */
+    /** Returns the contents of the next text field. */
    public String getNextString() {
    		String theText;
 		if (stringField==null)
@@ -839,7 +787,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		TextField tf = (TextField)(stringField.elementAt(sfIndex));
 		theText = tf.getText();
 		if (macro) {
-			String label = (String)labels.get((Object)tf);
+			String label = (String)labels.get(tf);
 			theText = Macro.getValue(macroOptions, label, theText);
 			if (theText!=null && (theText.startsWith("&")||label.toLowerCase(Locale.US).startsWith(theText))) {
 				// Is the value a macro variable?
@@ -864,7 +812,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 			recordCheckboxOption(cb);
 		boolean state = cb.getState();
 		if (macro) {
-			String label = (String)labels.get((Object)cb);
+			String label = (String)labels.get(cb);
 			String key = Macro.trimKey(label);
 			state = isMatch(macroOptions, key+" ");
 		}
@@ -906,7 +854,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		Choice thisChoice = (Choice)(choice.elementAt(choiceIndex));
 		String item = thisChoice.getSelectedItem();
 		if (macro) {
-			String label = (String)labels.get((Object)thisChoice);
+			String label = (String)labels.get(thisChoice);
 			item = Macro.getValue(macroOptions, label, item);
 			if (item!=null && item.startsWith("&")) // value is macro variable
 				item = getChoiceVariable(item);
@@ -924,7 +872,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		Choice thisChoice = (Choice)(choice.elementAt(choiceIndex));
 		int index = thisChoice.getSelectedIndex();
 		if (macro) {
-			String label = (String)labels.get((Object)thisChoice);
+			String label = (String)labels.get(thisChoice);
 			String oldItem = thisChoice.getSelectedItem();
 			int oldIndex = thisChoice.getSelectedIndex();
 			String item = Macro.getValue(macroOptions, label, oldItem);
@@ -958,40 +906,8 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		if (s!=null) item = s;
 		return item;
 	}
-    
-  	/** Returns the contents of the next textarea. */
-	public String getNextText() {
-		String text;
-		if (textAreaIndex==0 && textArea1!=null) {
-			//textArea1.selectAll();
-			text = textArea1.getText();
-			textAreaIndex++;
-			if (macro)
-				text = Macro.getValue(macroOptions, "text1", text);
-			if (recorderOn) {
-				String text2 = text;
-				String cmd = Recorder.getCommand();
-				if (cmd!=null && cmd.equals("Convolve...")) {
-					text2 = text.replaceAll("\n","\\\\n");
-					if (!text.endsWith("\n")) text2 = text2 + "\\n";
-				} else
-					text2 = text.replace('\n',' ');
-				Recorder.recordOption("text1", text2);
-			}
-		} else if (textAreaIndex==1 && textArea2!=null) {
-			textArea2.selectAll();
-			text = textArea2.getText();
-			textAreaIndex++;
-			if (macro)
-				text = Macro.getValue(macroOptions, "text2", text);
-			if (recorderOn)
-				Recorder.recordOption("text2", text.replace('\n',' '));
-		} else
-			text = null;
-		return text;
-	}
 
-	/** Displays this dialog box. */
+    /** Displays this dialog box. */
 	public void showDialog() {
 		if (macro) {
 			dispose();
@@ -1026,8 +942,8 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 				buttons.add(okay);
 			} else {
 				buttons.add(okay);
-				if (yesNoCancel) buttons.add(no);;
-				if (!hideCancelButton)
+				if (yesNoCancel) buttons.add(no);
+                if (!hideCancelButton)
 					buttons.add(cancel);
 				if (addHelp) buttons.add(help);
 			}
@@ -1090,17 +1006,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
   		return slider;
   	}
 
-  	/** Returns a reference to textArea1. */
-  	public TextArea getTextArea1() {
-  		return textArea1;
-  	}
-
-  	/** Returns a reference to textArea2. */
-  	public TextArea getTextArea2() {
-  		return textArea2;
-  	}
-  	
-  	/** Returns a reference to the Label or MultiLineLabel created by the
+    /** Returns a reference to the Label or MultiLineLabel created by the
   		last addMessage() call, or null if addMessage() was not called. */
   	public Component getMessage() {
   		return theLabel;
@@ -1110,16 +1016,6 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
     public Checkbox getPreviewCheckbox() {
         return previewCheckbox;
     }
-    
-	/** Returns references to the "OK" ("Yes"), "Cancel", 
-		and if present, "No" buttons as an array. */
-	public Button[] getButtons() {
-  		Button[] buttons = new Button[3];
-  		buttons[0] = okay;
-  		buttons[1] = cancel;
-  		buttons[2] = no;
-		return buttons;
-  	}
 
     /** Used by PlugInFilterRunner to provide visable feedback whether preview
     	is running or not by switching from "Preview" to "wait..."
@@ -1129,11 +1025,6 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
             previewCheckbox.setLabel(isRunning ? previewRunning : previewLabel);
             if (IJ.isMacOSX()) repaint();   //workaround OSX 10.4 refresh bug
         }
-    }
-    
-    /** Display dialog centered on the primary screen? */
-    public void centerDialog(boolean b) {
-    	centerDialog = b;
     }
 
     protected void setup() {
@@ -1230,7 +1121,7 @@ FocusListener, ItemListener, KeyListener, AdjustmentListener, WindowListener {
 		int flags = e.getModifiers();
 		boolean control = (flags & KeyEvent.CTRL_MASK) != 0;
 		boolean meta = (flags & KeyEvent.META_MASK) != 0;
-		boolean shift = (flags & e.SHIFT_MASK) != 0;
+		boolean shift = (flags & InputEvent.SHIFT_MASK) != 0;
 		if (keyCode==KeyEvent.VK_G && shift && (control||meta))
 			new ScreenGrabber().run(""); 
 	}

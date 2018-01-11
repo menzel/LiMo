@@ -1,5 +1,4 @@
 package ij.gui;
-import ij.IJ;
 import java.awt.event.*;
 
 /** This is an xtension of GenericDialog that is non-model.

@@ -4,8 +4,6 @@ package ij;
 import ij.process.*;
 import ij.gui.*;
 import ij.measure.Calibration;
-import java.awt.*;
-import java.awt.image.*;
 
 /** This class consists of static methods and
 	fields that implement ImageJ's Undo command. */
@@ -82,83 +80,8 @@ public class Undo {
 		roiCopy = null;
 		//IJ.log("Undo: reset");
 	}
-	
 
-	public static void undo() {
-		ImagePlus imp = WindowManager.getCurrentImage();
-		//IJ.log(imp.getTitle() + ": undo (" + whatToUndo + ")  "+(imageID!=imp.getID()));
-		if (imp==null || imageID!=imp.getID()) {
-			if (imp!=null && !IJ.macroRunning()) { // does image still have an undo buffer?
-				ImageProcessor ip2 = imp.getProcessor();
-				ip2.swapPixelArrays();
-				imp.updateAndDraw();
-			} else
-				reset();
-			return;
-		}
-		switch (whatToUndo) {
-			case FILTER:
-				ImageProcessor ip = imp.getProcessor();
-				if (ip!=null) {
-					if (!IJ.macroRunning()) {
-						ip.swapPixelArrays();
-						imp.updateAndDraw();
-						return; // don't reset
-					} else {
-						ip.reset();
-						imp.updateAndDraw();
-					}
-				}
-				break;
-			case TYPE_CONVERSION:
-			case COMPOUND_FILTER:
-			case COMPOUND_FILTER_DONE:
-				if (ipCopy!=null) {
-					if (whatToUndo==TYPE_CONVERSION && calCopy!=null)
-						imp.setCalibration(calCopy);
-					if (swapImages(new ImagePlus("",ipCopy), imp)) {
-						imp.updateAndDraw();
-						return;
-					} else
-						imp.setProcessor(null, ipCopy);
-				}
-				break;
-			case TRANSFORM:
-				if (impCopy!=null) {
-					if (swapImages(impCopy, imp)) {
-						imp.updateAndDraw();
-						return;
-					} else
-						imp.setProcessor(impCopy.getTitle(), impCopy.getProcessor());
-				}
-				break;
-			case PASTE:
-				Roi roi = imp.getRoi();
-				if (roi!=null)
-					roi.abortPaste();
-	    		break;
-			case ROI:
-				Roi roiCopy2 = roiCopy;
-				setup(ROI, imp); // setup redo
-				imp.setRoi(roiCopy2);
-				return; //don't reset
-			case OVERLAY_ADDITION:
-				Overlay overlay = imp.getOverlay();
-				if (overlay==null) 
-					{IJ.beep(); return;}
-				int size = overlay.size();
-				if (size>0) {
-					overlay.remove(size-1);
-					imp.draw();
-				} else {
-					IJ.beep();
-					return;
-				}
-	    		return; //don't reset
-    	}
-    	reset();
-	}
-	
+
 	static boolean swapImages(ImagePlus imp1, ImagePlus imp2) {
 		if (imp1.getWidth()!=imp2.getWidth() || imp1.getHeight()!=imp2.getHeight()
 		|| imp1.getBitDepth()!=imp2.getBitDepth() || IJ.macroRunning())

@@ -4,14 +4,7 @@ import ij.measure.Calibration;
 /** 8-bit image statistics, including histogram. */
 public class ByteStatistics extends ImageStatistics {
 
-	/** Construct an ImageStatistics object from a ByteProcessor
-		using the standard measurement options (area, mean,
-		mode, min and max) and no calibration. */
-	public ByteStatistics(ImageProcessor ip) {
-		this(ip, AREA+MEAN+MODE+MIN_MAX, null);
-	}
-
-	/** Constructs a ByteStatistics object from a ByteProcessor using
+    /** Constructs a ByteStatistics object from a ByteProcessor using
 		the specified measurement and calibration. */
 	public ByteStatistics(ImageProcessor ip, int mOptions, Calibration cal) {
 		ByteProcessor bp = (ByteProcessor)ip;

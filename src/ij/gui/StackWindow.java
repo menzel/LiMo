@@ -1,9 +1,7 @@
 package ij.gui;
 import ij.*;
-import ij.measure.Calibration;
 import ij.plugin.frame.SyncWindows;
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.event.*;
 
 /** This class is an extended ImageWindow used to display image stacks. */
@@ -175,15 +173,7 @@ public class StackWindow extends ImageWindow implements Runnable, AdjustmentList
         return true;
 	}
 
-	/** Displays the specified slice and updates the stack scrollbar. */
-	public void showSlice(int index) {
-		if (imp!=null && index>=1 && index<=imp.getStackSize()) {
-			imp.setSlice(index);
-			SyncWindows.setZ(this, index);
-		}
-	}
-	
-	/** Updates the stack scrollbar. */
+    /** Updates the stack scrollbar. */
 	public void updateSliceSelector() {
 		if (hyperStack || zSelector==null) return;
 		int stackSize = imp.getStackSize();
@@ -272,10 +262,7 @@ public class StackWindow extends ImageWindow implements Runnable, AdjustmentList
     	int c = imp.getNChannels();
     	int z = imp.getNSlices();
     	int t = imp.getNFrames();
-    	if (c!=nChannels||z!=nSlices||t!=nFrames||c*z*t!=imp.getStackSize())
-    		return false;
-    	else
-    		return true;
+        return c == nChannels && z == nSlices && t == nFrames && c * z * t == imp.getStackSize();
     }
     
     public void setAnimate(boolean b) {
