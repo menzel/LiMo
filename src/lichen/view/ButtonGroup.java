@@ -33,7 +33,7 @@ public class ButtonGroup {
 	public void highlight(){
 		for(JButton button: list){
 			if(button == activeButton){
-				button.setForeground(Color.RED); 
+				button.setForeground(Color.BLUE);
 			}else{
 				button.setForeground(Color.black);
 			}

@@ -2,6 +2,7 @@ package lichen.view;
 
 import ij.ImagePlus;
 import ij.gui.ImageCanvas;
+import ij.gui.ImageWindow;
 import ij.gui.ProgressBar;
 import ij.gui.Toolbar;
 import ij.process.ColorProcessor;
@@ -45,7 +46,7 @@ public class MainGUI extends JFrame{
 	private static MainGUI gui;
 	public static boolean history;
 	private JPanel colorPanel;
-	private JPanel image;
+	private JLayeredPane image;
 	private ImageCanvas ic;
 	protected ManualAnalyzer manualAnalyzer;
 	protected final JTextArea text = new JTextArea();
@@ -59,10 +60,6 @@ public class MainGUI extends JFrame{
 
 	/**
 	 * Constructor GUI
-	 * @param t2 
-	 * @param myProcessor2 
-	 * @param auto2 
-	 * @param fh2 
 	 */
 	public MainGUI( ImageFileHandler fh, AutoAnalyzer auto, Processor myProcessor, Toolbar t) { 
 		gui  = this; 
@@ -249,73 +246,20 @@ public class MainGUI extends JFrame{
 
 		imageFrame.setSize(200, 200);
 
-		image = new JPanel(new GridLayout());
+		image = new JLayeredPane();
 		image.setSize(200, 200); 
 		image.setBackground(Color.GRAY);
 
-
-		final JScrollBar imageHorizontal  = new JScrollBar(0); 
-		imageHorizontal.setUnitIncrement(UNIT_INCREMENT);
-
-		imageHorizontal.setPreferredSize(new Dimension(1,16)); 
-		imageHorizontal.addAdjustmentListener(new AdjustmentListener() {
-
-
-			@Override
-			public void adjustmentValueChanged(AdjustmentEvent ae) {
-				if(ic != null){ 
-
-					Rectangle srcRect = ic.getSrcRect(); 
-
-					srcRect.x = (int)((ae.getValue()*(imp.getWidth()-ic.getSize().width)/90)*magnification); 
-
-					ic.repaint();
-					imp.updateAndDraw(); 
-
-				}else{
-					imageHorizontal.setValue(0);
-				} 
-			}
-		});
-
-		final JScrollBar imageVertical = new JScrollBar(1); 
-		imageVertical.setPreferredSize(new Dimension(16,1)); 
-		imageVertical.addAdjustmentListener(new AdjustmentListener() {
-
-			@Override
-			public void adjustmentValueChanged(AdjustmentEvent ae) {
-				if(ic != null){ 
-
-					Rectangle srcRect = ic.getSrcRect(); 
-					srcRect.y = (int) ((ae.getValue()*(imp.getHeight()-ic.getSize().height)/90)*magnification);
-
-					ic.repaint();
-					imp.updateAndDraw();
-				}else{
-					imageVertical.setValue(0);
-				}
-			}
-		});
-
+		image.setLayout(new GridLayout());
+		image.setLayer(imageFrame, 1);
 
 		final JTextField pathField = new JTextField("");
 		pathField.setEditable(false);
 
 		imageFrame.add(pathField, BorderLayout.NORTH);
-
 		imageFrame.add(image, BorderLayout.CENTER);
-		imageFrame.add(imageHorizontal, BorderLayout.SOUTH);
-		imageFrame.add(imageVertical, BorderLayout.EAST);
 
-
-		//final JScrollPane ImageScrollPane = new JScrollPane(image);
-		//	ImageScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		//	ImageScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); 
-		//	imageFrame.add(ImageScrollPane, BorderLayout.CENTER);
-
-		getContentPane().add(imageFrame, BorderLayout.CENTER); 
-
-
+		getContentPane().add(imageFrame, BorderLayout.CENTER);
 
 		//---------------------------------------//
 		// Result Table:
@@ -403,9 +347,7 @@ public class MainGUI extends JFrame{
 						double w = ic.getSize().width/90;
 						double h = ic.getSize().height/90;
 
-						imageHorizontal.setValue((int) (imageHorizontal.getValue()- (ic.getMousePosition().x - mousePressed.x)/w));
-						imageVertical.setValue((int) (imageVertical.getValue() - (ic.getMousePosition().y - mousePressed.y)/h)); 
-
+						//TODO impl mouse drag
 
 					}catch(NullPointerException c){
 						// Mouse released outside of image, nothing to do here
@@ -502,13 +444,15 @@ public class MainGUI extends JFrame{
 
 
 				if(e.getWheelRotation() > 0){
-					getIc().zoomOut(e.getXOnScreen(), e.getYOnScreen());
+					getIc().zoomIn(e.getLocationOnScreen().x, e.getLocationOnScreen().y);
+
 					//							getIc().zoomOut((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
 					magnification = imp.getCanvas().getMagnification();
 					getContentPane().revalidate(); 
 
-				}else{ 
-					getIc().zoomIn(e.getXOnScreen(), e.getYOnScreen()); 
+				}else{
+
+					getIc().zoomIn(e.getLocationOnScreen().x, e.getLocationOnScreen().y);
 					//				getIc().zoomIn((int)(getIc().getSrcRect().getCenterX()), (int)(getIc().getSrcRect().getCenterY()));
 					magnification = imp.getCanvas().getMagnification();
 					getContentPane().revalidate(); 
@@ -828,7 +772,7 @@ public class MainGUI extends JFrame{
 					text.setText(text.getText() + "\n" + "Bitte einen gültigen Wert eingeben, zb 20%"); 
 				}
 			}
-		}); 
+		});
 
 
 		/**
@@ -982,7 +926,7 @@ public class MainGUI extends JFrame{
 						pathField.setText(fh.getLastDir()); 
 						imp.getProcessor().setProgressBar(bar);
 
-						imp.show(); 
+						imp.show();
 						manualAnalyzer = null;
 					}
 				}
@@ -994,9 +938,6 @@ public class MainGUI extends JFrame{
 
 					imp.getProcessor().setValue(makeColor(255, 5, 5));
 
-					//set Scrollbars to 0:
-					imageHorizontal.setValue(0);
-					imageVertical.setValue(0);
 
 				}catch (NullPointerException e){
 					//triggers when single windows for each images are opened or no image is selected, no problem here
@@ -1039,7 +980,7 @@ public class MainGUI extends JFrame{
 				flushTable(data);
 
 				imp  = fh.reloadImage();
-				imp.show(); 
+				imp.show();
 
 				manualAnalyzer = null;
 
@@ -1264,7 +1205,7 @@ public class MainGUI extends JFrame{
 
 	/**
 	 * Converts from Integer value to RGB Color
-	 * @param value integer value represents a Color (imageJ coding)
+	 * @param c integer value represents a Color (imageJ coding)
 	 * @return java Color object
 	 */
 	public Color convertFromIJIntToColor(int c) {
