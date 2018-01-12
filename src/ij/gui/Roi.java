@@ -1504,6 +1504,17 @@ public class Roi extends Object implements Cloneable, java.io.Serializable {
 		this.ignoreClipRect = ignoreClipRect;
 	}
 
+	public final boolean isActiveOverlayRoi() {
+		if (imp==null)
+			return false;
+		Overlay overlay = imp.getOverlay();
+		if (overlay!=null && overlay.contains(this))
+			return true;
+		ImageCanvas ic = imp.getCanvas();
+		overlay = ic!=null?ic.getShowAllList():null; // ROI Manager overlay
+		return overlay!=null && overlay.contains(this);
+	}
+
     /** Checks whether two rectangles are equal. */
     public boolean equals(Object obj) {
 		if (obj instanceof Roi) {
